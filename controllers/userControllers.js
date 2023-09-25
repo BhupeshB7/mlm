@@ -1,4 +1,5 @@
 const GameProfile = require('../models/GameProfile');
+const Image = require('../models/Image');
 const User = require('../models/User');
 const { generateUserId } = require('../utils/generateUserId');
 const { hashPassword } = require('../utils/passwordUtils');
@@ -47,6 +48,10 @@ exports.registerUser = async (req, res) => {
       name,
     });
     await game.save();
+    const image = new Image({
+      userId,
+    });
+    await image.save();
     res.json({ userId, name, password, sponsorId});
   } catch (error) {
     console.error(error);

@@ -8,7 +8,7 @@ const passwordRoute = require('./routes/passwordReset');
 const register = require('./routes/register');
 const taskRoutes = require('./routes/taskRoute')
 const userTaskRoute = require('./routes/userTaskRoute')
-const fileUpload = require("express-fileupload");
+// const fileUpload = require("express-fileupload");
 // Connect to MongoDB database
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGO_URL, {
     // origin:"https://globalsuccesspoint.in"
   }));
   app.use(express.json());
-  app.use(fileUpload())
+  // app.use(fileUpload())
 // error handler middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -69,6 +69,8 @@ app.use('/userTasks', userTaskRoute);
 app.use('/api/gameProfile',require('./routes/GameRoutes'));
 app.use('/api/game',require('./routes/game'));
 app.use('/api',require('./routes/GameDeposit'));
+app.use('/api',require('./routes/image'));
+// router.use(express.json());
    // Admin 
   app.use((err, req, res, next) => {
     console.error(err.stack);
