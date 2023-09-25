@@ -32,7 +32,7 @@ router.post('/image/upload/:userId', upload.single('image'), async (req, res) =>
     const { originalname, buffer } = req.file;
   
     try {
-        if (req.file.size > 100000) {
+        if (req.file.size > 400000) {
             return res.status(400).json({ error: 'File size exceeds the maximum limit (100KB)' });
           }
           // Check if mobile number already exists
