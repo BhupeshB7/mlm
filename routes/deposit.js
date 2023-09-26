@@ -43,13 +43,50 @@ else{
   }
 });
 
+// router.get("/depositusers", async (req, res) => {
+//   try {
+//     const searchDepositQuery = req.query.search; // Get the search query parameter from the request
+
+//     // Use a regular expression to perform a case-insensitive search for the given query
+//     const searchRegex = new RegExp(searchDepositQuery, "i");
+//     // const totalUsers = await Deposit.countDocuments();
+
+//     const users = await Deposit.find({
+//       $or: [
+//         { name: searchRegex },
+//         { userID: searchRegex },
+//         { transactionId: searchRegex },
+//       ],
+//     });
+//     res.json(users);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+
+
+
+
+const ITEMS_PER_PAGE = 10; // Number of items to show per page
+
 router.get("/depositusers", async (req, res) => {
   try {
-    const searchDepositQuery = req.query.search; // Get the search query parameter from the request
+    const page = parseInt(req.query.page) || 1; // Get the page number from the request query, default to 1 if not provided
+    const searchDepositQuery = req.query.search;
 
-    // Use a regular expression to perform a case-insensitive search for the given query
     const searchRegex = new RegExp(searchDepositQuery, "i");
-    // const totalUsers = await Deposit.countDocuments();
+
+    const totalUsers = await Deposit.countDocuments({
+      $or: [
+        { name: searchRegex },
+        { userID: searchRegex },
+        { transactionId: searchRegex },
+      ],
+    });
+
+    const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
+    const skip = (page - 1) * ITEMS_PER_PAGE;
 
     const users = await Deposit.find({
       $or: [
@@ -57,8 +94,11 @@ router.get("/depositusers", async (req, res) => {
         { userID: searchRegex },
         { transactionId: searchRegex },
       ],
-    });
-    res.json(users);
+    })
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE);
+
+    res.json({ users, totalPages });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
