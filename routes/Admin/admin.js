@@ -108,23 +108,69 @@ router.post('/login', isAdminOrAuthenticatedMiddleware, async (req, res) => {
 //   res.json(users);
 // });
 
+// router.get('/api/users', async (req, res) => {
+//   const searchQuery = req.query.search; // Get the search query parameter from the request
+
+//   // Use a regular expression to perform a case-insensitive search for the given query
+//   const searchRegex = new RegExp(searchQuery, 'i');
+
+//   // Find all users whose name or email matches the search query
+//   const users = await User.find({
+//     $or: [
+//       { name: searchRegex },
+//       { sponsorId: searchRegex },
+//       { userId: searchRegex }
+//     ]
+//   });
+
+//   res.json(users);
+// });
+
+// server.js
+
+// Define the number of items to display per page
+const itemsPerPage = 5; // You can adjust this as needed
+
 router.get('/api/users', async (req, res) => {
   const searchQuery = req.query.search; // Get the search query parameter from the request
+  const page = parseInt(req.query.page) || 1; // Get the page number from the request, default to 1
 
   // Use a regular expression to perform a case-insensitive search for the given query
   const searchRegex = new RegExp(searchQuery, 'i');
 
-  // Find all users whose name or email matches the search query
-  const users = await User.find({
-    $or: [
-      { name: searchRegex },
-      { sponsorId: searchRegex },
-      { userId: searchRegex }
-    ]
-  });
+  try {
+    // Count the total number of matching users
+    const totalUsersCount = await User.countDocuments({
+      $or: [
+        { name: searchRegex },
+        { sponsorId: searchRegex },
+        { userId: searchRegex },
+      ],
+    });
 
-  res.json(users);
+    // Calculate the number of pages
+    const totalPages = Math.ceil(totalUsersCount / itemsPerPage);
+
+    // Calculate the skip value to determine which documents to skip based on the page number
+    const skip = (page - 1) * itemsPerPage;
+
+    // Find users matching the search query with pagination
+    const users = await User.find({
+      $or: [
+        { name: searchRegex },
+        { sponsorId: searchRegex },
+        { userId: searchRegex },
+      ],
+    })
+      .skip(skip)
+      .limit(itemsPerPage);
+
+    res.json({ users, totalPages });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
 // Update user
 router.put('/active/:id', async (req, res) => {
   try {
@@ -188,7 +234,15 @@ router.get("/count-inactive-items", async (req, res) => {
   const numberOfInActiveUser = await countInActiveItems(items);
   res.json({ numberOfInActiveUser });
 });
-
+router.get('/users/count', async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ count });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 // Get all users (admin only)
 // router.get('/users', adminAuth, async (req, res) => {
 //     try {
