@@ -20,43 +20,7 @@ router.post("/depositSubmit", async (req, res) => {
   }
 });
 // Endpoint for admins to approve requests
-router.put("/approve/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { amount } = req.body;
-    const userRequest = await GameDeposit.findByIdAndUpdate(id, {
-      approved: "Approved", // Set the status to 'Approved'
-    });
 
-    if (!userRequest) {
-      return res.status(404).json({ message: "Request not found" });
-    }
-
-    // Fetch the user's profile by userId
-    const userProfile = await GameProfile.findOne({
-      userId: userRequest.userId,
-    });
-    console.log(userProfile);
-    console.log(amount);
-
-    if (!userProfile) {
-      return res.status(404).json({ message: "User profile not found" });
-    }
-
-    // Check if amount is a valid number
-    if (isNaN(amount)) {
-      return res.status(400).json({ message: "Invalid amount value" });
-    }
-
-    // Update the balance in the user's profile (assuming userRequest.amount is the deposit amount)
-    userProfile.balance += parseFloat(amount); // Convert amount to a number if it's a string
-    await userProfile.save();
-
-    res.json({ message: "Request approved and balance updated successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 router.post("/withdrawalSubmit", async (req, res) => {
   try {
     const { name, amount, userId, UPI } = req.body;
@@ -79,6 +43,7 @@ router.post("/withdrawalSubmit", async (req, res) => {
 router.get('/history/:userId', async (req, res) => {
     try {
       const userId = req.params.userId;
+     
       // Assuming you have a Game model, you can use it to query the database
       const gameHistory = await GameWithdrawal.find({ userId: userId });
       res.json(gameHistory);
@@ -133,6 +98,200 @@ router.get('/history/:userId', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-// ...
+//Admin, Fetch Data
+  // router.get('/deposit/history', async (req, res) => {
+  //   try {
+  //     const page = parseInt(req.params.page) ||1;
+  //     const pageSize =3;
+  //     const skip = (page - 1) * pageSize
+  //     const totalCount = await Game.countDocuments();
 
+  //   const totalPages = Math.ceil(totalCount / pageSize);
+
+  //     // Assuming you have a Game model, you can use it to query the database
+  //     const gameHistory = await GameDeposit.find().skip(skip).limit(pageSize).sort({createdAt: -1});
+  //     res.json({gameHistory,page, itemsPerPage: pageSize, totalPages});
+  //   } catch (err) {
+  //     console.error(`Error fetching game history: ${err}`);
+  //     res.status(500).json({ error: 'Internal Server Error' });
+  //   }
+  // });
+
+router.get('/deposit/history', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from query parameters
+    const limit = parseInt(req.query.limit) || 3; // Get the number of items per page from query parameters
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    // Assuming you have a Game model, you can use it to query the database with pagination
+    const totalRecords = await GameDeposit.countDocuments(); // Get the total count of records
+
+    const gameHistory = await GameDeposit.find()
+      .skip(startIndex)
+      .limit(limit);
+
+    const paginationInfo = {
+      currentPage: page,
+      totalPages: Math.ceil(totalRecords / limit),
+    };
+
+    res.json({ gameHistory, paginationInfo });
+  } catch (err) {
+    console.error(`Error fetching game history: ${err}`);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+  router.put("/approve/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const { amount } = req.body;
+      const userRequest = await GameDeposit.findByIdAndUpdate(id, {
+        approved: "Approved", // Set the status to 'Approved'
+      });
+  
+      if (!userRequest) {
+        return res.status(404).json({ message: "Request not found" });
+      }
+  
+      // Fetch the user's profile by userId
+      const userProfile = await GameProfile.findOne({
+        userId: userRequest.userId,
+      });
+      console.log(userProfile);
+      console.log(amount);
+  
+      if (!userProfile) {
+        return res.status(404).json({ message: "User profile not found" });
+      }
+  
+      // Check if amount is a valid number
+      if (isNaN(amount)) {
+        return res.status(400).json({ message: "Invalid amount value" });
+      }
+  
+      // Update the balance in the user's profile (assuming userRequest.amount is the deposit amount)
+      userProfile.balance += parseFloat(amount); // Convert amount to a number if it's a string
+      await userProfile.save();
+  
+      res.json({ message: "Request approved and balance updated successfully" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+// ...
+router.get('/statistics', async (req, res) => {
+  try {
+    const today = new Date();
+    const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds
+    const sevenDaysAgo = new Date(today - 7 * oneDay); // Seven days ago
+    const yesterday = new Date(today - oneDay); // Yesterday
+
+    // Find the previous seven-day total amount
+    const sevenDayTotalAmount = await GameDeposit.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: sevenDaysAgo,
+            $lte: today,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    // Find the previous seven-day pending amount
+    const sevenDayPendingAmount = await GameDeposit.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: sevenDaysAgo,
+            $lte: today,
+          },
+          approved: 'Pending',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalPendingAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    // Find the previous seven-day approved amount
+    const sevenDayApprovedAmount = await GameDeposit.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: sevenDaysAgo,
+            $lte: today,
+          },
+          approved: 'Approved',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalApprovedAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    // Find yesterday's approved amount
+    const yesterdayApprovedAmount = await GameDeposit.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: yesterday,
+            $lte: today,
+          },
+          approved: 'Approved',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          yesterdayApprovedAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    // Find yesterday's total amount
+    const yesterdayTotalAmount = await GameDeposit.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: yesterday,
+            $lte: today,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          yesterdayTotalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    res.json({
+      sevenDayTotalAmount: sevenDayTotalAmount[0]?.totalAmount || 0,
+      sevenDayPendingAmount: sevenDayPendingAmount[0]?.totalPendingAmount || 0,
+      sevenDayApprovedAmount: sevenDayApprovedAmount[0]?.totalApprovedAmount || 0,
+      yesterdayApprovedAmount: yesterdayApprovedAmount[0]?.yesterdayApprovedAmount || 0,
+      yesterdayTotalAmount: yesterdayTotalAmount[0]?.yesterdayTotalAmount || 0,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 module.exports = router;
