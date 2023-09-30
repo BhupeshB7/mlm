@@ -8,10 +8,10 @@ exports.registerUser = async (req, res) => {
     const { name, email, password, mobile, sponsorId } = req.body;
 
     // Check if sponsor ID exists
-    // const sponsor = await User.findOne({ userId: sponsorId });
-    // if (!sponsor) {
-    //   return res.status(404).json({ error: 'Invalid sponsor ID' });
-    // }
+    const sponsor = await User.findOne({ userId: sponsorId });
+    if (!sponsor) {
+      return res.status(404).json({ error: 'Invalid sponsor ID' });
+    }
 
 
     // Check if email already exists
