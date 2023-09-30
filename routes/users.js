@@ -276,22 +276,22 @@ router.post("/updateWalletss/:userId", async (req, res) => {
   let maximumEarnings = 0;
   switch (rank) {
     case 'Fresher':
-      maximumEarnings = 500;
+      maximumEarnings = 650;
       break;
     case 'Starter':
-      maximumEarnings = 800;
+      maximumEarnings = 1300;
       break;
     case 'Bronze':
-      maximumEarnings = 1500;
-      break;
-    case 'Silver':
-      maximumEarnings = 2000;
-      break;
-    case 'Gold':
       maximumEarnings = 2500;
       break;
+    case 'Silver':
+      maximumEarnings = 3500;
+      break;
+    case 'Gold':
+      maximumEarnings = 5000;
+      break;
     case 'Diamond':
-      maximumEarnings = 3000;
+      maximumEarnings = 10000;
       break;
     default:
       maximumEarnings = 0; // You may want to handle other ranks accordingly

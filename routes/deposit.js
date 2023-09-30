@@ -7,41 +7,69 @@ const imageValidate = require("../utils/imageValidate");
 const Topup = require("../models/Topup");
 const User = require("../models/User");
 
-router.post("/user", async (req, res) => {
+// POST endpoint for handling deposit submissions
+router.post("/userAmount", async (req, res) => {
   try {
     const { name, transactionId, userID, depositAmount } = req.body;
 
-    const transaction = await Deposit.findOne({ transactionId });
-    if (transaction) {
-      return res.status(400).json({ error: "transactionId already exists" });
+    // Check if the transactionId already exists in the database
+    const existingDeposit = await Deposit.findOne({ transactionId });
+    if (existingDeposit) {
+      return res.status(400).json({ message: "Transaction Id already exists" });
     }
-else{
 
-  const user = new Deposit({ name, transactionId, userID, depositAmount });
-  await user.save();
-  console.log("userID:", userID);
+    // Create a new deposit record
+    const newDeposit = new Deposit({
+      name,
+      transactionId,
+      userID,
+      depositAmount,
+    });
 
-  // Update the topupWallet in the User schema with the depositAmount
-  const userToUpdate = await User.findOne({userId:userID});
-  console.log("userToUpdate:", userToUpdate);
-  console.log("depositAmount:", depositAmount);
+    // Save the deposit to the database
+    await newDeposit.save();
 
-  if (!userToUpdate) {
-    console.log(`User with userId ${userID} not found`);
-    return res.status(404).json({ error: "User not found" });
-  }
-
-  userToUpdate.topupWallet += depositAmount;
-  await userToUpdate.save();
-  console.log("Updated topupWallet:", userToUpdate.topupWallet);
- 
-  res.json({ message: "Deposit successful", user: userToUpdate });
-}
+    res.status(201).json({ message: "Deposit successful" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
+// router.post("/user", async (req, res) => {
+//   try {
+//     const { name, transactionId, userID, depositAmount } = req.body;
+
+//     const transaction = await Deposit.findOne({ transactionId });
+//     if (transaction) {
+//       return res.status(400).json({ error: "transactionId already exists" });
+//     }
+// else{
+
+//   const user = new Deposit({ name, transactionId, userID, depositAmount });
+//   await user.save();
+//   console.log("userID:", userID);
+
+//   // Update the topupWallet in the User schema with the depositAmount
+//   const userToUpdate = await User.findOne({userId:userID});
+//   console.log("userToUpdate:", userToUpdate);
+//   console.log("depositAmount:", depositAmount);
+
+//   if (!userToUpdate) {
+//     console.log(`User with userId ${userID} not found`);
+//     return res.status(404).json({ error: "User not found" });
+//   }
+
+//   userToUpdate.topupWallet += depositAmount;
+//   await userToUpdate.save();
+//   console.log("Updated topupWallet:", userToUpdate.topupWallet);
+ 
+//   res.json({ message: "Deposit successful", user: userToUpdate });
+// }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
 // router.get("/depositusers", async (req, res) => {
 //   try {

@@ -7,7 +7,8 @@ const profileRoutes = require('./routes/profile');
 const passwordRoute = require('./routes/passwordReset');
 const register = require('./routes/register');
 const taskRoutes = require('./routes/taskRoute')
-const userTaskRoute = require('./routes/userTaskRoute')
+const userTaskRoute = require('./routes/userTaskRoute');
+const User = require('./models/User');
 // const fileUpload = require("express-fileupload");
 // Connect to MongoDB database
 mongoose.connect(process.env.MONGO_URL, {
@@ -51,7 +52,7 @@ app.use("/api/admin", require('./routes/Admin/admin'));
   //Deposit Routes
   app.use('/api/deposit', require('./routes/deposit'));
 //Withdraw request
-app.use('/api', require('./routes/withdraw'));
+app.use('/api/withdraw', require('./routes/withdraw'));
 //direct request
 app.use('/api', require('./routes/direct'));
 //Task Completion
@@ -72,7 +73,28 @@ app.use('/api',require('./routes/GameDeposit'));
 app.use('/api',require('./routes/image'));
 // router.use(express.json());
    // Admin 
+// // Define a cron job that runs every 10 minutes
+// cron.schedule('*/1 * * * *', async () => {
+//   try {
+//     // Find users with income wallet greater than 0
+//     const users = await User.find({ income: { $gt: 0 } });
 
+//     for (const user of users) {
+//       // Transfer income wallet amount to past income wallet
+//       user.pastIncome += user.income;
+//       // Add new income to the income wallet
+//       // Replace 3000 with the actual new income amount
+//       user.income = user.income + 3000;
+
+//       // Save the updated user data
+//       await user.save();
+//     }
+
+//     console.log('Income transfer and update completed.');
+//   } catch (error) {
+//     console.error('Error in background task:', error);
+//   }
+// });
 
 
   app.use((err, req, res, next) => {

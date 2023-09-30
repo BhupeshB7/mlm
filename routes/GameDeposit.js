@@ -52,6 +52,44 @@ router.get('/history/:userId', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+  // router.get('/withdraw/history', async (req, res) => {
+  //   try {
+     
+  //     // Assuming you have a Game model, you can use it to query the database
+  //     const gameHistory = await GameWithdrawal.find();
+  //     res.json(gameHistory);
+  //   } catch (err) {
+  //     console.error(`Error fetching game history: ${err}`);
+  //     res.status(500).json({ error: 'Internal Server Error' });
+  //   }
+  // });
+
+router.get('/withdraw/history', async (req, res) => {
+  try {
+    // Pagination parameters (page and perPage)
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+    const perPage = parseInt(req.query.perPage) || 4; // Default to 10 items per page
+
+    // Calculate the skip value based on pagination parameters
+    const skip = (page - 1) * perPage;
+
+    // Query the database with pagination
+    const gameHistory = await GameWithdrawal.find()
+      .skip(skip)
+      .limit(perPage);
+
+    // Count the total number of records (needed for pagination)
+    const totalRecords = await GameWithdrawal.countDocuments();
+
+    const totalPages = Math.ceil(totalRecords / perPage);
+
+    res.json({ gameHistory, totalPages });
+  } catch (err) {
+    console.error(`Error fetching game history: ${err}`);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Define a page and pageSize in your route
 
 // router.get('/history/:userId', async (req, res) => {
