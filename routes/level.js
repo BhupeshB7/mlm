@@ -81,6 +81,7 @@ const User = require('../models/User');
 // });
 
 
+
 async function apiRateLimitMiddleware(req, res, next) {
   const { userId } = req.params;
 
@@ -108,10 +109,7 @@ async function apiRateLimitMiddleware(req, res, next) {
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
-
-
-
-router.post("/updateWallet/:userId", apiRateLimitMiddleware,  async (req, res) => {
+router.post("/updateWallet/:userId",apiRateLimitMiddleware,  async (req, res) => {
   const { userId } = req.params;
   let user = await User.findOne({ userId: userId });
   if (!user) {
