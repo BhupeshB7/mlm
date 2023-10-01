@@ -45,7 +45,7 @@ router.post("/sendpasswordlink",async(req,res)=>{
                 to:email,
                 subject:"Sending Email For password Reset",
                 // html:`<h2>hi... ${userfind.name}</h2>`,
-                html:`<h2>hi... ${userfind.name}</h2>  \n This Link Valid For 5 MINUTES https://globalsuccesspoint.in/forgotpassword/${userfind.id}/${setusertoken.verifytoken}`
+                html:`<h2>hi... ${userfind.name}</h2>  \n This Link Valid For 5 MINUTES https://https://powerfulindia.netlify.app/forgotpassword/${userfind.id}/${setusertoken.verifytoken}`
             }
 
             transporter.sendMail(mailOptions,(error,info)=>{

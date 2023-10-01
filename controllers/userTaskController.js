@@ -1,5 +1,7 @@
+const User = require('../models/User');
 const UserTask = require('../models/userTasks');
-
+const express = require('express');
+const router = express.Router();
 // Endpoint to check if a task is complete for a specific user
 const checkTaskCompletion = async (req, res) => {
   const { taskId, userId } = req.params;
@@ -19,5 +21,5 @@ const checkTaskCompletion = async (req, res) => {
 };
 
 module.exports = {
-  checkTaskCompletion,
+  checkTaskCompletion, router
 };
