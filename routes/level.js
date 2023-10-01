@@ -81,9 +81,35 @@ const User = require('../models/User');
 // });
 
 
+function apiRateLimitMiddleware(req, res, next) {
+  const { userId } = req.params;
+
+  User.findOne({ userId: userId }, (err, user) => {
+    if (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const now = new Date();
+    const lastApiCallTimestamp = user.lastApiCallTimestamp;
+
+    if (!lastApiCallTimestamp || now - lastApiCallTimestamp >= 12 * 60 * 60 * 1000) {
+      // If the user is allowed to make the API call, update the lastApiCallTimestamp
+      user.lastApiCallTimestamp = now;
+      user.save();
+      next();
+    } else {
+      // If the user is not allowed, return an error message
+      return res.status(429).json({ error: 'API rate limit exceeded' });
+    }
+  });
+}
 
 
-router.post("/updateWallet/:userId", async (req, res) => {
+router.post("/updateWallet/:userId", apiRateLimitMiddleware, async (req, res) => {
   const { userId } = req.params;
   let user = await User.findOne({ userId: userId });
   if (!user) {

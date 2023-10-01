@@ -104,6 +104,10 @@ activationTime: {
   lastUpdated: {
     type: Date,
   },
+  lastApiCallTimestamp: {
+    type: Date,
+    default: null,
+  },
 date: {Date},
  }, {timestamps: true},
 );

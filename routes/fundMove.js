@@ -128,7 +128,7 @@ router.post("/transfer/:userId", async (req, res) => {
     }
 
     if (transferAmount <= user.balance) {
-      const deduction = transferAmount * 0.05; // 5% deduction
+      const deduction = transferAmount * 0.08; // 8% deduction
       const transferAfterDeduction = transferAmount - deduction;
 
       user.balance -= transferAmount;
