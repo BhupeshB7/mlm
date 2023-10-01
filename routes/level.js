@@ -94,7 +94,7 @@ async function apiRateLimitMiddleware(req, res, next) {
     const now = new Date();
     const lastApiCallTimestamp = user.lastApiCallTimestamp;
 
-    if (!lastApiCallTimestamp || now - lastApiCallTimestamp >= 1 60 * 60 * 1000) {
+    if (!lastApiCallTimestamp || now - lastApiCallTimestamp >=  2*60 * 60 * 1000) {
     // if (!lastApiCallTimestamp || now - lastApiCallTimestamp >= 12 * 60 * 60 * 1000) {
       // If the user is allowed to make the API call, update the lastApiCallTimestamp
       user.lastApiCallTimestamp = now;
