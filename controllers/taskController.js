@@ -47,18 +47,18 @@
 //   deleteTask,
 // };
 
-
 // taskController.js
-const Task = require('../models/newTask');
-const UserTask = require('../models/userTasks');
-const mongoose = require('mongoose');
+const User = require("../models/User");
+const Task = require("../models/newTask");
+const UserTask = require("../models/userTasks");
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find();
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve tasks' });
+    res.status(500).json({ error: "Failed to retrieve tasks" });
   }
 };
 
@@ -107,7 +107,7 @@ const getAllTasks = async (req, res) => {
 //     res.status(500).json({ error: 'Failed to retrieve the task' });
 //   }
 // };
-//2nd latest code 
+//2nd latest code
 // const getTaskById = async (req, res) => {
 //   try {
 //     const taskId = req.params.id;
@@ -148,7 +148,7 @@ const createTask = async (req, res) => {
     const newTask = await Task.create({ title, videoLink });
     res.status(201).json(newTask);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create a task' });
+    res.status(500).json({ error: "Failed to create a task" });
   }
 };
 //last updated code
@@ -160,20 +160,20 @@ const getTaskById = async (req, res) => {
     // Fetch the task based on taskId
     const task = await Task.findById(taskId);
     if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
+      return res.status(404).json({ error: "Task not found" });
     }
 
     // Fetch all userTasks associated with the given taskId
     const userTasks = await UserTask.find({ taskId });
 
     // Check if all users have completed the task
-    const allUsersCompleted = userTasks.every(userTask => userTask.completed);
+    const allUsersCompleted = userTasks.every((userTask) => userTask.completed);
 
     if (allUsersCompleted) {
       // If all users have completed the task, show userTasks array as empty
-      task.userTasks = userTasks.map(userTask => ({
+      task.userTasks = userTasks.map((userTask) => ({
         userId: userTask.userId,
-        completed: userTask.completed
+        completed: userTask.completed,
       }));
       // task.userTasks = [];
     } else {
@@ -184,31 +184,241 @@ const getTaskById = async (req, res) => {
     res.status(200).json(task);
   } catch (error) {
     console.error(error); // Log the error for debugging purposes
-    res.status(500).json({ error: 'Failed to retrieve the task. Please try again later.' });
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve the task. Please try again later." });
   }
 };
 
+// const markTaskCompleted = async (req, res) => {
+//   const taskId = req.params.id;
+//   const userId = req.body.userId; // Assuming you send userId in the request body
+
+//   try {
+//     await Task.findByIdAndUpdate(taskId, { completedBy: true });
+
+//     // Check if the userTask already exists, if not, create a new entry
+//     const userTask = await UserTask.findOne({ taskId, userId });
+//     if (!userTask) {
+//       await UserTask.create({ taskId, userId, completed: true });
+
+//       if(!userTask.WalletUpdated)
+//       {
+
+//         let user = await User.findOne({ userId: userId });
+//         if (!user) {
+//           return res.status(404).send("User not found");
+//         }
+
+//         user.balance += 30;
+//         user.income += 30;
+//         user.selfIncome += 30;
+//         await user.save();
+
+//         if (user.is_active) {
+//           let sponsor = await User.findOne({ userId: user.sponsorId });
+//           let sponsorCount = await User.countDocuments({ userId: user.sponsorId, is_active: true });
+
+//           if (sponsor && sponsorCount >= 1 && sponsor.is_active) {
+//             sponsor.balance += 4;
+//             sponsor.teamIncome += 4;
+//             sponsor.income += 4;
+//             await sponsor.save();
+
+//             let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
+
+//             if (sponsor2 && sponsor2.is_active) {
+//               let sponsor2CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
+
+//               if (sponsor2CountUser >= 2) {
+//                 sponsor2.teamIncome += 3;
+//                 sponsor2.balance += 3;
+//                 sponsor2.income += 3;
+//                 await sponsor2.save();
+
+//                 let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
+
+//                 if (sponsor3 && sponsor3.is_active) {
+//                   let sponsor3CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
+
+//                   if (sponsor3CountUser >= 3) {
+//                     sponsor3.balance += 2;
+//                     sponsor3.teamIncome += 2;
+//                     sponsor3.income += 2;
+//                     await sponsor3.save();
+
+//                     let sponsor4 = await User.findOne({ userId: sponsor3.sponsorId });
+
+//                     if (sponsor4 && sponsor4.is_active) {
+//                       let sponsor4CountUser = await User.countDocuments({ sponsorId: sponsor3.userId, is_active: true });
+
+//                       if (sponsor4CountUser >= 4) {
+//                         sponsor4.balance += 1;
+//                         sponsor4.teamIncome += 1;
+//                         sponsor4.income += 1;
+//                         await sponsor4.save();
+
+//                         let sponsor5 = await User.findOne({ userId: sponsor4.sponsorId });
+
+//                         if (sponsor5 && sponsor5.is_active) {
+//                           let sponsor5CountUser = await User.countDocuments({ sponsorId: sponsor4.userId, is_active: true });
+
+//                           if (sponsor5CountUser >= 5) {
+//                             sponsor5.balance += 1;
+//                             sponsor5.teamIncome += 1;
+//                             sponsor5.income += 1;
+//                             await sponsor5.save();
+//                           }
+//                         }
+//                       }
+//                     }
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+
+//         res.send("Account increased successfully");
+//         userTask.WalletUpdated = true;
+//         await userTask.save();
+//       }
+//     } else {
+//       userTask.completed = true;
+//       userTask.WalletUpdated =true;
+
+//       await userTask.save();
+//     }
+
+//     res.status(200).json({ message: 'Task marked as completed' });
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json({ error: 'Failed to mark the task as completed' });
+//   }
+// };
 
 const markTaskCompleted = async (req, res) => {
   const taskId = req.params.id;
   const userId = req.body.userId; // Assuming you send userId in the request body
 
   try {
-    await Task.findByIdAndUpdate(taskId, { completedBy: true });
-
     // Check if the userTask already exists, if not, create a new entry
-    const userTask = await UserTask.findOne({ taskId, userId });
+    let userTask = await UserTask.findOne({ taskId, userId });
+    // console.log(userId);
     if (!userTask) {
-      await UserTask.create({ taskId, userId, completed: true });
-    } else {
-      userTask.completed = true;
-      await userTask.save();
+      await UserTask.create({
+        taskId,
+        userId,
+        completed: true,
+        WalletUpdated: false,
+      });
     }
 
-    res.status(200).json({ message: 'Task marked as completed' });
+    // Retrieve the userTask again (or the newly created one)
+    userTask = await UserTask.findOne({ taskId, userId });
+
+    if (!userTask) {
+      return res.status(404).send("UserTask not found");
+    }
+    
+      // Check if the task is completed
+      if (userTask.completed) {
+        // Mark the task as completed
+        userTask.completed = true;
+
+        // Update WalletUpdated to true
+        userTask.WalletUpdated = true;
+
+        await userTask.save();
+
+        // Update user's balance, income, and selfIncome
+        let user = await User.findOne({ userId: userId });
+        if (!user) {
+          return res.status(404).send("User not found");
+        }
+        user.balance += 30;
+        user.income += 30;
+        user.selfIncome += 30;
+        await user.save();
+        if (user.is_active) {
+          let sponsor = await User.findOne({ userId: user.sponsorId });
+          let sponsorCount = await User.countDocuments({ userId: user.sponsorId, is_active: true });
+
+          if (sponsor && sponsorCount >= 1 && sponsor.is_active) {
+            sponsor.balance += 4;
+            sponsor.teamIncome += 4;
+            sponsor.income += 4;
+            await sponsor.save();
+
+            let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
+
+            if (sponsor2 && sponsor2.is_active) {
+              let sponsor2CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
+
+              if (sponsor2CountUser >= 2) {
+                sponsor2.teamIncome += 3;
+                sponsor2.balance += 3;
+                sponsor2.income += 3;
+                await sponsor2.save();
+
+                let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
+
+                if (sponsor3 && sponsor3.is_active) {
+                  let sponsor3CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
+
+                  if (sponsor3CountUser >= 3) {
+                    sponsor3.balance += 2;
+                    sponsor3.teamIncome += 2;
+                    sponsor3.income += 2;
+                    await sponsor3.save();
+
+                    let sponsor4 = await User.findOne({ userId: sponsor3.sponsorId });
+
+                    if (sponsor4 && sponsor4.is_active) {
+                      let sponsor4CountUser = await User.countDocuments({ sponsorId: sponsor3.userId, is_active: true });
+
+                      if (sponsor4CountUser >= 4) {
+                        sponsor4.balance += 1;
+                        sponsor4.teamIncome += 1;
+                        sponsor4.income += 1;
+                        await sponsor4.save();
+
+                        let sponsor5 = await User.findOne({ userId: sponsor4.sponsorId });
+
+                        if (sponsor5 && sponsor5.is_active) {
+                          let sponsor5CountUser = await User.countDocuments({ sponsorId: sponsor4.userId, is_active: true });
+
+                          if (sponsor5CountUser >= 5) {
+                            sponsor5.balance += 1;
+                            sponsor5.teamIncome += 1;
+                            sponsor5.income += 1;
+                            await sponsor5.save();
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        // Additional logic for updating sponsors and their incomes goes here
+        // console.log("Update");
+        res.send("Account increased successfully");
+      } else {
+        // console.log("error");
+        res.send("Account is already increased");
+      }
+    
   } catch (error) {
-    res.status(500).json({ error: 'Failed to mark the task as completed' });
+    console.log(error);
+    res.status(500).json({ error: "Failed to mark the task as completed" });
   }
+};
+
+module.exports = {
+  markTaskCompleted,
 };
 
 const deleteTask = async (req, res) => {
@@ -218,9 +428,9 @@ const deleteTask = async (req, res) => {
     await Task.findByIdAndDelete(taskId);
     // Delete userTask entries for the deleted task
     await UserTask.deleteMany({ taskId });
-    res.status(200).json({ message: 'Task deleted successfully' });
+    res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete the task' });
+    res.status(500).json({ error: "Failed to delete the task" });
   }
 };
 const deleteAllTasks = async (req, res) => {
@@ -229,9 +439,9 @@ const deleteAllTasks = async (req, res) => {
     await Task.deleteMany({});
     // Delete all userTask entries related to the deleted tasks
     await UserTask.deleteMany({});
-    res.status(200).json({ message: 'All tasks deleted successfully' });
+    res.status(200).json({ message: "All tasks deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete all tasks' });
+    res.status(500).json({ error: "Failed to delete all tasks" });
   }
 };
 // const  taskStatus =( async (req, res) => {
@@ -288,7 +498,7 @@ const taskStatus = async (userId, level) => {
     }
   } catch (error) {
     console.log(error);
-    throw new Error('Error fetching user task status');
+    throw new Error("Error fetching user task status");
   }
 };
 
@@ -301,22 +511,21 @@ const getUserTaskStatus = async (userId) => {
     return { status };
   } catch (error) {
     console.log(error);
-    throw new Error('Error fetching user task status');
+    throw new Error("Error fetching user task status");
   }
 };
 
 // API endpoint
-const taskCompletionStatus =( async (req, res) => {
+const taskCompletionStatus = async (req, res) => {
   const userId = req.params.userId;
 
   try {
     const userTaskStatus = await getUserTaskStatus(userId);
     res.json(userTaskStatus);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching user task status' });
+    res.status(500).json({ error: "Error fetching user task status" });
   }
-});
-
+};
 
 module.exports = {
   getAllTasks,
@@ -325,5 +534,5 @@ module.exports = {
   markTaskCompleted,
   deleteTask,
   deleteAllTasks,
-  taskCompletionStatus
+  taskCompletionStatus,
 };

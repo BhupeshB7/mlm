@@ -3,9 +3,7 @@ const mongoose = require('mongoose');
 
 const userTaskSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+    type:String
   },
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -13,6 +11,10 @@ const userTaskSchema = new mongoose.Schema({
     required: true,
   },
   completed: {
+    type: Boolean,
+    default: false,
+  },
+  WalletUpdated: {
     type: Boolean,
     default: false,
   },
