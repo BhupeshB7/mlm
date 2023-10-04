@@ -336,9 +336,9 @@ const markTaskCompleted = async (req, res) => {
         if (!user) {
           return res.status(404).send("User not found");
         }
-        user.balance += 30;
-        user.income += 30;
-        user.selfIncome += 30;
+        user.balance += 25;
+        user.income += 25;
+        user.selfIncome += 25;
         await user.save();
         if (user.is_active) {
           let sponsor = await User.findOne({ userId: user.sponsorId });
@@ -389,9 +389,9 @@ const markTaskCompleted = async (req, res) => {
                           let sponsor5CountUser = await User.countDocuments({ sponsorId: sponsor4.userId, is_active: true });
 
                           if (sponsor5CountUser >= 5) {
-                            sponsor5.balance += 1;
-                            sponsor5.teamIncome += 1;
-                            sponsor5.income += 1;
+                            sponsor5.balance += 0.5;
+                            sponsor5.teamIncome += 0.5;
+                            sponsor5.income += 0.5;
                             await sponsor5.save();
                           }
                         }
