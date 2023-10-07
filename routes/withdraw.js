@@ -147,7 +147,7 @@ function isAfter1PMIST() {
 // All withdrawal Code
 router.post('/user/:userId', async (req, res) => {
   const { userId} = req.params;
-  const { amount, GPay, ifscCode, accountNo, accountHolderName } = req.body;
+  const { amount, ifscCode, accountNo, accountHolderName } = req.body;
   const user = await User.findOne({ userId: userId});
 
   // Check if the withdrawal amount is greater than 0
@@ -194,7 +194,6 @@ router.post('/user/:userId', async (req, res) => {
     const withdrawalRequest = new WithdrawBalance({
       userId,
       amount,
-      GPay,
       ifscCode,
       accountNo,
       accountHolderName
@@ -215,7 +214,7 @@ router.post('/user/:userId', async (req, res) => {
     }
 
     // Check if user has already made a withdrawal of 200 Rs
-    if (user.withdrawalDone && amount === 200) {
+    if (user.withdrawalDone) {
       return res.status(403).json({ error: 'Withdrawal of 200 Rs already done' });
     }
 
@@ -228,7 +227,6 @@ router.post('/user/:userId', async (req, res) => {
     const withdrawalRequest = new WithdrawBalance({
       userId,
       amount,
-      GPay,
       ifscCode,
       accountNo,
       accountHolderName
@@ -269,7 +267,6 @@ router.post('/user/:userId', async (req, res) => {
     const withdrawalRequest = new WithdrawBalance({
       userId,
       amount,
-      GPay,
       ifscCode,
       accountNo,
       accountHolderName
