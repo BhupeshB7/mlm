@@ -408,16 +408,19 @@ router.put("/withdrawals/:id", async (req, res) => {
   const { id } = req.params;
   const { status, transactionNumber } = req.body;
   try {
-    const withdrawalRequest = await WithdrawalReq.findByIdAndUpdate(
+    const withdrawalRequest = await WithdrawBalance.findByIdAndUpdate(
       id,
-      { status, transactionNumber },
+      { status , transactionNumber },
       { new: true }
     );
     if (!withdrawalRequest) {
       return res.status(404).json({ error: "Withdrawal request not found" });
     }
+    withdrawalRequest.status = 'approved';
+    await withdrawalRequest.save();
     res.json(withdrawalRequest);
   } catch (error) {
+    console.error(error);
     res.status(500).json(error);
   }
 });
@@ -426,7 +429,7 @@ router.put("/withdrawals/:id", async (req, res) => {
 router.delete("/withdrawalWallet/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await WithdrawalReq.findByIdAndDelete({ _id: id });
+    await WithdrawBalance.findByIdAndDelete({ _id: id });
     res.status(200).send("Deleted successfully"); // Success, no content
   } catch (error) {
     // console.error(error);
