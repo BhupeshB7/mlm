@@ -280,12 +280,12 @@ router.post("/topUpUserID/:userID", async (req, res) => {
       const activationStatus = await activateUser(userId);
 
       if (activationStatus) {
-        const topUpAmount = 800;
+        const topUpAmount = 850;
         // depositUser.depositAmount -= topUpAmount;
         // await depositUser.save();
 
         const activeDeposit = await User.findOne({userId:userID})
-        if (activeDeposit.topupWallet < 800) {
+        if (activeDeposit.topupWallet < 850) {
           return res.status(400).json({ error: "Low Balance" });
         }
         activeDeposit.topupWallet -= topUpAmount;
