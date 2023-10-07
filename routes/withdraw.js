@@ -342,7 +342,7 @@ router.post('/user/:userId', async (req, res) => {
 router.get("/withdrawals/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const withdrawalRequest = await WithdrawalReq.find({ userId: userId });
+    const withdrawalRequest = await WithdrawBalance.find({ userId: userId });
     if (!withdrawalRequest) {
       return res.status(404).json({ error: "Withdrawal request not found" });
     }
