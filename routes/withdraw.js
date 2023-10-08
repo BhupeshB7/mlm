@@ -376,7 +376,7 @@ router.get("/withdrawals", async (req, res) => {
   const searchRegx = new RegExp(withdrawalQuerySearch, "i");
 
   const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-  const limit = parseInt(req.query.limit) || 4; // Default to 10 items per page
+  const limit = parseInt(req.query.limit) || 20; // Default to 10 items per page
 
   const skip = (page - 1) * limit;
 
