@@ -258,7 +258,7 @@ router.post("/topUpUserID/:userID", async (req, res) => {
       return res.status(401).send("User not found!");
     }
 
-    if (deposit.is_active) {
+    
       const { userId } = req.body;
       const activeUser = await User.findOne({ userId }).select("userId is_active topupWallet").lean().exec();
 
@@ -295,9 +295,7 @@ router.post("/topUpUserID/:userID", async (req, res) => {
       } else {
         return res.json({ error: "Failed to activate user." });
       }
-    } else {
-      return res.json({ error: "Your Deposit Amount is not Approved!" });
-    }
+   
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "An error occurred. Please try again later." });
