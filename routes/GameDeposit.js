@@ -68,7 +68,7 @@ router.get('/withdraw/history', async (req, res) => {
   try {
     // Pagination parameters (page and perPage)
     const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
-    const perPage = parseInt(req.query.perPage) || 4; // Default to 10 items per page
+    const perPage = parseInt(req.query.perPage) || 20; // Default to 10 items per page
 
     // Calculate the skip value based on pagination parameters
     const skip = (page - 1) * perPage;
@@ -158,7 +158,7 @@ router.get('/withdraw/history', async (req, res) => {
 router.get('/deposit/history', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1; // Get the requested page from query parameters
-    const limit = parseInt(req.query.limit) || 3; // Get the number of items per page from query parameters
+    const limit = parseInt(req.query.limit) || 20; // Get the number of items per page from query parameters
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
