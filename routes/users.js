@@ -317,7 +317,7 @@ router.post("/updateWalletss/:userId", async (req, res) => {
     let sponsor = await User.findOne({ userId: user.sponsorId });
     let sponsorCount = await User.countDocuments({ userId: user.sponsorId, is_active: true });
 
-    if (sponsor && sponsorCount >= 1 && sponsor.is_active) {
+    if (sponsor && sponsorCount >= 2 && sponsor.is_active) {
       sponsor.balance += 4;
       sponsor.teamIncome += 4;
       sponsor.income += 4;

@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URL, {
     .catch((error) => console.error(error));
   // Middleware
   app.use(cors({
-    // origin:"http://localhost:3000"
+    origin:"http://localhost:3000",
     // origin:"https://globalsuccesspoint.netlify.app"
     origin:"https://powerfullindia.com",
     origin:"https://www.powerfullindia.com",
