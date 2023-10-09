@@ -6,9 +6,12 @@ const app = express();
 const profileRoutes = require('./routes/profile');
 const passwordRoute = require('./routes/passwordReset');
 const register = require('./routes/register');
-const taskRoutes = require('./routes/taskRoute')
+const taskRoutes = require('./routes/taskRoute');
 const userTaskRoute = require('./routes/userTaskRoute');
-const User = require('./models/User');
+// const cloudinary = require('cloudinary').v2;
+// const User = require('./models/User');
+// const config = require('./config');
+// const imageRoutes = require('./routes/CloudinaryImage');
 // const fileUpload = require("express-fileupload");
 // Connect to MongoDB database
 mongoose.connect(process.env.MONGO_URL, {
@@ -21,6 +24,7 @@ mongoose.connect(process.env.MONGO_URL, {
   // Middleware
   app.use(cors({
     origin:"http://localhost:3000",
+    origin:"http://localhost:5000",
     // origin:"https://globalsuccesspoint.netlify.app"
     origin:"https://powerfullindia.com",
     origin:"https://www.powerfullindia.com",
@@ -32,6 +36,16 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+// Configure Cloudinary
+// const { cloud_name, api_key, api_secret } = config.cloudinary;
+// cloudinary.config({
+//   cloud_name,
+//   api_key,
+//   api_secret,
+// });
+// Use image routes
+// app.use('/api', imageRoutes);
 // Routes
 app.use("/api/auth", require("./routes/auth"));
 //For Task

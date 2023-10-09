@@ -10,6 +10,10 @@ const userRequestSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  UTR: {
+    type: String,
+    required: true,
+  },
   userId:{
     type: String,
     required: true,

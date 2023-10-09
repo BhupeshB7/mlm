@@ -119,11 +119,11 @@ router.post("/transfer/:userId", async (req, res) => {
     }
 
     const sponsorIdMatches = await User.countDocuments({ sponsorId: user.userId, is_active: true });
-    if (sponsorIdMatches < 1) {
-      return res.status(400).json({ error: "Minimum One active user required for fund transfer" });
+    if (sponsorIdMatches < 2) {
+      return res.status(400).json({ error: "Minimum Two active user required for fund transfer" });
     }
 
-    if (transferAmount <= 850) {
+    if (transferAmount <= 100) {
       return res.json({ error: 'Minimum/Low Balance' });
     }
 

@@ -11,8 +11,8 @@ const GameWithdrawal = require("../models/GameWithdrawal");
 // Endpoint for users to submit requests
 router.post("/depositSubmit", async (req, res) => {
   try {
-    const { name, amount, userId } = req.body;
-    const userRequest = new GameDeposit({ name, amount, userId });
+    const { name, amount, userId, UTR } = req.body;
+    const userRequest = new GameDeposit({ name, amount, userId,UTR });
     await userRequest.save();
     res.json({ message: "Request submitted successfully" });
   } catch (err) {
@@ -215,6 +215,21 @@ router.get('/deposit/history', async (req, res) => {
       await userProfile.save();
   
       res.json({ message: "Request approved and balance updated successfully" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+  router.put("/Withdrawal/approve/:id", async (req, res) => {
+    try {
+      const id = req.params.id;
+      const userRequest = await GameWithdrawal.findByIdAndUpdate(id, {
+        approved: "Approved", // Set the status to 'Approved'
+      });
+  
+      if (!userRequest) {
+        return res.status(404).json({ message: "Request not found" });
+      }
+      res.json({ message: "Approved  successfully" });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
