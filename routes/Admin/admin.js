@@ -129,7 +129,7 @@ router.post('/login', isAdminOrAuthenticatedMiddleware, async (req, res) => {
 // server.js
 
 // Define the number of items to display per page
-const itemsPerPage = 5; // You can adjust this as needed
+const itemsPerPage = 20; // You can adjust this as needed
 
 router.get('/api/users', async (req, res) => {
   const searchQuery = req.query.search; // Get the search query parameter from the request
