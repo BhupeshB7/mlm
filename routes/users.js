@@ -225,10 +225,10 @@ function countActiveUsersByLevel(teamStructure) {
 
 function getHighestAchievedRank(activeUsersByLevel) {
   const rankThresholds = {
-    Starter: 14,
-    Bronze: 70,
-    Silver: 400,
-    Gold: 1000,
+    Bronze: 10,
+    Silver: 70,
+    Gold: 350,
+    RoyalStar: 800,
     Diamond: 2000,
   };
 
@@ -278,16 +278,16 @@ router.post("/updateWalletss/:userId", async (req, res) => {
     case 'Fresher':
       maximumEarnings = 650;
       break;
-    case 'Starter':
+    case 'Bronze':
       maximumEarnings = 1300;
       break;
-    case 'Bronze':
+    case 'Silver':
       maximumEarnings = 2500;
       break;
-    case 'Silver':
+    case 'Gold':
       maximumEarnings = 3500;
       break;
-    case 'Gold':
+    case 'RoyalStar':
       maximumEarnings = 5000;
       break;
     case 'Diamond':

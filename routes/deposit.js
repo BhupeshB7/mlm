@@ -205,7 +205,7 @@ router.post("/topUpActivate", async (req, res) => {
     const { userId } = req.body;
 
     const user = await User.findOne({ userId })
-      .select("userId is_active")
+      .select("userId is_active name")
       .lean()
       .exec();
 
@@ -215,9 +215,9 @@ router.post("/topUpActivate", async (req, res) => {
 
     // Assuming you have an 'is_active' property in the User model
     if (user.is_active) {
-      return res.json({ status: true });
+      return res.json({ name:user.name, status: true });
     } else {
-      return res.json({ status: false });
+      return res.json({ name:user.name, status: false });
     }
   } catch (error) {
     // console.log(error);
@@ -252,7 +252,7 @@ const isAutoDeactivateTime = (activationTime) => {
 router.post("/topUpUserID/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
-    const deposit = await User.findOne({ userId:userID }).select("userId topupWallet balance is_active ").lean().exec();
+    const deposit = await User.findOne({ userId:userID }).select("userId topupWallet balance is_active name").lean().exec();
 
     if (!deposit) {
       return res.status(401).send("User not found!");
@@ -260,7 +260,7 @@ router.post("/topUpUserID/:userID", async (req, res) => {
 
     
       const { userId } = req.body;
-      const activeUser = await User.findOne({ userId }).select("userId is_active topupWallet").lean().exec();
+      const activeUser = await User.findOne({ userId }).select("userId is_active topupWallet name").lean().exec();
 
       if (activeUser.is_active) {
         if (isAutoDeactivateTime(activeUser.activationTime)) {
