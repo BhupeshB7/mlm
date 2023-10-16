@@ -3,6 +3,20 @@ const { registerUser } = require('../controllers/userControllers');
 const User = require('../models/User');
 const router = express.Router();
 const moment = require('moment');
+router.get("/getSponsorName/:sponsorId", async (req, res) => {
+  const sponsorId = req.params.sponsorId;
+  try {
+    const sponsor = await User.findOne({ sponsorId: sponsorId });
+    if (sponsor) {
+      res.json({ name: sponsor.name }); // Assuming the name is a property in your User model
+    } else {
+      res.status(404).json({ error: "Sponsor ID not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching sponsor name:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 router.post('/register', registerUser);
 // API route to find daily new user registrations
 // API route to find daily new user registrations for the previous 7 days
