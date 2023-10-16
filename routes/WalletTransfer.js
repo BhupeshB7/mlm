@@ -18,7 +18,7 @@ router.post('/transferTopupWallet', async (req, res) => {
   // Check if the target user exists
   const targetUser = await User.findOne({ userId: targetUserId });
   if (!targetUser) {
-    return res.status(400).json({ error: 'Target user not found' });
+    return res.status(400).json({ error: 'UserID not found' });
   }
 
   // Update the source user's topupWallet
