@@ -85,6 +85,7 @@ app.use('/api/gameProfile',require('./routes/GameRoutes'));
 app.use('/api/game',require('./routes/game'));
 app.use('/api',require('./routes/GameDeposit'));
 app.use('/api',require('./routes/image'));
+app.use('/api',require('./routes/WalletTransfer'));
 // router.use(express.json());
    // Admin 
 // // Define a cron job that runs every 10 minutes

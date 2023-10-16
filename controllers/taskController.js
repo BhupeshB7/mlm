@@ -344,7 +344,7 @@ const markTaskCompleted = async (req, res) => {
           let sponsor = await User.findOne({ userId: user.sponsorId });
           let sponsorCount = await User.countDocuments({ userId: user.sponsorId, is_active: true });
 
-          if (sponsor && sponsorCount >= 1 && sponsor.is_active) {
+          if (sponsor && sponsorCount >= 2 && sponsor.is_active) {
             sponsor.balance += 4;
             sponsor.teamIncome += 4;
             sponsor.income += 4;
@@ -355,7 +355,7 @@ const markTaskCompleted = async (req, res) => {
             if (sponsor2 && sponsor2.is_active) {
               let sponsor2CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
 
-              if (sponsor2CountUser >= 2) {
+              if (sponsor2CountUser >= 4) {
                 sponsor2.teamIncome += 3;
                 sponsor2.balance += 3;
                 sponsor2.income += 3;
@@ -366,7 +366,7 @@ const markTaskCompleted = async (req, res) => {
                 if (sponsor3 && sponsor3.is_active) {
                   let sponsor3CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
 
-                  if (sponsor3CountUser >= 3) {
+                  if (sponsor3CountUser >= 6) {
                     sponsor3.balance += 2;
                     sponsor3.teamIncome += 2;
                     sponsor3.income += 2;
@@ -377,7 +377,7 @@ const markTaskCompleted = async (req, res) => {
                     if (sponsor4 && sponsor4.is_active) {
                       let sponsor4CountUser = await User.countDocuments({ sponsorId: sponsor3.userId, is_active: true });
 
-                      if (sponsor4CountUser >= 4) {
+                      if (sponsor4CountUser >= 8) {
                         sponsor4.balance += 1;
                         sponsor4.teamIncome += 1;
                         sponsor4.income += 1;
@@ -388,7 +388,7 @@ const markTaskCompleted = async (req, res) => {
                         if (sponsor5 && sponsor5.is_active) {
                           let sponsor5CountUser = await User.countDocuments({ sponsorId: sponsor4.userId, is_active: true });
 
-                          if (sponsor5CountUser >= 5) {
+                          if (sponsor5CountUser >= 10) {
                             sponsor5.balance += 0.5;
                             sponsor5.teamIncome += 0.5;
                             sponsor5.income += 0.5;
