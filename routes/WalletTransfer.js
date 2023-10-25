@@ -32,7 +32,7 @@ router.post('/transferTopupWallet', async (req, res) => {
   res.json({ message: 'Transfer successful' });
 });
 // Modify the route to return just the user's name
-app.get('/targetTransfer/name/:userId', async (req, res) => {
+router.get('/targetTransfer/name/:userId', async (req, res) => {
   const userId = req.params.userId;
   try {
     const user = await User.findOne({ userId });
