@@ -31,5 +31,19 @@ router.post('/transferTopupWallet', async (req, res) => {
 
   res.json({ message: 'Transfer successful' });
 });
+// Modify the route to return just the user's name
+app.get('/targetTransfer/name/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const user = await User.findOne({ userId });
+    if (user) {
+      res.json({ name: user.name });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 module.exports = router;
