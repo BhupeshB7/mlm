@@ -25,8 +25,8 @@ mongoose.connect(process.env.MONGO_URL, {
   app.use(cors({
     // origin:"http://localhost:3000",
     // origin:"https://globalsuccesspoint.netlify.app"
-    // origin:"https://powerfullindia.com",
-    // origin:"https://www.powerfullindia.com",
+    origin:"https://powerfullindia.com",
+    origin:"https://www.powerfullindia.com",
   }));
   app.use(express.json());
   // app.use(fileUpload())
