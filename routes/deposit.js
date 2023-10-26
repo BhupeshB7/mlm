@@ -6,6 +6,7 @@ const imageValidate = require("../utils/imageValidate");
 // const User = require('../models/User');
 const Topup = require("../models/Topup");
 const User = require("../models/User");
+const TopupHistory = require('../models/TopUpHistory'); // Import the TopupHistory model
 
 // POST endpoint for handling deposit submissions
 router.post("/userAmount", async (req, res) => {
@@ -249,59 +250,120 @@ const isAutoDeactivateTime = (activationTime) => {
   const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
   return daysDifference >= 60;
 };
+// router.post("/topUpUserID/:userID", async (req, res) => {
+//   try {
+//     const { userID } = req.params;
+//     const deposit = await User.findOne({ userId:userID }).select("userId topupWallet balance is_active name").lean().exec();
+
+//     if (!deposit) {
+//       return res.status(401).send("User not found!");
+//     }
+
+    
+//       const { userId } = req.body;
+//       const activeUser = await User.findOne({ userId }).select("userId is_active topupWallet name").lean().exec();
+
+//       if (activeUser.is_active) {
+//         if (isAutoDeactivateTime(activeUser.activationTime)) {
+//           activeUser.is_active = false;
+//           await User.findOneAndUpdate({ userId }, { is_active: false });
+//           return res.status(201).send("User auto-deactivated after 45 days of activation.");
+//         }
+//         return res.status(201).send("User already activated!");
+//       }
+
+//       // const depositUser = await Deposit.findOne({ userID });
+
+//       // if (depositUser.depositAmount < 800) {
+//       //   return res.status(400).json({ error: "Low Balance" });
+//       // }
+
+//       const activationStatus = await activateUser(userId);
+
+//       if (activationStatus) {
+//         const topUpAmount = 850;
+//         // depositUser.depositAmount -= topUpAmount;
+//         // await depositUser.save();
+
+//         const activeDeposit = await User.findOne({userId:userID})
+//         if (activeDeposit.topupWallet < 850) {
+//           return res.status(400).json({ error: "Low Balance" });
+//         }
+//         activeDeposit.topupWallet -= topUpAmount;
+//         await activeDeposit.save();
+        
+//         return res.status(201).json({ success: "User Activated", user: activationStatus });
+//       } else {
+//         return res.json({ error: "Failed to activate user." });
+//       }
+   
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: "An error occurred. Please try again later." });
+//   }
+// });
+
+
 router.post("/topUpUserID/:userID", async (req, res) => {
   try {
     const { userID } = req.params;
-    const deposit = await User.findOne({ userId:userID }).select("userId topupWallet balance is_active name").lean().exec();
+    const deposit = await User.findOne({ userId: userID })
+      .select("userId topupWallet balance is_active name")
+      .lean()
+      .exec();
 
     if (!deposit) {
       return res.status(401).send("User not found!");
     }
 
-    
-      const { userId } = req.body;
-      const activeUser = await User.findOne({ userId }).select("userId is_active topupWallet name").lean().exec();
+    const { userId } = req.body;
+    const activeUser = await User.findOne({ userId })
+      .select("userId is_active topupWallet name")
+      .lean()
+      .exec();
 
-      if (activeUser.is_active) {
-        if (isAutoDeactivateTime(activeUser.activationTime)) {
-          activeUser.is_active = false;
-          await User.findOneAndUpdate({ userId }, { is_active: false });
-          return res.status(201).send("User auto-deactivated after 45 days of activation.");
-        }
-        return res.status(201).send("User already activated!");
+    if (activeUser.is_active) {
+      if (isAutoDeactivateTime(activeUser.activationTime)) {
+        activeUser.is_active = false;
+        await User.findOneAndUpdate({ userId }, { is_active: false });
+        return res.status(201).send("User auto-deactivated after 45 days of activation.");
+      }
+      return res.status(201).send("User already activated!");
+    }
+
+    const activationStatus = await activateUser(userId);
+
+    if (activationStatus) {
+      const topUpAmount = 850;
+      const activeDeposit = await User.findOne({ userId: userID });
+
+      if (activeDeposit.topupWallet < topUpAmount) {
+        return res.status(400).json({ error: "Low Balance" });
       }
 
-      // const depositUser = await Deposit.findOne({ userID });
+      activeDeposit.topupWallet -= topUpAmount;
+      await activeDeposit.save();
 
-      // if (depositUser.depositAmount < 800) {
-      //   return res.status(400).json({ error: "Low Balance" });
-      // }
+      // Create a new TopupHistory record for the top-up
+      const topupHistory = new TopupHistory({
+        name: activeUser.name,
+        userId: userId,
+        targetUserId: userID,
+        amount: topUpAmount,
+      });
 
-      const activationStatus = await activateUser(userId);
+      // Save the top-up history record
+      await topupHistory.save();
 
-      if (activationStatus) {
-        const topUpAmount = 850;
-        // depositUser.depositAmount -= topUpAmount;
-        // await depositUser.save();
-
-        const activeDeposit = await User.findOne({userId:userID})
-        if (activeDeposit.topupWallet < 850) {
-          return res.status(400).json({ error: "Low Balance" });
-        }
-        activeDeposit.topupWallet -= topUpAmount;
-        await activeDeposit.save();
-        
-        return res.status(201).json({ success: "User Activated", user: activationStatus });
-      } else {
-        return res.json({ error: "Failed to activate user." });
-      }
-   
+      return res.status(201).json({ success: "User Activated", user: activationStatus });
+    } else {
+      return res.json({ error: "Failed to activate user." });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "An error occurred. Please try again later." });
   }
 });
-
 
 // ... (Other routes)
 
