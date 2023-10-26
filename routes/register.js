@@ -6,7 +6,7 @@ const moment = require('moment');
 router.get("/getSponsorName/:sponsorId", async (req, res) => {
   const sponsorId = req.params.sponsorId;
   try {
-    const sponsor = await User.findOne({ sponsorId: sponsorId });
+    const sponsor = await User.findOne({ userId: sponsorId });
     if (sponsor) {
       res.json({ name: sponsor.name }); // Assuming the name is a property in your User model
     } else {
