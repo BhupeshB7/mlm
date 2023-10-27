@@ -88,5 +88,29 @@ router.get('/targetTransfer/name/:userId', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+// Route to fetch data based on userID with pagination
+router.get('/topupHistory/:userID', async (req, res) => {
+  try {
+    const userID = req.params.userID;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const perPage = 10; // Number of records per page
 
+    const totalRecords = await TopUpHistory.countDocuments({ userId: userID });
+    const totalPages = Math.ceil(totalRecords / perPage);
+    const skip = (page - 1) * perPage;
+
+    const data = await TopUpHistory.find({ userId: userID })
+      .skip(skip)
+      .limit(perPage);
+
+    res.json({
+      data,
+      currentPage: page,
+      totalPages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 module.exports = router;
