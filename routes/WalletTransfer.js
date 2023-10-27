@@ -99,12 +99,12 @@ router.get('/topupHistory/:userID', async (req, res) => {
     const totalPages = Math.ceil(totalRecords / perPage);
     const skip = (page - 1) * perPage;
 
-    const data = await TopUpHistory.find({ userId: userID })
+    const topUpdata = await TopUpHistory.find({ userId: userID })
       .skip(skip)
       .limit(perPage);
 
     res.json({
-      data,
+      topUpdata,
       currentPage: page,
       totalPages,
     });
