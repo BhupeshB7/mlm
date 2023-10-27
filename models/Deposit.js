@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const imageSchema = mongoose.Schema({
-  path: {type: String}
-})
-const userSchema = new Schema({
+
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -15,17 +12,21 @@ const userSchema = new Schema({
   userID: {
     type: String
   },
-  depositAmount:{
-    type:Number,
-    default:0
+  depositAmount: {
+    type: Number,
+    default: 0
   },
-  images: [imageSchema],
-  isApproved:{
-    type:Boolean,
-    default:false
+  images: [
+    {
+      public_id: { type: String }, // Store the public_id from Cloudinary
+    }
+  ],
+  isApproved: {
+    type: Boolean,
+    default: false
   }
-},{
-  timestamps:true
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Deposit', userSchema);

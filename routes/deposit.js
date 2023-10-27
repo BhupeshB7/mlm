@@ -1,23 +1,45 @@
 const express = require("express");
-const mongoose = require('mongoose');
 const router = express.Router();
 const Deposit = require("../models/Deposit");
 const imageValidate = require("../utils/imageValidate");
 // const User = require('../models/User');
-const Topup = require("../models/Topup");
 const User = require("../models/User");
 const TopupHistory = require('../models/TopUpHistory'); // Import the TopupHistory model
 
-// POST endpoint for handling deposit submissions
-router.post("/userAmount", async (req, res) => {
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
+const path = require('path');
+
+// Define the storage for multer
+const storage = multer.memoryStorage(); // Store the file in memory
+
+// Initialize multer with the storage settings
+const upload = multer({ storage });
+
+// The route for user deposits with image upload
+router.post('/userAmount', upload.single('image'), async (req, res) => {
   try {
     const { name, transactionId, userID, depositAmount } = req.body;
+    const image = req.file; // Uploaded image
 
     // Check if the transactionId already exists in the database
     const existingDeposit = await Deposit.findOne({ transactionId });
     if (existingDeposit) {
-      return res.status(400).json({ message: "Transaction Id already exists" });
+      return res.status(400).json({ message: 'Transaction Id already exists' });
     }
+
+    // Save the uploaded image to a temporary file
+    const tempFilePath = path.join(__dirname, 'temp');
+    fs.writeFileSync(tempFilePath, image.buffer);
+
+    // Upload the image to Cloudinary from the temporary file
+    const result = await cloudinary.uploader.upload(tempFilePath, {
+      resource_type: 'auto', // Automatically detect the resource type (image, video, etc.)
+    });
+
+    // Remove the temporary file
+    fs.unlinkSync(tempFilePath);
 
     // Create a new deposit record
     const newDeposit = new Deposit({
@@ -25,17 +47,47 @@ router.post("/userAmount", async (req, res) => {
       transactionId,
       userID,
       depositAmount,
+      images: [{ public_id: result.public_id }], // Store the public_id from Cloudinary
     });
 
     // Save the deposit to the database
     await newDeposit.save();
 
-    res.status(201).json({ message: "Deposit successful" });
+    res.status(201).json({ message: 'Deposit successful' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+// // POST endpoint for handling deposit submissions
+// router.post("/userAmount", async (req, res) => {
+//   try {
+//     const { name, transactionId, userID, depositAmount } = req.body;
+
+//     // Check if the transactionId already exists in the database
+//     const existingDeposit = await Deposit.findOne({ transactionId });
+//     if (existingDeposit) {
+//       return res.status(400).json({ message: "Transaction Id already exists" });
+//     }
+
+//     // Create a new deposit record
+//     const newDeposit = new Deposit({
+//       name,
+//       transactionId,
+//       userID,
+//       depositAmount,
+//     });
+
+//     // Save the deposit to the database
+//     await newDeposit.save();
+
+//     res.status(201).json({ message: "Deposit successful" });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
 // router.post("/user", async (req, res) => {
 //   try {
 //     const { name, transactionId, userID, depositAmount } = req.body;

@@ -8,6 +8,8 @@ const passwordRoute = require('./routes/passwordReset');
 const register = require('./routes/register');
 const taskRoutes = require('./routes/taskRoute');
 const userTaskRoute = require('./routes/userTaskRoute');
+// const cloudinaryConfig = require("./cloudinaryConfig");
+const cloudinaryConfig= require("./cloudinaryConfig");
 // const cloudinary = require('cloudinary').v2;
 // const User = require('./models/User');
 // const config = require('./config');
@@ -23,11 +25,12 @@ mongoose.connect(process.env.MONGO_URL, {
     .catch((error) => console.error(error));
   // Middleware
   app.use(cors({
-    // origin:"http://localhost:3000",
     // origin:"https://globalsuccesspoint.netlify.app"
-    origin:"https://powerfullindia.com",
-    origin:"https://www.powerfullindia.com",
+    // origin:"https://powerfullindia.com",
+    // origin:"https://www.powerfullindia.com",
+    // origin:"http://localhost:3000",
   }));
+  cloudinaryConfig();
   app.use(express.json());
   // app.use(fileUpload())
 // error handler middleware
