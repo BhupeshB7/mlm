@@ -55,7 +55,7 @@ router.post('/userAmount', upload.single('image'), async (req, res) => {
 
     res.status(201).json({ message: 'Deposit successful' });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
