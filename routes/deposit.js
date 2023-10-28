@@ -59,7 +59,27 @@ router.post('/userAmount', upload.single('image'), async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+router.get('/depositHistory/:userId',async(req, res)=>{
+  try {
+    const userId = req.params.userId;
+    const page = req.query.page ? parseInt(req.query.page) :1;
+    const perPage = 10; // Number of records per page
+    const totalRecords = await Deposit.countDocuments({userID:userId}).select('-images');
+    const totalPages = Math.ceil(totalRecords/perPage);
+    const skip = (page - 1) * perPage;
+    const depositHistory = await Deposit.findOne({ userID: userId}).skip(skip).limit(perPage).select('-images');
+    if(!depositHistory) {
+      res.status(404).json({ message: 'User not found' });
+    }
+    if(depositHistory){
+      res.status(200).json({depositHistory,currentPage:page,totalPages, });
+    }
 
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message:'Internal server error'});
+  }
+})
 // // POST endpoint for handling deposit submissions
 // router.post("/userAmount", async (req, res) => {
 //   try {
