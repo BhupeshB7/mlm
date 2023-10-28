@@ -59,27 +59,29 @@ router.post('/userAmount', upload.single('image'), async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-router.get('/depositHistory/:userId',async(req, res)=>{
+router.get("/depositHistory/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    const page = req.query.page ? parseInt(req.query.page) :1;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
     const perPage = 10; // Number of records per page
-    const totalRecords = await Deposit.countDocuments({userID:userId}).select('-images');
-    const totalPages = Math.ceil(totalRecords/perPage);
+    const totalRecords = await Deposit.countDocuments({ userID: userId });
+    const totalPages = Math.ceil(totalRecords / perPage);
     const skip = (page - 1) * perPage;
-    const depositHistory = await Deposit.findOne({ userID: userId}).skip(skip).limit(perPage).select('-images');
-    if(!depositHistory) {
-      res.status(404).json({ message: 'User not found' });
+    const depositHistory = await Deposit.find({ userID: userId })
+      .skip(skip)
+      .limit(perPage)
+      .select("-images");
+    if (!depositHistory || depositHistory.length === 0) {
+      res.status(404).json({ message: "User not found or no deposit history available" });
+    } else {
+      res.status(200).json({ depositHistory, currentPage: page, totalPages });
     }
-    if(depositHistory){
-      res.status(200).json({depositHistory,currentPage:page,totalPages, });
-    }
-
   } catch (error) {
     console.log(error);
-    res.status(500).json({message:'Internal server error'});
+    res.status(500).json({ message: "Internal server error" });
   }
-})
+});
+
 // // POST endpoint for handling deposit submissions
 // router.post("/userAmount", async (req, res) => {
 //   try {
