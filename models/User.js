@@ -88,12 +88,21 @@ role: {
   default: 'user',
 },
 is_active: { type: Boolean, default: false },
-income:{type:Number, default:0},
+
 balance:{type:Number, default:0},
 withdrawal:{type:Number, default:0},
 selfIncome:{type:Number, default:0},
 teamIncome:{type:Number, default:0},
 rewards:{type:Number, default:0},
+// income:{type:Number, default:0},
+ // Define a virtual property to calculate 'income'
+ income: {
+  type: Number,
+  default:0,
+  get: function () {
+    return this.selfIncome + this.teamIncome + this.rewards;
+  },
+},
 topupWallet: { type: Number, default: 0 },
 pendingTransfer: [pendingTransferSchema],
 activationTime: {
@@ -113,10 +122,10 @@ date: {Date},
  
 );
 // Define a pre-save hook to update 'income' based on 'selfIncome', 'teamIncome', and 'rewards'
-userSchema.pre('save', function (next) {
-  this.income = this.selfIncome + this.teamIncome + this.rewards;
-  next();
-});
+// userSchema.pre('save', function (next) {
+//   this.income = this.selfIncome + this.teamIncome + this.rewards;
+//   next();
+// });
 
 
 module.exports = mongoose.model('User', userSchema);
