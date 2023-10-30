@@ -33,6 +33,7 @@ const User = require('../models/User');
 // });
 const mongoose = require('mongoose');
 const TopUpHistory = require('../models/TopUpHistory');
+const TopUpHistory1 = require('../models/TopUpHistory1');
 
 router.post('/transferTopupWallet', async (req, res) => {
   const { sourceUserId, targetUserId, amount } = req.body;
@@ -100,6 +101,31 @@ router.get('/topupHistory/:userID', async (req, res) => {
     const skip = (page - 1) * perPage;
 
     const topUpdata = await TopUpHistory.find({ userId: userID })
+      .skip(skip)
+      .limit(perPage);
+
+    res.json({
+      topUpdata,
+      currentPage: page,
+      totalPages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+// Route to fetch data based on userID with pagination
+router.get('/topupUser/:userID', async (req, res) => {
+  try {
+    const userID = req.params.userID;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const perPage = 10; // Number of records per page
+
+    const totalRecords = await TopUpHistory1.countDocuments({ userId: userID });
+    const totalPages = Math.ceil(totalRecords / perPage);
+    const skip = (page - 1) * perPage;
+
+    const topUpdata = await TopUpHistory1.find({ userId: userID })
       .skip(skip)
       .limit(perPage);
 

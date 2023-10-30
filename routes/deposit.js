@@ -4,12 +4,11 @@ const Deposit = require("../models/Deposit");
 const imageValidate = require("../utils/imageValidate");
 // const User = require('../models/User');
 const User = require("../models/User");
-const TopupHistory = require('../models/TopUpHistory'); // Import the TopupHistory model
-
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const path = require('path');
+const TopUpHistory1 = require("../models/TopUpHistory1");
 
 // Define the storage for multer
 const storage = multer.memoryStorage(); // Store the file in memory
@@ -419,15 +418,14 @@ router.post("/topUpUserID/:userID", async (req, res) => {
       await activeDeposit.save();
 
       // Create a new TopupHistory record for the top-up
-      const topupHistory = new TopupHistory({
-        name: activeUser.name,
+      const topupHistory1 = new TopUpHistory1({
+        // name: activeUser.name,
         userId: userId,
         targetUserId: userID,
-        amount: topUpAmount,
       });
 
       // Save the top-up history record
-      await topupHistory.save();
+      await topupHistory1.save();
 
       return res.status(201).json({ success: "User Activated", user: activationStatus });
     } else {
