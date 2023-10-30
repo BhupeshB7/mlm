@@ -110,7 +110,12 @@ activationTime: {
   },
 date: {Date},
  }, {timestamps: true},
+ 
 );
+// Create a virtual field to calculate 'Income' based on 'selfIncome', 'teamIncome', and 'rewards'
+userSchema.virtual('Income').get(function () {
+  return this.selfIncome + this.teamIncome + this.rewards;
+});
 
 module.exports = mongoose.model('User', userSchema);
 
