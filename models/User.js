@@ -112,10 +112,12 @@ date: {Date},
  }, {timestamps: true},
  
 );
-// Create a virtual field to calculate 'Income' based on 'selfIncome', 'teamIncome', and 'rewards'
-userSchema.virtual('Income').get(function () {
-  return this.selfIncome + this.teamIncome + this.rewards;
+// Define a pre-save hook to update 'income' based on 'selfIncome', 'teamIncome', and 'rewards'
+userSchema.pre('save', function (next) {
+  this.income = this.selfIncome + this.teamIncome + this.rewards;
+  next();
 });
+
 
 module.exports = mongoose.model('User', userSchema);
 
