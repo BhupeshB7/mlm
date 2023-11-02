@@ -136,9 +136,9 @@ router.post("/transfer/:userId", async (req, res) => {
         amount: transferAfterDeduction,
         deduction: deduction,
       });
-     user.topupWallet += transferAmount;
+     user.topupWallet += transferAfterDeduction;
       await user.save();
-
+        
       res.json({
         message: "Transfer SuccessFull.",
         balance: user.balance,
