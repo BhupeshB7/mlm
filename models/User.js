@@ -5,7 +5,7 @@ const pendingTransferSchema = new mongoose.Schema({
   amount: { type: Number, default: 0 },
   deduction: { type: Number, default: 0 },
   total: { type: Number, default: 0 },
-  status: { type: String, default: 'Pending' },
+  // status: { type: String, default: 'Pending' },
 }, {timestamps: true},);
 pendingTransferSchema.pre('save', function (next) {
   this.total = this.amount + this.deduction;

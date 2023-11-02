@@ -135,19 +135,18 @@ router.post("/transfer/:userId", async (req, res) => {
       user.pendingTransfer.push({
         amount: transferAfterDeduction,
         deduction: deduction,
-        status: "Pending",
       });
-
+     user.topupWallet += transferAmount;
       await user.save();
 
       res.json({
-        message: "Transfer requested and pending approval.",
+        message: "Transfer SuccessFull.",
         balance: user.balance,
       });
     } else {
-      console.log("Insufficient funds in the income wallet.");
+      console.log("Insufficient funds in the Balance wallet.");
       res.status(400).json({
-        error: "Insufficient funds in the income wallet.",
+        error: "Insufficient funds in the Balance wallet.",
         balance: user.balance,
       });
     }
