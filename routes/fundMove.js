@@ -118,10 +118,10 @@ router.post("/transfer/:userId", async (req, res) => {
       return res.status(400).json({ error: "Cannot make new pending transfer while there is a pending transfer awaiting approval/rejection" });
     }
 
-    const sponsorIdMatches = await User.countDocuments({ sponsorId: user.userId, is_active: true });
-    if (sponsorIdMatches < 2) {
-      return res.status(400).json({ error: "Minimum Two active user required for fund transfer" });
-    }
+    // const sponsorIdMatches = await User.countDocuments({ sponsorId: user.userId, is_active: true });
+    // if (sponsorIdMatches < 2) {
+    //   return res.status(400).json({ error: "Minimum Two active user required for fund transfer" });
+    // }
 
     if (transferAmount <= 100) {
       return res.json({ error: 'Minimum/Low Balance' });
