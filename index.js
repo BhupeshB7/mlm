@@ -28,7 +28,7 @@ mongoose.connect(process.env.MONGO_URL, {
     // origin:"https://globalsuccesspoint.netlify.app"
     // origin:"https://powerfullindia.com",
     origin:"https://www.powerfullindia.com",
-    origin:"http://localhost:3000",
+    // origin:"http://localhost:3000",
   }));
   cloudinaryConfig();
   app.use(express.json());
