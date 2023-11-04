@@ -48,7 +48,7 @@ router.get('/history/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const page = parseInt(req.query.page) || 1; // Get the page from the query parameters or default to 1
-    const pageSize = 20; // Set the page size (items per page)
+    const pageSize = 10; // Set the page size (items per page)
 
     // Calculate the number of documents to skip based on the page and pageSize
     const skip = (page - 1) * pageSize;
