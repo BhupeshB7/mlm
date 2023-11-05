@@ -44,14 +44,30 @@ exports.registerUser = async (req, res) => {
     // Save user to database
     await user.save();
     const game = new GameProfile({
+      sponsorId,
       userId,
       name,
     });
+    // Increase the GameWallet by 30Rs in the new user's GameProfile
+    game.gameWallet += 30;
+    await game.save();
+
     await game.save();
     const image = new Image({
       userId,
     });
     await image.save();
+    // Check if sponsor user exists
+    if (sponsorId) {
+      // Get the sponsor's GameProfile
+      const sponsorGameProfile = await GameProfile.findOne({ userId: sponsorId });
+
+      if (sponsorGameProfile) {
+        // Increase the sponsor's GameWallet by 10Rs
+        sponsorGameProfile.gameWallet += 10;
+        await sponsorGameProfile.save();
+      }
+    }
     res.json({ userId, name, password, sponsorId});
   } catch (error) {
     console.error(error);
