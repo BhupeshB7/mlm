@@ -5,6 +5,7 @@ const gameSchema = new mongoose.Schema({
   entryFee: Number,
   targetColor: String,
   chosenColor: String,
+  targetLetter:String,
   result: String,
   winningAmount: Number,
   userId: String,

@@ -10,9 +10,9 @@ router.post('/saveGame', async (req, res) => {
       userId,
       entryFee,
       targetColor,
+      targetLetter,
       chosenColor,
       result,
-      winningAmount,
     } = req.body;
 
     const game = new Game({
@@ -20,8 +20,8 @@ router.post('/saveGame', async (req, res) => {
       entryFee,
       targetColor,
       chosenColor,
+      targetLetter,
       result,
-      winningAmount,
     });
 
     await game.save();
