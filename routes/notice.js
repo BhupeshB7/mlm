@@ -3,7 +3,7 @@ const router = express.Router();
 const Notice = require('../models/Notice');
 
 // Create a notice
-router.post('/notice', async (req, res) => {
+router.post('/v1', async (req, res) => {
   try {
     const newNotice = new Notice(req.body);
     const savedNotice = await newNotice.save();
