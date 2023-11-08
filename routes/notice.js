@@ -14,7 +14,7 @@ router.post('/v1', async (req, res) => {
 });
 
 // Get all notices
-router.get('/notice', async (req, res) => {
+router.get('/v1', async (req, res) => {
   try {
     const notices = await Notice.find().sort('-timestamp');
     res.json(notices);
