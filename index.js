@@ -28,7 +28,7 @@ mongoose.connect(process.env.MONGO_URL, {
     // origin:"https://globalsuccesspoint.netlify.app"
     // origin:"https://powerfullindia.com",
     origin:"https://www.powerfullindia.com",
-    // origin:"http://localhost:3000",
+    origin:"http://localhost:3000",
   }));
   cloudinaryConfig();
   app.use(express.json());
@@ -90,6 +90,7 @@ app.use('/api',require('./routes/GameDeposit'));
 app.use('/api',require('./routes/image'));
 app.use('/api',require('./routes/WalletTransfer'));
 app.use('/api',require('./routes/changePassword'));
+app.use('/api',require('./routes/notice'));
 // router.use(express.json());
    // Admin 
 // // Define a cron job that runs every 10 minutes
