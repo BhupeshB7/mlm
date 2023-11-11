@@ -7,6 +7,6 @@ const LiveGameUserData = new mongoose.Schema({
   choosenColor: String,
   choosenLetter:String,
   userId: String,
-},{timestamps});
+},{timestamps :true});
 
 module.exports = mongoose.model('LiveGameUser', LiveGameUserData);
