@@ -86,6 +86,7 @@ app.use('/userTasks', userTaskRoute);
 // Routes
 app.use('/api/gameProfile',require('./routes/GameRoutes'));
 app.use('/api/game',require('./routes/game'));
+app.use('/api',require('./routes/LiveGameUser'));
 app.use('/api',require('./routes/GameDeposit'));
 app.use('/api',require('./routes/image'));
 app.use('/api',require('./routes/WalletTransfer'));

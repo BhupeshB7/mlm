@@ -2,7 +2,7 @@ const express = require('express');
 const LiveGameData = require('../models/LiveGameData');
 const router = express.Router();
 // Route to save game details
-router.post('/saveGame', async (req, res) => {
+router.post('/liveGame/saveGame', async (req, res) => {
     try {
       const {
         userId,
