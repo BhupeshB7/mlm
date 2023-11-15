@@ -27,4 +27,14 @@ router.post('/liveGame/saveGame', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+  // Define the endpoint to fetch all LiveGameUsers
+router.get('/liveGameUsers', async (req, res) => {
+  try {
+    const liveGameUsers = await LiveGameData.find();
+    res.json(liveGameUsers);
+  } catch (error) {
+    console.error('Error fetching live game users:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 module.exports =router;
