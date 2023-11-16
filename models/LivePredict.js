@@ -20,4 +20,4 @@ const predictLiveSchema = new mongoose.Schema({
   },
 },{timestamps:true});
 
-module.exports = mongoose.model('PredictLiveHistory', predictLiveSchema);
+module.exports = mongoose.model('PredictLive', predictLiveSchema);
