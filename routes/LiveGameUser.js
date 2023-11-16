@@ -11,7 +11,7 @@ router.post('/liveGame/saveGame', async (req, res) => {
         entryFee,
         choosenColor,
         choosenLetter,
-        ChoosenNumber,
+        choosenNumber,
       } = req.body;
   
       const game = new LiveGameData({
@@ -19,7 +19,7 @@ router.post('/liveGame/saveGame', async (req, res) => {
         entryFee,
         choosenColor,
         choosenLetter,
-        ChoosenNumber,
+        choosenNumber,
       });
   
       await game.save();
