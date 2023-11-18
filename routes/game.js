@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Game = require('../models/Game');
+const GameProfile = require('../models/GameProfile');
 
 // Route to save game details
 router.post('/saveGame', async (req, res) => {
@@ -25,7 +26,11 @@ router.post('/saveGame', async (req, res) => {
     });
 
     await game.save();
-
+    const level1 =  await GameProfile.findOne({sponsorId: userId});
+    if(level1){
+      level1.balance += entryFee*0.006;
+      level1.levelIncome += entryFee*0.006;
+    }
     res.status(201).json({ message: 'Game saved successfully!' });
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });

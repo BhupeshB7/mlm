@@ -13,6 +13,10 @@ const GameProfileSchema = new mongoose.Schema({
   },
   userId: String,
   sponsorId: String,
+  levelIncome: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("GameProfile", GameProfileSchema);
