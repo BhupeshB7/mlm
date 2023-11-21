@@ -94,5 +94,38 @@ router.get('/gamer/:userId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+// User balace update
+router.get('/balance/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await GameProfile.findOne({ userId });
 
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+router.put('/balance/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { balance } = req.body;
+
+    const user = await GameProfile.findOneAndUpdate({ userId }, { $set: { balance } }, { new: true });
+
+    if (user) {
+      res.json({message: 'Balance updated successfully'});
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 module.exports = router;
