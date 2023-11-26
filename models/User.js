@@ -88,6 +88,7 @@ role: {
   default: 'user',
 },
 is_active: { type: Boolean, default: false },
+isBlocked: { type: Boolean, default: false },
 
 balance:{type:Number, default:0},
 withdrawal:{type:Number, default:0},
