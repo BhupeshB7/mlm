@@ -29,7 +29,39 @@ router.post("/liveGame/saveGame", async (req, res) => {
 router.get("/liveGameUsers", async (req, res) => {
   try {
     const liveGameUsers = await LiveGameData.find();
-    res.json(liveGameUsers);
+    
+    const colorCounts = {};
+    const sizeCounts = {};
+
+    liveGameUsers.forEach((user) => {
+      // Convert color and size to lowercase for case-insensitivity
+      const lowerCaseColor = user.color.toLowerCase();
+      const lowerCaseSize = user.size.toLowerCase();
+
+      // Count colors
+      colorCounts[lowerCaseColor] = (colorCounts[lowerCaseColor] || 0) + 1;
+
+      // Count sizes
+      sizeCounts[lowerCaseSize] = (sizeCounts[lowerCaseSize] || 0) + 1;
+    });
+
+    // Count specific colors (red, green, blueviolet)
+    const redCount = colorCounts['red'] || 0;
+    const greenCount = colorCounts['green'] || 0;
+    const blueVioletCount = colorCounts['blueviolet'] || 0;
+
+    // Count specific sizes (big, small)
+    const bigCount = sizeCounts['big'] || 0;
+    const smallCount = sizeCounts['small'] || 0;
+
+    res.json({liveGameUsers, 
+      colorCounts,
+      sizeCounts,
+      redCount,
+      greenCount,
+      blueVioletCount,
+      bigCount,
+      smallCount,});
   } catch (error) {
     console.error("Error fetching live game users:", error);
     res.status(500).json({ error: "Internal Server Error" });
