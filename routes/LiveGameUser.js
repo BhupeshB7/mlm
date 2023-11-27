@@ -55,7 +55,7 @@ router.get("/liveGameUsers", async (req, res) => {
     const smallCount = sizeCounts['small'] || 0;
 
     res.json({
-      data: liveGameUsers, 
+      liveGameUsers, 
       colorCounts,
       sizeCounts,
       redCount,
