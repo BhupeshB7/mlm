@@ -44,7 +44,6 @@ router.get("/liveGameUsers", async (req, res) => {
     // Count occurrences of each unique combination
     const colorCounts = {};
     const sizeCounts = {};
-    const letterCounts = {};
 
     // Specific color counts
     let redCount = 0;
@@ -56,37 +55,35 @@ router.get("/liveGameUsers", async (req, res) => {
     let smallCount = 0;
 
     liveGameUsers.forEach((user) => {
-      // Count choosenColor occurrences
-      colorCounts[user.choosenColor] = (colorCounts[user.choosenColor] || 0) + 1;
-
-      // Count choosenSize occurrences
-      sizeCounts[user.choosenSize] = (sizeCounts[user.choosenSize] || 0) + 1;
-
-      // Count choosenLetter occurrences
-      letterCounts[user.choosenLetter] = (letterCounts[user.choosenLetter] || 0) + 1;
-
       // Count specific colors
-      if (user.choosenColor.toLowerCase() === 'red') {
+      if (user.choosenColor && user.choosenColor.toLowerCase() === 'red') {
         redCount++;
-      } else if (user.choosenColor.toLowerCase() === 'green') {
+      } else if (user.choosenColor && user.choosenColor.toLowerCase() === 'green') {
         greenCount++;
-      } else if (user.choosenColor.toLowerCase() === 'blueviolet') {
+      } else if (user.choosenColor && user.choosenColor.toLowerCase() === 'blueviolet') {
         blueVioletCount++;
       }
 
-      // Count specific sizes (case-insensitive)
-      if (user.choosenSize && user.choosenSize.toLowerCase() === 'big') {
+      // Count specific sizes
+      if (user.choosenLetter && user.choosenLetter.toLowerCase() === 'big') {
         bigCount++;
-      } else if (user.choosenSize && user.choosenSize.toLowerCase() === 'small') {
+      } else if (user.choosenLetter && user.choosenLetter.toLowerCase() === 'small') {
         smallCount++;
       }
+
+      // Count choosenColor occurrences
+      const choosenColorLower = user.choosenColor ? user.choosenColor.toLowerCase() : '';
+      colorCounts[choosenColorLower] = (colorCounts[choosenColorLower] || 0) + 1;
+
+      // Count choosenSize occurrences
+      const choosenSizeLower = user.choosenLetter ? user.choosenLetter.toLowerCase() : '';
+      sizeCounts[choosenSizeLower] = (sizeCounts[choosenSizeLower] || 0) + 1;
     });
 
     res.json({
       liveGameUsers,
       colorCounts,
       sizeCounts,
-      letterCounts,
       redCount,
       greenCount,
       blueVioletCount,
@@ -98,6 +95,8 @@ router.get("/liveGameUsers", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
 
 // Backend Route
 // router.get("/liveGameHistory", async (req, res) => {
