@@ -36,6 +36,28 @@ router.get("/liveGameUsers", async (req, res) => {
   }
 });
 // Backend Route
+// router.get("/liveGameHistory", async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const perPage = parseInt(req.query.perPage) || 10;
+
+//     const totalRecords = await LiveGameHistory.countDocuments();
+//     const totalPages = Math.ceil(totalRecords / perPage);
+
+//     const liveGameUsers = await LiveGameHistory.find()
+//       .skip((page - 1) * perPage)
+//       .limit(perPage);
+
+//     res.json({
+//       data: liveGameUsers,
+//       totalPages,
+//       currentPage: page,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching live game users:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 router.get("/liveGameHistory", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -48,17 +70,47 @@ router.get("/liveGameHistory", async (req, res) => {
       .skip((page - 1) * perPage)
       .limit(perPage);
 
+    const colorCounts = {};
+    const sizeCounts = {};
+
+    liveGameUsers.forEach((user) => {
+      // Convert color and size to lowercase for case-insensitivity
+      const lowerCaseColor = user.color.toLowerCase();
+      const lowerCaseSize = user.size.toLowerCase();
+
+      // Count colors
+      colorCounts[lowerCaseColor] = (colorCounts[lowerCaseColor] || 0) + 1;
+
+      // Count sizes
+      sizeCounts[lowerCaseSize] = (sizeCounts[lowerCaseSize] || 0) + 1;
+    });
+
+    // Count specific colors (red, green, blueviolet)
+    const redCount = colorCounts['red'] || 0;
+    const greenCount = colorCounts['green'] || 0;
+    const blueVioletCount = colorCounts['blueviolet'] || 0;
+
+    // Count specific sizes (big, small)
+    const bigCount = sizeCounts['big'] || 0;
+    const smallCount = sizeCounts['small'] || 0;
+
     res.json({
       data: liveGameUsers,
       totalPages,
       currentPage: page,
+      colorCounts,
+      sizeCounts,
+      redCount,
+      greenCount,
+      blueVioletCount,
+      bigCount,
+      smallCount,
     });
   } catch (error) {
     console.error("Error fetching live game users:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 // Endpoint to check color and number match
 router.post("/saveSelection", async (req, res) => {
   const {sessionId, color, number, size } = req.body;
