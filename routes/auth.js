@@ -89,7 +89,7 @@ router.post('/resetBalances', async (req, res) => {
       return;
     }
 
-    await User.updateMany({}, { $set: { balance: 0 } });
+    await User.updateMany({}, { $set: { balance: 0, selfIncome: 0, teamIncome: 0, income: 0 } });
     res.json({ success: true, message: 'Balances reset successfully.' });
   } catch (error) {
     if (error.name === 'AbortError') {
