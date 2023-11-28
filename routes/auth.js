@@ -68,4 +68,37 @@ router.put('/unblock/:id', async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+// Route to update all users' balances to 0
+router.post('/resetBalances', async (req, res) => {
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  // Attach the abort controller's signal to the request
+  req.on('abort', () => {
+    console.log('Request aborted');
+    controller.abort();
+  });
+
+  try {
+    // Simulate a time-consuming task (e.g., fetching data from a remote server)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Check if the request has been aborted before performing the database update
+    if (signal.aborted) {
+      console.log('Request aborted before updating balances.');
+      return;
+    }
+
+    await User.updateMany({}, { $set: { balance: 0 } });
+    res.json({ success: true, message: 'Balances reset successfully.' });
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      console.log('Request aborted during the operation.');
+      return;
+    }
+
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;

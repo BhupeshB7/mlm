@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const multer = require('multer');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
@@ -116,6 +117,55 @@ app.use('/api/notice',require('./routes/notice'));
 //     console.error('Error in background task:', error);
 //   }
 // });
+const imageSchema = new mongoose.Schema({
+  name: String,
+  data: Buffer,
+  contentType: String,
+});
+
+const Image = mongoose.model('CarouselImage', imageSchema);
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+app.use(express.json());
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    const { originalname, buffer, mimetype } = req.file;
+    const image = new Image({
+      name: originalname,
+      data: buffer,
+      contentType: mimetype,
+    });
+    await image.save();
+    res.status(201).send('Image uploaded successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/images', async (req, res) => {
+  try {
+    const images = await Image.find();
+    res.json(images);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.delete('/delete/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Image.findByIdAndDelete(id);
+    res.status(200).send('Image deleted successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 
   app.use((err, req, res, next) => {
