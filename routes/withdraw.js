@@ -167,9 +167,9 @@ router.post('/user/:userId', async (req, res) => {
         .json({ error: "Withdrawal is not allowed on Sundays." });
     }
       // Check if it's after 1 PM IST
-      if (isAfter1PMIST()) {
-        return res.status(400).json({ error: 'Withdrawal is not allowed after 1 PM IST.' });
-      }
+      // if (isAfter1PMIST()) {
+      //   return res.status(400).json({ error: 'Withdrawal is not allowed after 1 PM IST.' });
+      // }
     // Check if the user is active
   if (!user.is_active) {
     return res.status(400).json({ error: 'User is not active and cannot make withdrawals' });
@@ -254,8 +254,8 @@ router.post('/user/:userId', async (req, res) => {
     }
 
     // Check if user has already made a withdrawal of 200 Rs
-    if (user.withdrawalDone && amount === 200) {
-      return res.status(403).json({ error: 'Withdrawal of 200 Rs already done' });
+    if (user.withdrawalDoneFour && amount === 400) {
+      return res.status(403).json({ error: 'Withdrawal of 400 Rs already done' });
     }
 
     // Check if user balance is sufficient for the withdrawal
