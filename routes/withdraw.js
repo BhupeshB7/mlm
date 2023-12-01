@@ -277,7 +277,7 @@ router.post('/user/:userId', async (req, res) => {
     // Update user withdrawal and balance
     user.withdrawal += amount;
     user.balance -= amount;
-    user.withdrawalDone = true;
+    user.withdrawalDoneFour = true;
     await user.save();
 
     return res.json({ success: true });
