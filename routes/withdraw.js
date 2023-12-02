@@ -245,7 +245,11 @@ router.post('/user/:userId', async (req, res) => {
   else if (amount === 400) {
 
     const count1 = await User.countDocuments({ sponsorId: userId, is_active:true   });
-    console.log(count1)
+    // console.log(count1)
+     // Check if user has already made a withdrawal of 200 Rs
+     if (user.withdrawalDoneFour && amount === 400) {
+      return res.status(403).json({ error: 'Withdrawal of 400 Rs already done' });
+    }
     if (count1 < 1) {
       return res.status(400).json({ error: 'Minimum One Direct for Withdrawal' });
     }
@@ -253,10 +257,7 @@ router.post('/user/:userId', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Check if user has already made a withdrawal of 200 Rs
-    if (user.withdrawalDoneFour && amount === 400) {
-      return res.status(403).json({ error: 'Withdrawal of 400 Rs already done' });
-    }
+   
 
     // Check if user balance is sufficient for the withdrawal
     if (user.balance < amount) {
