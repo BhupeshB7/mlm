@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Game = require('../models/Game');
 const GameProfile = require('../models/GameProfile');
+const User = require('../models/User');
 
 // Route to save game details
 router.post('/saveGame', async (req, res) => {
@@ -98,7 +99,7 @@ router.get('/gamer/:userId', async (req, res) => {
 router.get('/balance/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
-    const user = await GameProfile.findOne({ userId });
+    const user = await User.findOne({ userId });
 
     if (user) {
       res.json(user);
@@ -116,7 +117,7 @@ router.put('/balance/:userId', async (req, res) => {
     const userId = req.params.userId;
     const { balance } = req.body;
 
-    const user = await GameProfile.findOneAndUpdate({ userId }, { $set: { balance } }, { new: true });
+    const user = await User.findOneAndUpdate({ userId }, { $set: { balance } }, { new: true });
 
     if (user) {
       res.json({message: 'Balance updated successfully'});
