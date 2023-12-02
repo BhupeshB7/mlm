@@ -167,9 +167,9 @@ router.post('/user/:userId', async (req, res) => {
         .json({ error: "Withdrawal is not allowed on Sundays." });
     }
       // Check if it's after 1 PM IST
-      // if (isAfter1PMIST()) {
-      //   return res.status(400).json({ error: 'Withdrawal is not allowed after 1 PM IST.' });
-      // }
+      if (isAfter1PMIST()) {
+        return res.status(400).json({ error: 'Withdrawal is not allowed after 1 PM IST.' });
+      }
     // Check if the user is active
   if (!user.is_active) {
     return res.status(400).json({ error: 'User is not active and cannot make withdrawals' });
