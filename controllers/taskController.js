@@ -309,6 +309,7 @@ const markTaskCompleted = async (req, res) => {
       await UserTask.create({
         taskId,
         userId,
+        sponsorId,
         completed: true,
         WalletUpdated: false,
       });

@@ -5,6 +5,9 @@ const userTaskSchema = new mongoose.Schema({
   userId: {
     type:String
   },
+  sponsorId: {
+    type:String
+  },
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
