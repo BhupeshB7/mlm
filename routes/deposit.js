@@ -58,6 +58,49 @@ router.post('/userAmount', upload.single('image'), async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+//for game deposit code
+// The route for user deposits with image upload
+router.post('/userAmount/gameDeposit', upload.single('image'), async (req, res) => {
+  try {
+    const { name, transactionId, userId, depositAmount } = req.body;
+    const image = req.file; // Uploaded image
+
+    // Check if the transactionId already exists in the database
+    const existingDeposit = await Deposit.findOne({ transactionId });
+    if (existingDeposit) {
+      return res.status(400).json({ message: 'Transaction Id already exists' });
+    }
+
+    // Save the uploaded image to a temporary file
+    const tempFilePath = path.join(__dirname, 'temp');
+    fs.writeFileSync(tempFilePath, image.buffer);
+
+    // Upload the image to Cloudinary from the temporary file
+    const result = await cloudinary.uploader.upload(tempFilePath, {
+      resource_type: 'auto', // Automatically detect the resource type (image, video, etc.)
+    });
+
+    // Remove the temporary file
+    fs.unlinkSync(tempFilePath);
+
+    // Create a new deposit record
+    const newDeposit = new Deposit({
+      name,
+      transactionId,
+      userId,
+      depositAmount,
+      images: [{ public_id: result.public_id }], // Store the public_id from Cloudinary
+    });
+
+    // Save the deposit to the database
+    await newDeposit.save();
+
+    res.status(201).json({ message: 'Deposit successful' });
+  } catch (error) {
+    // console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 router.get("/depositHistory/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;

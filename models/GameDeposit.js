@@ -1,27 +1,32 @@
-// models/UserRequest.js
 const mongoose = require('mongoose');
 
-const userRequestSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: true
   },
-  amount: {
+  transactionId: {
+    type: String,
+    required: true
+  },
+  userId: {
+    type: String
+  },
+  depositAmount: {
     type: Number,
-    required: true,
+    default: 0
   },
-  UTR: {
-    type: String,
-    required: true,
-  },
-  userId:{
-    type: String,
-    required: true,
-  },
-  approved: {
-    type: String, // Change the type to String
-    default: 'Pending', // Set the default value to 'Pending'
-  },
-},{timestamps:true});
+  images: [
+    {
+      public_id: { type: String }, // Store the public_id from Cloudinary
+    }
+  ],
+  isApproved: {
+    type: Boolean,
+    default: false
+  }
+}, {
+  timestamps: true
+});
 
-module.exports = mongoose.model('UserRequest', userRequestSchema);
+module.exports = mongoose.model('gameDeposit', userSchema);
