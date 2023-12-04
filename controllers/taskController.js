@@ -354,21 +354,24 @@ const markTaskCompleted = async (req, res) => {
       user.balance += 25;
       user.income += 25;
       user.selfIncome += 25;
+      user.dailyIncome += 25;
+      user.lastIncomeUpdate = currentDate; //
       await user.save();
       if (user.is_active) {
         let sponsor = await User.findOne({ userId: user.sponsorId });
-        console.log(sponsor);
+        // console.log(sponsor);
         let sponsorCount = await User.countDocuments({
           sponsorId: user.sponsorId,
           is_active: true,
         });
-        console.log(user.sponsorId);
-        console.log("Total Count");
-        console.log(sponsorCount);
+        // console.log(user.sponsorId);
+        // console.log("Total Count");
+        // console.log(sponsorCount);
         if (sponsor && sponsorCount >= 2 && sponsor.is_active) {
           sponsor.balance += 4;
           sponsor.teamIncome += 4;
-          sponsor.income += 4;
+          sponsor.dailyIncome += 4;
+          user.lastIncomeUpdate = currentDate; //
           await sponsor.save();
 
           let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
@@ -383,6 +386,8 @@ const markTaskCompleted = async (req, res) => {
               sponsor2.teamIncome += 3;
               sponsor2.balance += 3;
               sponsor2.income += 3;
+              sponsor2.dailyIncome += 3;
+              user.lastIncomeUpdate = currentDate; //
               await sponsor2.save();
 
               let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
@@ -397,6 +402,8 @@ const markTaskCompleted = async (req, res) => {
                   sponsor3.balance += 2;
                   sponsor3.teamIncome += 2;
                   sponsor3.income += 2;
+                  sponsor3.dailyIncome += 2;
+                  user.lastIncomeUpdate = currentDate; //
                   await sponsor3.save();
 
                   let sponsor4 = await User.findOne({
@@ -413,6 +420,8 @@ const markTaskCompleted = async (req, res) => {
                       sponsor4.balance += 1;
                       sponsor4.teamIncome += 1;
                       sponsor4.income += 1;
+                      sponsor4.dailyIncome += 1;
+                      user.lastIncomeUpdate = currentDate; //
                       await sponsor4.save();
 
                       let sponsor5 = await User.findOne({
@@ -429,6 +438,8 @@ const markTaskCompleted = async (req, res) => {
                           sponsor5.balance += 0.5;
                           sponsor5.teamIncome += 0.5;
                           sponsor5.income += 0.5;
+                          sponsor5.dailyIncome += 0.5;
+                          user.lastIncomeUpdate = currentDate; //
                           await sponsor5.save();
                         }
                       }
