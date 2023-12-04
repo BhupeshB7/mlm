@@ -9,6 +9,7 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const path = require('path');
 const TopUpHistory1 = require("../models/TopUpHistory1");
+const GameDeposit = require("../models/GameDeposit");
 
 // Define the storage for multer
 const storage = multer.memoryStorage(); // Store the file in memory
@@ -66,7 +67,7 @@ router.post('/userAmount/gameDeposit', upload.single('image'), async (req, res) 
     const image = req.file; // Uploaded image
 
     // Check if the transactionId already exists in the database
-    const existingDeposit = await Deposit.findOne({ transactionId });
+    const existingDeposit = await GameDeposit.findOne({ transactionId });
     if (existingDeposit) {
       return res.status(400).json({ message: 'Transaction Id already exists' });
     }
@@ -84,7 +85,7 @@ router.post('/userAmount/gameDeposit', upload.single('image'), async (req, res) 
     fs.unlinkSync(tempFilePath);
 
     // Create a new deposit record
-    const newDeposit = new Deposit({
+    const newDeposit = new GameDeposit({
       name,
       transactionId,
       userId,
