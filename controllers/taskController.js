@@ -322,7 +322,12 @@ const markTaskCompleted = async (req, res) => {
     if (!userTask) {
       return res.status(404).send("UserTask not found");
     }
-    
+    if(userTask.completed){
+      return res.status(404).send("Task already completed");
+    }
+    if(userTask.WalletUpdated){
+      return res.status(404).send("Wallet already Updated");
+    }
       // Check if the task is completed
       if (userTask.completed) {
         // Mark the task as completed
