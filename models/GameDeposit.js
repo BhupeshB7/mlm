@@ -29,4 +29,4 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('gameDeposit', userSchema);
+module.exports = mongoose.model('GameDeposit', userSchema);
