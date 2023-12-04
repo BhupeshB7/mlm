@@ -187,7 +187,7 @@ router.get('/deposit/history', async (req, res) => {
       const id = req.params.id;
       const { amount } = req.body;
       const userRequest = await GameDeposit.findByIdAndUpdate(id, {
-        approved: "Approved", // Set the status to 'Approved'
+        approved: true, // Set the status to 'Approved'
       });
   
       if (!userRequest) {
@@ -198,8 +198,8 @@ router.get('/deposit/history', async (req, res) => {
       const userProfile = await GameProfile.findOne({
         userId: userRequest.userId,
       });
-      console.log(userProfile);
-      console.log(amount);
+      // console.log(userProfile);
+      // console.log(amount);
   
       if (!userProfile) {
         return res.status(404).json({ message: "User profile not found" });
