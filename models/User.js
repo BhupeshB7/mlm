@@ -98,6 +98,8 @@ balance:{type:Number, default:0},
 withdrawal:{type:Number, default:0},
 selfIncome:{type:Number, default:0},
 teamIncome:{type:Number, default:0},
+dailyIncome: { type: Number, default: 0 },
+lastIncomeUpdate: { type: Date, default: null },
 rewards:{type:Number, default:0},
 // income:{type:Number, default:0},
  // Define a virtual property to calculate 'income'

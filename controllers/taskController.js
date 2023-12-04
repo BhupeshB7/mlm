@@ -304,7 +304,7 @@ const markTaskCompleted = async (req, res) => {
 
   try {
     // Check if the userTask already exists, if not, create a new entry
-    let userTask = await UserTask.findOne({ taskId, userId,sponsorId });
+    let userTask = await UserTask.findOne({ taskId, userId, sponsorId });
     // console.log(userId);
     if (!userTask) {
       await UserTask.create({
@@ -322,85 +322,114 @@ const markTaskCompleted = async (req, res) => {
     if (!userTask) {
       return res.status(404).send("UserTask not found");
     }
-    if(userTask.WalletUpdated){
+    if (userTask.WalletUpdated) {
       return res.status(400).send("Wallet already Updated");
     }
-      // Check if the task is completed
-      if (userTask.completed) {
-        // Mark the task as completed
-        userTask.completed = true;
+    // Check if the task is completed
+    if (userTask.completed) {
+      // Mark the task as completed
+      userTask.completed = true;
 
-        // Update WalletUpdated to true
-        userTask.WalletUpdated = true;
+      // Update WalletUpdated to true
+      userTask.WalletUpdated = true;
 
-        await userTask.save();
+      await userTask.save();
 
-        // Update user's balance, income, and selfIncome
-        let user = await User.findOne({ userId: userId });
-        if (!user) {
-          return res.status(404).send("User not found");
-        }
-        user.balance += 25;
-        user.income += 25;
-        user.selfIncome += 25;
-        await user.save();
-        if (user.is_active) {
-          let sponsor = await User.findOne({ userId: user.sponsorId });
-          console.log(sponsor);
-          let sponsorCount = await User.countDocuments({ sponsorId: user.sponsorId, is_active: true });
-          console.log(user.sponsorId)
-          console.log('Total Count')
-           console.log(sponsorCount);
-          if (sponsor && sponsorCount >= 2 && sponsor.is_active) {
-            sponsor.balance += 4;
-            sponsor.teamIncome += 4;
-            sponsor.income += 4;
-            await sponsor.save();
-          
-            let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
-            
-            if (sponsor2 && sponsor2.is_active) {
-              let sponsor2CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
+      // Update user's balance, income, and selfIncome
+      let user = await User.findOne({ userId: userId });
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      // Calculate and update dailyIncome
+      let currentDate = new Date();
 
-              if (sponsor2CountUser >= 4) {
-                sponsor2.teamIncome += 3;
-                sponsor2.balance += 3;
-                sponsor2.income += 3;
-                await sponsor2.save();
+      // Check if it's a new day
+      if (
+        !user.lastIncomeUpdate ||
+        user.lastIncomeUpdate.getDate() !== currentDate.getDate()
+      ) {
+        // Reset dailyIncome to 0 if it's a new day
+        user.dailyIncome = 0;
+      }
+      user.balance += 25;
+      user.income += 25;
+      user.selfIncome += 25;
+      await user.save();
+      if (user.is_active) {
+        let sponsor = await User.findOne({ userId: user.sponsorId });
+        console.log(sponsor);
+        let sponsorCount = await User.countDocuments({
+          sponsorId: user.sponsorId,
+          is_active: true,
+        });
+        console.log(user.sponsorId);
+        console.log("Total Count");
+        console.log(sponsorCount);
+        if (sponsor && sponsorCount >= 2 && sponsor.is_active) {
+          sponsor.balance += 4;
+          sponsor.teamIncome += 4;
+          sponsor.income += 4;
+          await sponsor.save();
 
-                let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
+          let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
 
-                if (sponsor3 && sponsor3.is_active) {
-                  let sponsor3CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
+          if (sponsor2 && sponsor2.is_active) {
+            let sponsor2CountUser = await User.countDocuments({
+              sponsorId: sponsor2.userId,
+              is_active: true,
+            });
 
-                  if (sponsor3CountUser >= 6) {
-                    sponsor3.balance += 2;
-                    sponsor3.teamIncome += 2;
-                    sponsor3.income += 2;
-                    await sponsor3.save();
+            if (sponsor2CountUser >= 4) {
+              sponsor2.teamIncome += 3;
+              sponsor2.balance += 3;
+              sponsor2.income += 3;
+              await sponsor2.save();
 
-                    let sponsor4 = await User.findOne({ userId: sponsor3.sponsorId });
+              let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
 
-                    if (sponsor4 && sponsor4.is_active) {
-                      let sponsor4CountUser = await User.countDocuments({ sponsorId: sponsor3.userId, is_active: true });
+              if (sponsor3 && sponsor3.is_active) {
+                let sponsor3CountUser = await User.countDocuments({
+                  sponsorId: sponsor2.userId,
+                  is_active: true,
+                });
 
-                      if (sponsor4CountUser >= 8) {
-                        sponsor4.balance += 1;
-                        sponsor4.teamIncome += 1;
-                        sponsor4.income += 1;
-                        await sponsor4.save();
+                if (sponsor3CountUser >= 6) {
+                  sponsor3.balance += 2;
+                  sponsor3.teamIncome += 2;
+                  sponsor3.income += 2;
+                  await sponsor3.save();
 
-                        let sponsor5 = await User.findOne({ userId: sponsor4.sponsorId });
+                  let sponsor4 = await User.findOne({
+                    userId: sponsor3.sponsorId,
+                  });
 
-                        if (sponsor5 && sponsor5.is_active) {
-                          let sponsor5CountUser = await User.countDocuments({ sponsorId: sponsor4.userId, is_active: true });
+                  if (sponsor4 && sponsor4.is_active) {
+                    let sponsor4CountUser = await User.countDocuments({
+                      sponsorId: sponsor3.userId,
+                      is_active: true,
+                    });
 
-                          if (sponsor5CountUser >= 10) {
-                            sponsor5.balance += 0.5;
-                            sponsor5.teamIncome += 0.5;
-                            sponsor5.income += 0.5;
-                            await sponsor5.save();
-                          }
+                    if (sponsor4CountUser >= 8) {
+                      sponsor4.balance += 1;
+                      sponsor4.teamIncome += 1;
+                      sponsor4.income += 1;
+                      await sponsor4.save();
+
+                      let sponsor5 = await User.findOne({
+                        userId: sponsor4.sponsorId,
+                      });
+
+                      if (sponsor5 && sponsor5.is_active) {
+                        let sponsor5CountUser = await User.countDocuments({
+                          sponsorId: sponsor4.userId,
+                          is_active: true,
+                        });
+
+                        if (sponsor5CountUser >= 10) {
+                          sponsor5.balance += 0.5;
+                          sponsor5.teamIncome += 0.5;
+                          sponsor5.income += 0.5;
+                          await sponsor5.save();
                         }
                       }
                     }
@@ -410,14 +439,14 @@ const markTaskCompleted = async (req, res) => {
             }
           }
         }
-        // Additional logic for updating sponsors and their incomes goes here
-        // console.log("Update");
-        res.send("Account increased successfully");
-      } else {
-        // console.log("error");
-        res.send("Account is already increased");
       }
-    
+      // Additional logic for updating sponsors and their incomes goes here
+      // console.log("Update");
+      res.send("Account increased successfully");
+    } else {
+      // console.log("error");
+      res.send("Account is already increased");
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to mark the task as completed" });
