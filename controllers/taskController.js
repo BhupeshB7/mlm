@@ -346,16 +346,19 @@ const markTaskCompleted = async (req, res) => {
         await user.save();
         if (user.is_active) {
           let sponsor = await User.findOne({ userId: user.sponsorId });
-          let sponsorCount = await User.countDocuments({ userId: user.sponsorId, is_active: true });
-
+          console.log(sponsor);
+          let sponsorCount = await User.countDocuments({ sponsorId: user.sponsorId, is_active: true });
+          console.log(user.sponsorId)
+          console.log('Total Count')
+           console.log(sponsorCount);
           if (sponsor && sponsorCount >= 2 && sponsor.is_active) {
             sponsor.balance += 4;
             sponsor.teamIncome += 4;
             sponsor.income += 4;
             await sponsor.save();
-
+          
             let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
-
+            
             if (sponsor2 && sponsor2.is_active) {
               let sponsor2CountUser = await User.countDocuments({ sponsorId: sponsor2.userId, is_active: true });
 

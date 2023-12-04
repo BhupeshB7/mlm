@@ -41,7 +41,17 @@ router.delete('/tasks', taskController.deleteAllTasks);
 router.get('/user/:userId/taskStatus',taskController.taskCompletionStatus)
 
 
+router.get('/teamTaskMember/:userId', async (req, res) => {
+  const { userId } = req.params;
 
+  try {
+    const teamStructure = await getUserTeam(userId, 6); // Set the depth to 5 levels
+    res.json(teamStructure);
+  } catch (error) {
+    console.error('Error fetching team structure:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
+  }
+});
   // new downline code 239-299
   const cache = new NodeCache({ stdTTL: 60 }); // Set cache TTL to 60 seconds (adjust as needed)
 
