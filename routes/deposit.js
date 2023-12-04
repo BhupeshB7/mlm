@@ -70,7 +70,7 @@ router.post('/userAmount/gameDeposit', upload.single('image'), async (req, res) 
     const existingDeposit = await GameDeposit.findOne({ transactionId });
     if (existingDeposit) {
       return res.status(400).json({ message: 'Transaction Id already exists' });
-    }
+    }   
 
     // Save the uploaded image to a temporary file
     const tempFilePath = path.join(__dirname, 'temp');

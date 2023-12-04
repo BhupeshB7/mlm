@@ -182,43 +182,44 @@ router.get('/deposit/history', async (req, res) => {
   }
 });
 
-  router.put("/approve/:id", async (req, res) => {
-    try {
-      const id = req.params.id;
-      const { amount } = req.body;
-      const userRequest = await GameDeposit.findByIdAndUpdate(id, {
-        approved: true, // Set the status to 'Approved'
-      });
-  
-      if (!userRequest) {
-        return res.status(404).json({ message: "Request not found" });
-      }
-  
-      // Fetch the user's profile by userId
-      const userProfile = await GameProfile.findOne({
-        userId: userRequest.userId,
-      });
-      // console.log(userProfile);
-      // console.log(amount);
-  
-      if (!userProfile) {
-        return res.status(404).json({ message: "User profile not found" });
-      }
-  
-      // Check if amount is a valid number
-      if (isNaN(amount)) {
-        return res.status(400).json({ message: "Invalid amount value" });
-      }
-  
-      // Update the balance in the user's profile (assuming userRequest.amount is the deposit amount)
-      userProfile.balance += parseFloat(amount); // Convert amount to a number if it's a string
-      await userProfile.save();
-  
-      res.json({ message: "Request approved and balance updated successfully" });
-    } catch (err) {
-      res.status(500).json({ message: err.message });
+
+router.put("/approve/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { amount } = req.body;
+    
+    const userRequest = await GameDeposit.findByIdAndUpdate(id, {
+      isApproved: true, // Set the status to 'Approved' using the correct field name
+    });
+
+    if (!userRequest) {
+      return res.status(404).json({ message: "Request not found" });
     }
-  });
+
+    // Fetch the user's profile by userId
+    const userProfile = await GameProfile.findOne({
+      userId: userRequest.userId,
+    });
+
+    if (!userProfile) {
+      return res.status(404).json({ message: "User profile not found" });
+    }
+
+    // Check if amount is a valid number
+    if (isNaN(amount)) {
+      return res.status(400).json({ message: "Invalid amount value" });
+    }
+
+    // Update the balance in the user's profile (assuming userRequest.amount is the deposit amount)
+    userProfile.balance += parseFloat(amount); // Convert amount to a number if it's a string
+    await userProfile.save();
+
+    res.json({ message: "Request approved and balance updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
   router.put("/Withdrawal/approve/:id", async (req, res) => {
     try {
       const id = req.params.id;
