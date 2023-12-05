@@ -49,6 +49,7 @@ app.use((err, req, res, next) => {
 // });
 // Use image routes
 // app.use('/api', imageRoutes);
+// 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
 //For Task
