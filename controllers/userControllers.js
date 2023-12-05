@@ -64,7 +64,7 @@ exports.registerUser = async (req, res) => {
 
       if (sponsorGameProfile) {
         // Increase the sponsor's GameWallet by 10Rs
-        sponsorGameProfile.balance += 10;
+        sponsorGameProfile.balance += 5;
         await sponsorGameProfile.save();
       }
     }
