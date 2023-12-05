@@ -202,7 +202,7 @@ router.post("/saveSelection", async (req, res) => {
     if (colorMatches.length > 0) {
       const colorUpdatePromises = colorMatches.map(async (match) => {
         const { userId, entryFee } = match;
-        const updatedBalance = entryFee * 1.5;
+        const updatedBalance = entryFee * 2;
         await GameProfile.findOneAndUpdate(
           { userId },
           { $inc: { balance: updatedBalance } }
@@ -215,7 +215,7 @@ router.post("/saveSelection", async (req, res) => {
     if (sizeMatches.length > 0) {
       const sizeUpdatePromises = sizeMatches.map(async (match) => {
         const { userId, entryFee } = match;
-        const updatedBalance = entryFee * 1.5;
+        const updatedBalance = entryFee * 2;
         await GameProfile.findOneAndUpdate(
           { userId },
           { $inc: { balance: updatedBalance } }
@@ -228,7 +228,7 @@ router.post("/saveSelection", async (req, res) => {
     if (numberMatches.length > 0) {
       const numberUpdatePromises = numberMatches.map(async (match) => {
         const { userId, entryFee } = match;
-        const updatedBalance = entryFee * 2;
+        const updatedBalance = entryFee * 4;
         await GameProfile.findOneAndUpdate(
           { userId },
           { $inc: { balance: updatedBalance } }
