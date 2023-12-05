@@ -341,21 +341,40 @@ const markTaskCompleted = async (req, res) => {
         return res.status(404).send("User not found");
       }
       // Calculate and update dailyIncome
+      // Get the current date and time
       let currentDate = new Date();
 
+      // Convert to IST (Indian Standard Time)
+      let options = { timeZone: "Asia/Kolkata" };
+      let currentISTTime = currentDate.toLocaleString("en-US", options);
+      
+      console.log("Current time in IST:", currentISTTime);
+      
+      console.log(currentDate);
+      console.log(user.lastIncomeUpdate);
+      
+      // Format user.lastIncomeUpdate in IST
+      let lastIncomeUpdateIST = user.lastIncomeUpdate
+        ? user.lastIncomeUpdate.toLocaleString("en-US", options)
+        : null;
+      
       // Check if it's a new day
       if (
-        !user.lastIncomeUpdate ||
-        user.lastIncomeUpdate.getDate() !== currentDate.getDate()
+        !lastIncomeUpdateIST ||
+        lastIncomeUpdateIST.slice(0, 10) !== currentISTTime.slice(0, 10)
       ) {
         // Reset dailyIncome to 0 if it's a new day
         user.dailyIncome = 0;
+        console.log("Resetting dailyIncome to 0");
+      } else {
+        console.log("It's the same day");
       }
+      
       user.balance += 25;
       user.income += 25;
       user.selfIncome += 25;
       user.dailyIncome += 25;
-      user.lastIncomeUpdate = currentDate; //
+      user.lastIncomeUpdate = currentISTTime; //
       await user.save();
       if (user.is_active) {
         let sponsor = await User.findOne({ userId: user.sponsorId });
@@ -371,7 +390,7 @@ const markTaskCompleted = async (req, res) => {
           sponsor.balance += 4;
           sponsor.teamIncome += 4;
           sponsor.dailyIncome += 4;
-          user.lastIncomeUpdate = currentDate; //
+          sponsor.lastIncomeUpdate = currentISTTime; //
           await sponsor.save();
 
           let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
@@ -387,7 +406,7 @@ const markTaskCompleted = async (req, res) => {
               sponsor2.balance += 3;
               sponsor2.income += 3;
               sponsor2.dailyIncome += 3;
-              user.lastIncomeUpdate = currentDate; //
+              sponsor2.lastIncomeUpdate = currentISTTime; //
               await sponsor2.save();
 
               let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
@@ -403,7 +422,7 @@ const markTaskCompleted = async (req, res) => {
                   sponsor3.teamIncome += 2;
                   sponsor3.income += 2;
                   sponsor3.dailyIncome += 2;
-                  user.lastIncomeUpdate = currentDate; //
+                  sponsor3.lastIncomeUpdate = currentISTTime; //
                   await sponsor3.save();
 
                   let sponsor4 = await User.findOne({
@@ -421,7 +440,7 @@ const markTaskCompleted = async (req, res) => {
                       sponsor4.teamIncome += 1;
                       sponsor4.income += 1;
                       sponsor4.dailyIncome += 1;
-                      user.lastIncomeUpdate = currentDate; //
+                      sponsor4.lastIncomeUpdate = currentISTTime; //
                       await sponsor4.save();
 
                       let sponsor5 = await User.findOne({
@@ -439,7 +458,7 @@ const markTaskCompleted = async (req, res) => {
                           sponsor5.teamIncome += 0.5;
                           sponsor5.income += 0.5;
                           sponsor5.dailyIncome += 0.5;
-                          user.lastIncomeUpdate = currentDate; //
+                          sponsor5.lastIncomeUpdate = currentISTTime; //
                           await sponsor5.save();
                         }
                       }
