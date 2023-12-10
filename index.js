@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const cors = require('cors');
 require('dotenv').config();
+const cron = require('node-cron');
 const app = express();
 const profileRoutes = require('./routes/profile');
 const passwordRoute = require('./routes/passwordReset');
@@ -11,6 +12,7 @@ const taskRoutes = require('./routes/taskRoute');
 const userTaskRoute = require('./routes/userTaskRoute');
 // const cloudinaryConfig = require("./cloudinaryConfig");
 const cloudinaryConfig= require("./cloudinaryConfig");
+const User = require('./models/User');
 // const cloudinary = require('cloudinary').v2;
 // const User = require('./models/User');
 // const config = require('./config');
@@ -118,6 +120,32 @@ app.use('/api/notice',require('./routes/notice'));
 //     console.error('Error in background task:', error);
 //   }
 // });
+// Set up a daily task to reset dailyIncome to zero for a specific user at 11:50 PM IST
+// cron.schedule('51 13 * * *', async () => {
+//   try {
+//     // Replace 'yourUserId' with the actual userId of the user you want to update
+//     const userIdToUpdate = 'PI1374686110';
+
+//     // Reset dailyIncome for the specific user
+//     await User.updateOne({ userId: userIdToUpdate }, { $set: { dailyIncome: 0 } });
+//     console.log(`Daily income reset successful for user with userId: ${userIdToUpdate}`);
+//   } catch (error) {
+//     console.error('Error resetting daily income:', error);
+//   }
+// }, {
+//   timezone: 'Asia/Kolkata', // Set the timezone to IST
+// });
+cron.schedule('50 23 * * *', async () => {
+  try {
+    // Reset dailyIncome for all users
+    await User.updateMany({}, { $set: { dailyIncome: 0 } });
+    console.log('Daily income reset successful');
+  } catch (error) {
+    console.error('Error resetting daily income:', error);
+  }
+}, {
+  timezone: 'Asia/Kolkata', // Set the timezone to IST
+});
 const imageSchema = new mongoose.Schema({
   name: String,
   data: Buffer,
