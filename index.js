@@ -397,7 +397,7 @@ const startTimer = () => {
 
   const timerId = setInterval(async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/generateRandomData');
+      const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData');
       console.log('Automatic API call successful:', response.data);
 
       console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
