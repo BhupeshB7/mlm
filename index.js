@@ -353,11 +353,13 @@ const generateAndSaveRandomData = async () => {
     const randomNumber = getRandomValue(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
     const randomLetter = getRandomValue(["Small", "Big"]);
     // Generate the session information
-    const sessionPrefix = 'pi122';
     const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().slice(0, 10); // Get YYYY-MM-DD
-
-    const session = sessionPrefix + formattedDate;
+    const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Get current month with leading zero
+    const currentDay = currentDate.getDate().toString().padStart(2, '0'); // Get current day with leading zero
+    const currentMinutes = currentDate.getMinutes().toString().padStart(2, '0'); // Get current minutes with leading zero
+    const sessionPrefix = 'PI11-';
+    const session = `${sessionPrefix}${currentMonth}${currentDay}-00${currentMinutes}`;
+    
     const newData = new RandomData({
       color: randomColor,
       letter: randomLetter,
@@ -382,7 +384,7 @@ const generateAndSaveRandomData = async () => {
 const displayDataAndRestartTimer = async () => {
   try {
     const newData = await generateAndSaveRandomData();
-    console.log(`Generated and saved random data after timer end:`, newData);
+    // console.log(`Generated and saved random data after timer end:`, newData);
 
     // Auto-restart the timer for 3 minutes
     startTimer();
@@ -393,16 +395,16 @@ const displayDataAndRestartTimer = async () => {
 };
 
 const startTimer = () => {
-  let timerCountdown = 1 * 60; // 3 minutes
+  let timerCountdown = 3 * 60; // 3 minutes
 
   const timerId = setInterval(async () => {
     try {
       const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData');
       console.log('Automatic API call successful:', response.data);
 
-      console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
+      // console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
 
-      timerCountdown = 1 * 60; // Restart the timer
+      timerCountdown = 3 * 60; // Restart the timer
 
       // Emit the timer countdown to all connected clients
       io.emit('timerUpdate', { countdown: timerCountdown });
@@ -411,7 +413,7 @@ const startTimer = () => {
     //   Log the error and continue; you might want to handle this more gracefully
     }
 
-    console.log(`Timer: ${timerCountdown} seconds remaining`);
+    // console.log(`Timer: ${timerCountdown} seconds remaining`);
     timerCountdown--;
  // Emit the timer countdown to all connected clients
  io.emit('timerUpdate', { countdown: timerCountdown });
@@ -434,7 +436,7 @@ io.on('connection', (socket) => {
     }
 
     // Emit the initial timer countdown to the client
-    socket.emit('timerUpdate', { countdown: 1 * 60 }); // Initial countdown value
+    socket.emit('timerUpdate', { countdown: 3 * 60 }); // Initial countdown value
   });
 });
 
