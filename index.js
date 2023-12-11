@@ -270,7 +270,7 @@ app.use('/api', require('./routes/changePassword'));
 app.use('/api', require('./routes/notice'));
 
 // Schedule daily income reset using cron
-cron.schedule('50 23 * * *', async () => {
+cron.schedule('24 1 * * *', async () => {
   try {
     // Reset dailyIncome for all users
     await User.updateMany({}, { $set: { dailyIncome: 0 } });
@@ -340,6 +340,30 @@ app.delete('/delete/:id', async (req, res) => {
   }
 });
 // 3Minutes Game COde
+// Pagination endpoint
+app.get('/api/randomData', async (req, res) => {
+  const perPage = 15;
+  const page = req.query.page || 1;
+
+  try {
+    const data = await RandomData.find({})
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+    const totalDocuments = await RandomData.countDocuments();
+    const totalPages = Math.ceil(totalDocuments / perPage);
+
+    res.json({
+      data,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 const getRandomValue = (array) => {
@@ -369,14 +393,14 @@ const generateAndSaveRandomData = async () => {
 
     await newData.save();
 
-    console.log('Generated and saved random data:', newData);
+    // console.log('Generated and saved random data:', newData);
 
     // Emit the new data to all connected clients
     io.emit('newData', newData);
 
     return newData;
   } catch (error) {
-    console.error('Error generating and saving random data:', error);
+    // console.error('Error generating and saving random data:', error);
     throw error;
   }
 };
@@ -389,7 +413,7 @@ const displayDataAndRestartTimer = async () => {
     // Auto-restart the timer for 3 minutes
     startTimer();
   } catch (error) {
-    console.error('Error fetching and saving random data after timer end:', error);
+    // console.error('Error fetching and saving random data after timer end:', error);
     // Log the error and continue; you might want to handle this more gracefully
   }
 };
@@ -400,7 +424,7 @@ const startTimer = () => {
   const timerId = setInterval(async () => {
     try {
       const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData');
-      console.log('Automatic API call successful:', response.data);
+      // console.log('Automatic API call successful:', response.data);
 
       // console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
 
@@ -409,7 +433,7 @@ const startTimer = () => {
       // Emit the timer countdown to all connected clients
       io.emit('timerUpdate', { countdown: timerCountdown });
     } catch (error) {
-      console.error('Error making automatic API call:', error.message);
+      // console.error('Error making automatic API call:', error.message);
     //   Log the error and continue; you might want to handle this more gracefully
     }
 
