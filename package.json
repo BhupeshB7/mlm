@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node  index.js",
-    "dev":"nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.3",
     "fileupload": "^1.0.0",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
     "mongoose": "^7.0.3",
@@ -29,6 +30,7 @@
     "node-cron": "^3.0.2",
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.22",
+    "socket.io": "^4.7.2",
     "uuid": "^9.0.0",
     "validator": "^13.9.0"
   }
