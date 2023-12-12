@@ -209,7 +209,7 @@ const socketIo = require('socket.io');
 const dotenv = require('dotenv');
 const cloudinaryConfig = require("./cloudinaryConfig");
 const User = require('./models/User');
-
+const taskRoutes = require('./routes/taskRoute');
 // Load environment variables from .env file
 dotenv.config();
 
@@ -242,6 +242,7 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
+app.use('/api', taskRoutes);
 app.use("/api/auth", require("./routes/auth"));
 app.use('/api/task', require('./routes/task'));
 app.use("/api/users", require("./routes/users"));
