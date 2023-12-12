@@ -231,7 +231,12 @@ const io = socketIo(server, {
 });
 
 // Middleware
-app.use(cors());
+// app.use(cors());
+  app.use(cors({
+    // origin:"https://powerfullindia.com",
+    origin:"https://www.powerfullindia.com",
+    // origin:"http://localhost:3000",
+  }));
 cloudinaryConfig();
 app.use(express.json());
 
