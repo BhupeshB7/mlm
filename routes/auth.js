@@ -14,9 +14,9 @@ router.post("/login", async (req, res) => {
 
 
   try {
-    const response = await axios.post(captchaVerifyUrl);
-    const { success } = response.data;
-    if(success){
+    // const response = await axios.post(captchaVerifyUrl);
+    // const { success } = response.data;
+    // if(success){
       
     // Check if user exists
     const user = await User.findOne({ userId });
@@ -41,10 +41,10 @@ router.post("/login", async (req, res) => {
       expiresIn: "7h",
     });
     res.json({ token });
-    }else{
-       // Return an error response indicating invalid captcha
-       res.status(401).json({ error: 'Invalid captcha' });
-    }
+    // }else{
+    //    // Return an error response indicating invalid captcha
+    //    res.status(401).json({ error: 'Invalid captcha' });
+    // }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
