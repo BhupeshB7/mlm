@@ -276,7 +276,7 @@ app.use('/api', require('./routes/changePassword'));
 app.use('/api', require('./routes/notice'));
 
 // Schedule daily income reset using cron
-cron.schedule('24 1 * * *', async () => {
+cron.schedule('55 23 * * *', async () => {
   try {
     // Reset dailyIncome for all users
     await User.updateMany({}, { $set: { dailyIncome: 0 } });

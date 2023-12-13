@@ -14,6 +14,12 @@ function isAfter1PMIST() {
   const currentHourIST = now.getUTCHours() + 5; // Add 5 hours to UTC time for IST
   return currentHourIST >= 13; // 13 represents 1 PM in 24-hour format
 }
+function isBefore9AMIST() {
+  const now = new Date();
+  const ISTOffset = 330; // IST offset in minutes
+  const currentTimeIST = new Date(now.getTime() + ISTOffset * 60000);
+  return currentTimeIST.getHours() < 9;
+}
 
 // Create a new user withdrawal request
 // router.post("/user/:userId", async (req, res) => {
@@ -166,6 +172,11 @@ router.post('/user/:userId', async (req, res) => {
         .status(400)
         .json({ error: "Withdrawal is not allowed on Sundays." });
     }
+     // Check if it's before 8 AM IST
+     if (isBefore9AMIST()) {
+      return res.status(400).json({ error: 'Withdrawal is not allowed before 9 AM IST.' });
+    }
+
       // Check if it's after 1 PM IST
       if (isAfter1PMIST()) {
         return res.status(400).json({ error: 'Withdrawal is not allowed after 1 PM IST.' });
