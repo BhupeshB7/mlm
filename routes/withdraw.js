@@ -147,12 +147,7 @@ router.post("/user/:userId", async (req, res) => {
       .status(400)
       .json({ error: "Withdrawal amount should be greater than 0" });
   }
-  // Check if the withdrawal amount is greater than or equal to 500
-  if (amount >= 500) {
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    const currentDate = new Date();
+  const currentDate = new Date();
   const currentIST = new Date(
     currentDate.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
   );
@@ -175,6 +170,12 @@ router.post("/user/:userId", async (req, res) => {
     return res.status(403).json({ error: 'Withdrawal not allowed after 1 PM.' });
   }
 
+  // Check if the withdrawal amount is greater than or equal to 500
+  if (amount >= 500) {
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+  
     // Check if the user is active
     if (!user.is_active) {
       return res
