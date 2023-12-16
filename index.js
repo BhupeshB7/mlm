@@ -567,11 +567,11 @@ const startTimer1 = () => {
   const timerId1 = setInterval(async () => {
     try {
       const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData1');
-      // console.log('Automatic API call successful:', response.data);
+      console.log('Automatic API call successful:', response.data);
 
-      // console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
+      console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
 
-      timerCountdown1 = 3 * 60; // Restart the timer
+      timerCountdown1 = 1 * 60; // Restart the timer
 
       // Emit the timer countdown to all connected clients
       io.emit('timerUpdate1', { countdown: timerCountdown1 });
@@ -580,7 +580,7 @@ const startTimer1 = () => {
     //   Log the error and continue; you might want to handle this more gracefully
     }
 
-    // console.log(`Timer: ${timerCountdown1} seconds remaining`);
+    console.log(`Timer: ${timerCountdown1} seconds remaining`);
     timerCountdown1--;
  // Emit the timer countdown to all connected clients
  io.emit('timerUpdate1', { countdown: timerCountdown1 });
@@ -603,7 +603,7 @@ io.on('connection', (socket) => {
     }
 
     // Emit the initial timer countdown to the client
-    socket.emit('timerUpdate1', { countdown: 3 * 60 }); // Initial countdown value
+    socket.emit('timerUpdate1', { countdown: 1 * 60 }); // Initial countdown value
   });
 });
 

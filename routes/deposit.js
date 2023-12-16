@@ -464,8 +464,8 @@ router.post("/topUpUserID/:userID", async (req, res) => {
       // Create a new TopupHistory record for the top-up
       const topupHistory1 = new TopUpHistory1({
         // name: activeUser.name,
-        userId: userId,
-        targetUserId: userID,
+        userId: userID,
+        targetUserId: userId,
       });
 
       // Save the top-up history record
