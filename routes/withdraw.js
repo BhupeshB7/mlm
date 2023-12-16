@@ -10,7 +10,6 @@ const router = express.Router();
 // Function to check if the user has at least two direct referrals
 // Function to check if the current time is after 1 PM IST
 
-
 // Create a new user withdrawal request
 // router.post("/user/:userId", async (req, res) => {
 //   const { userId } = req.params;
@@ -134,18 +133,14 @@ const router = express.Router();
 //   }
 // });
 
-
-
-
-
 //withdrawal code end
 //for MLM
 // All withdrawal Code
-router.post('/user/:userId', async (req, res) => {
-  const { userId} = req.params;
+router.post("/user/:userId", async (req, res) => {
+  const { userId } = req.params;
   const { amount, ifscCode, accountNo, accountHolderName } = req.body;
-  const user = await User.findOne({ userId: userId});
-  
+  const user = await User.findOne({ userId: userId });
+
   function isAfter1PMIST() {
     const now = new Date();
     const currentHourIST = now.getUTCHours() + 5; // Add 5 hours to UTC time for IST
@@ -159,12 +154,14 @@ router.post('/user/:userId', async (req, res) => {
   }
   // Check if the withdrawal amount is greater than 0
   if (amount <= 0) {
-    return res.status(400).json({ error: 'Withdrawal amount should be greater than 0' });
+    return res
+      .status(400)
+      .json({ error: "Withdrawal amount should be greater than 0" });
   }
   // Check if the withdrawal amount is greater than or equal to 500
   if (amount >= 500) {
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
     //     // Check if the current day is Sunday (day 0)
     const today = new Date();
@@ -173,33 +170,58 @@ router.post('/user/:userId', async (req, res) => {
         .status(400)
         .json({ error: "Withdrawal is not allowed on Sundays." });
     }
-     // Check if it's before 8 AM IST
-     if (isBefore9AMIST()) {
-      return res.status(400).json({ error: 'Withdrawal is not allowed before 9 AM IST.' });
+    const today1 = new Date();
+    if (today1.getDay() === 0) {
+      return res
+        .status(400)
+        .json({ error: "Withdrawal is not allowed on Monday." });
+    }
+    const today7 = new Date();
+    if (today7.getDay() === 0) {
+      return res
+        .status(400)
+        .json({ error: "Withdrawal is not allowed on Saturday." });
+    }
+    // Check if it's before 8 AM IST
+    if (isBefore9AMIST()) {
+      return res
+        .status(400)
+        .json({ error: "Withdrawal is not allowed before 9 AM IST." });
     }
 
-      // Check if it's after 1 PM IST
-      if (isAfter1PMIST()) {
-        return res.status(400).json({ error: 'Withdrawal is not allowed after 1 PM IST.' });
-      }
+    // Check if it's after 1 PM IST
+    if (isAfter1PMIST()) {
+      return res
+        .status(400)
+        .json({ error: "Withdrawal is not allowed after 1 PM IST." });
+    }
     // Check if the user is active
-  if (!user.is_active) {
-    return res.status(400).json({ error: 'User is not active and cannot make withdrawals' });
-  }
+    if (!user.is_active) {
+      return res
+        .status(400)
+        .json({ error: "User is not active and cannot make withdrawals" });
+    }
     //   // check if the withdrawal amount is greater than or equal to 500
-      if (amount < 500) {
-        return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
-      }
+    if (amount < 500) {
+      return res
+        .status(400)
+        .json({ error: "Minimum withdrawal amount is 500 Rs" });
+    }
     // Check if user has at least two direct referrals
-    const count = await User.countDocuments({ sponsorId: userId, is_active:true   });
-    console.log(count)
+    const count = await User.countDocuments({
+      sponsorId: userId,
+      is_active: true,
+    });
+    console.log(count);
     if (count < 2) {
-      return res.status(400).json({ error: 'Minimum Two Direct for Withdrawal' });
+      return res
+        .status(400)
+        .json({ error: "Minimum Two Direct for Withdrawal" });
     }
 
     // Check if user balance is sufficient for the withdrawal
     if (user.balance < amount) {
-      return res.status(400).json({ error: 'Insufficient balance' });
+      return res.status(400).json({ error: "Insufficient balance" });
     }
 
     // Create a new withdrawal request
@@ -208,7 +230,7 @@ router.post('/user/:userId', async (req, res) => {
       amount,
       ifscCode,
       accountNo,
-      accountHolderName
+      accountHolderName,
     });
 
     await withdrawalRequest.save();
@@ -219,20 +241,21 @@ router.post('/user/:userId', async (req, res) => {
     await user.save();
 
     return res.json({ success: true });
-  } 
-  else if (amount === 200) {
+  } else if (amount === 200) {
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // Check if user has already made a withdrawal of 200 Rs
     if (user.withdrawalDone) {
-      return res.status(403).json({ error: 'Withdrawal of 200 Rs already done' });
+      return res
+        .status(403)
+        .json({ error: "Withdrawal of 200 Rs already done" });
     }
 
     // Check if user balance is sufficient for the withdrawal
     if (user.balance < amount) {
-      return res.status(400).json({ error: 'Insufficient balance' });
+      return res.status(400).json({ error: "Insufficient balance" });
     }
 
     // Create a new withdrawal request
@@ -241,7 +264,7 @@ router.post('/user/:userId', async (req, res) => {
       amount,
       ifscCode,
       accountNo,
-      accountHolderName
+      accountHolderName,
     });
 
     await withdrawalRequest.save();
@@ -253,27 +276,30 @@ router.post('/user/:userId', async (req, res) => {
     await user.save();
 
     return res.json({ success: true });
-  }
-  else if (amount === 400) {
-
-    const count1 = await User.countDocuments({ sponsorId: userId, is_active:true   });
+  } else if (amount === 400) {
+    const count1 = await User.countDocuments({
+      sponsorId: userId,
+      is_active: true,
+    });
     // console.log(count1)
-     // Check if user has already made a withdrawal of 200 Rs
-     if (user.withdrawalDoneFour && amount === 400) {
-      return res.status(403).json({ error: 'Withdrawal of 400 Rs already done' });
+    // Check if user has already made a withdrawal of 200 Rs
+    if (user.withdrawalDoneFour && amount === 400) {
+      return res
+        .status(403)
+        .json({ error: "Withdrawal of 400 Rs already done" });
     }
     if (count1 < 1) {
-      return res.status(400).json({ error: 'Minimum One Direct for Withdrawal' });
+      return res
+        .status(400)
+        .json({ error: "Minimum One Direct for Withdrawal" });
     }
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
-
-   
 
     // Check if user balance is sufficient for the withdrawal
     if (user.balance < amount) {
-      return res.status(400).json({ error: 'Insufficient balance' });
+      return res.status(400).json({ error: "Insufficient balance" });
     }
 
     // Create a new withdrawal request
@@ -282,7 +308,7 @@ router.post('/user/:userId', async (req, res) => {
       amount,
       ifscCode,
       accountNo,
-      accountHolderName
+      accountHolderName,
     });
 
     await withdrawalRequest.save();
@@ -294,9 +320,10 @@ router.post('/user/:userId', async (req, res) => {
     await user.save();
 
     return res.json({ success: true });
-  }
-  else {
-    return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
+  } else {
+    return res
+      .status(400)
+      .json({ error: "Minimum withdrawal amount is 500 Rs" });
   }
 });
 // Withdrawal code ENd
@@ -423,13 +450,13 @@ router.put("/withdrawals/:id", async (req, res) => {
   try {
     const withdrawalRequest = await WithdrawBalance.findByIdAndUpdate(
       id,
-      { status , transactionNumber },
+      { status, transactionNumber },
       { new: true }
     );
     if (!withdrawalRequest) {
       return res.status(404).json({ error: "Withdrawal request not found" });
     }
-    withdrawalRequest.status = 'approved';
+    withdrawalRequest.status = "approved";
     await withdrawalRequest.save();
     res.json(withdrawalRequest);
   } catch (error) {
