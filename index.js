@@ -274,7 +274,7 @@ app.use('/api', require('./routes/GameDeposit'));
 app.use('/api', require('./routes/image'));
 app.use('/api', require('./routes/WalletTransfer'));
 app.use('/api', require('./routes/changePassword'));
-app.use('/api', require('./routes/notice'));
+app.use('/api/notice', require('./routes/notice'));
 
 // Schedule daily income reset using cron
 cron.schedule('55 23 * * *', async () => {
