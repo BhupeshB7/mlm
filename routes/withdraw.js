@@ -9,17 +9,7 @@ const router = express.Router();
 //withdrwal code
 // Function to check if the user has at least two direct referrals
 // Function to check if the current time is after 1 PM IST
-function isAfter1PMIST() {
-  const now = new Date();
-  const currentHourIST = now.getUTCHours() + 5; // Add 5 hours to UTC time for IST
-  return currentHourIST >= 13; // 13 represents 1 PM in 24-hour format
-}
-function isBefore9AMIST() {
-  const now = new Date();
-  const ISTOffset = 330; // IST offset in minutes
-  const currentTimeIST = new Date(now.getTime() + ISTOffset * 60000);
-  return currentTimeIST.getHours() < 9;
-}
+
 
 // Create a new user withdrawal request
 // router.post("/user/:userId", async (req, res) => {
@@ -155,7 +145,18 @@ router.post('/user/:userId', async (req, res) => {
   const { userId} = req.params;
   const { amount, ifscCode, accountNo, accountHolderName } = req.body;
   const user = await User.findOne({ userId: userId});
-
+  
+  function isAfter1PMIST() {
+    const now = new Date();
+    const currentHourIST = now.getUTCHours() + 5; // Add 5 hours to UTC time for IST
+    return currentHourIST >= 13; // 13 represents 1 PM in 24-hour format
+  }
+  function isBefore9AMIST() {
+    const now = new Date();
+    const ISTOffset = 330; // IST offset in minutes
+    const currentTimeIST = new Date(now.getTime() + ISTOffset * 60000);
+    return currentTimeIST.getHours() < 9;
+  }
   // Check if the withdrawal amount is greater than 0
   if (amount <= 0) {
     return res.status(400).json({ error: 'Withdrawal amount should be greater than 0' });
