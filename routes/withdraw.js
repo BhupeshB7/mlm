@@ -141,17 +141,6 @@ router.post("/user/:userId", async (req, res) => {
   const { amount, ifscCode, accountNo, accountHolderName } = req.body;
   const user = await User.findOne({ userId: userId });
 
-  function isAfter1PMIST() {
-    const now = new Date();
-    const currentHourIST = now.getUTCHours() + 5; // Add 5 hours to UTC time for IST
-    return currentHourIST >= 13; // 13 represents 1 PM in 24-hour format
-  }
-  function isBefore9AMIST() {
-    const now = new Date();
-    const ISTOffset = 330; // IST offset in minutes
-    const currentTimeIST = new Date(now.getTime() + ISTOffset * 60000);
-    return currentTimeIST.getHours() < 9;
-  }
   // Check if the withdrawal amount is greater than 0
   if (amount <= 0) {
     return res
@@ -163,38 +152,29 @@ router.post("/user/:userId", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    //     // Check if the current day is Sunday (day 0)
-    const today = new Date();
-    if (today.getDay() === 0) {
-      return res
-        .status(400)
-        .json({ error: "Withdrawal is not allowed on Sundays." });
-    }
-    const today1 = new Date();
-    if (today1.getDay() === 0) {
-      return res
-        .status(400)
-        .json({ error: "Withdrawal is not allowed on Monday." });
-    }
-    const today7 = new Date();
-    if (today7.getDay() === 0) {
-      return res
-        .status(400)
-        .json({ error: "Withdrawal is not allowed on Saturday." });
-    }
-    // Check if it's before 8 AM IST
-    if (isBefore9AMIST()) {
-      return res
-        .status(400)
-        .json({ error: "Withdrawal is not allowed before 9 AM IST." });
-    }
+    const currentDate = new Date();
+  const currentIST = new Date(
+    currentDate.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
+  );
 
-    // Check if it's after 1 PM IST
-    if (isAfter1PMIST()) {
-      return res
-        .status(400)
-        .json({ error: "Withdrawal is not allowed after 1 PM IST." });
-    }
+  const dayOfWeek = currentIST.getDay();
+  const hours = currentIST.getHours();
+
+  // Check if it's Sunday
+  if (dayOfWeek === 0) {
+    return res.status(403).json({ error: 'Withdrawal not allowed on Sundays.' });
+  }
+
+  // Check if it's before 9 AM
+  if (hours < 9) {
+    return res.status(403).json({ error: 'Withdrawal not allowed before 9 AM.' });
+  }
+
+  // Check if it's after 1 PM
+  if (hours >= 13) {
+    return res.status(403).json({ error: 'Withdrawal not allowed after 1 PM.' });
+  }
+
     // Check if the user is active
     if (!user.is_active) {
       return res
