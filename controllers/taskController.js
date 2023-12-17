@@ -301,7 +301,8 @@ const markTaskCompleted = async (req, res) => {
   const taskId = req.params.id;
   const userId = req.body.userId; // Assuming you send userId in the request body
   const sponsorId = req.body.sponsorId; // Assuming you send userId in the request body
-
+  const name = req.body.name;
+  const mobile = req.body.mobile;
   try {
     // Check if the userTask already exists, if not, create a new entry
     let userTask = await UserTask.findOne({ taskId, userId, sponsorId });
@@ -311,6 +312,8 @@ const markTaskCompleted = async (req, res) => {
         taskId,
         userId,
         sponsorId,
+        mobile,
+        name,
         completed: true,
         WalletUpdated: false,
       });
