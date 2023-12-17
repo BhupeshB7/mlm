@@ -408,7 +408,7 @@ const markTaskCompleted = async (req, res) => {
 
           if (sponsor2 && sponsor2.is_active) {
             let sponsor2CountUser = await User.countDocuments({
-              sponsorId: sponsor2.userId,
+              sponsorId: user.sponsorId,
               is_active: true,
             });
 
@@ -424,7 +424,7 @@ const markTaskCompleted = async (req, res) => {
 
               if (sponsor3 && sponsor3.is_active) {
                 let sponsor3CountUser = await User.countDocuments({
-                  sponsorId: sponsor2.userId,
+                  sponsorId: user.sponsorId,
                   is_active: true,
                 });
 
@@ -442,7 +442,7 @@ const markTaskCompleted = async (req, res) => {
 
                   if (sponsor4 && sponsor4.is_active) {
                     let sponsor4CountUser = await User.countDocuments({
-                      sponsorId: sponsor3.userId,
+                      sponsorId: user.sponsorId,
                       is_active: true,
                     });
 
@@ -460,7 +460,7 @@ const markTaskCompleted = async (req, res) => {
 
                       if (sponsor5 && sponsor5.is_active) {
                         let sponsor5CountUser = await User.countDocuments({
-                          sponsorId: sponsor4.userId,
+                          sponsorId: user.sponsorId,
                           is_active: true,
                         });
 
