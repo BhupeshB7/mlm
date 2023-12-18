@@ -389,15 +389,18 @@ const markTaskCompleted = async (req, res) => {
       await user.save();
       if (user.is_active) {
         let sponsor = await User.findOne({ userId: user.sponsorId });
+        // let sponsorTest = await User.find({ sponsorId: sponsor.userId }).select("name userId sponsorId");
         // console.log(sponsor);
-        let sponsorCount = await User.countDocuments({
-          sponsorId: user.sponsorId,
+        // console.log(sponsorTest)
+        let sponsorDownCount = await User.countDocuments({
+          sponsorId: sponsor.userId,
           is_active: true,
         });
         // console.log(user.sponsorId);
         // console.log("Total Count");
-        // console.log(sponsorCount);
-        if (sponsor && sponsorCount >= 2 && sponsor.is_active) {
+        // console.log("Level1");
+        // console.log(sponsorDownCount);
+        if (sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
           sponsor.balance += 4;
           sponsor.teamIncome += 4;
           sponsor.dailyIncome += 4;
@@ -407,12 +410,15 @@ const markTaskCompleted = async (req, res) => {
           let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
 
           if (sponsor2 && sponsor2.is_active) {
-            let sponsor2CountUser = await User.countDocuments({
-              sponsorId: user.sponsorId,
+            let sponsor2DownCount = await User.countDocuments({
+              sponsorId: sponsor2.userId,
               is_active: true,
             });
-
-            if (sponsor2CountUser >= 4) {
+            console.log(sponsor2);
+            console.log("Total Count");
+            console.log("Level1");
+            console.log(sponsor2DownCount);
+            if (sponsor2DownCount >= 4) {
               sponsor2.teamIncome += 3;
               sponsor2.balance += 3;
               sponsor2.income += 3;
@@ -424,10 +430,13 @@ const markTaskCompleted = async (req, res) => {
 
               if (sponsor3 && sponsor3.is_active) {
                 let sponsor3CountUser = await User.countDocuments({
-                  sponsorId: user.sponsorId,
+                  sponsorId: sponsor3.userId,
                   is_active: true,
                 });
-
+                // console.log(user.sponsorId);
+                // console.log("Level1");
+                // console.log("Total Count");
+                // console.log(sponsor3CountUser);
                 if (sponsor3CountUser >= 6) {
                   sponsor3.balance += 2;
                   sponsor3.teamIncome += 2;
@@ -442,7 +451,7 @@ const markTaskCompleted = async (req, res) => {
 
                   if (sponsor4 && sponsor4.is_active) {
                     let sponsor4CountUser = await User.countDocuments({
-                      sponsorId: user.sponsorId,
+                      sponsorId: sponsor4.userId,
                       is_active: true,
                     });
 
@@ -460,7 +469,7 @@ const markTaskCompleted = async (req, res) => {
 
                       if (sponsor5 && sponsor5.is_active) {
                         let sponsor5CountUser = await User.countDocuments({
-                          sponsorId: user.sponsorId,
+                          sponsorId: sponsor5.userId,
                           is_active: true,
                         });
 

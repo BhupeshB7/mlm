@@ -580,7 +580,7 @@ const startTimer1 = () => {
     //   Log the error and continue; you might want to handle this more gracefully
     }
 
-    console.log(`Timer: ${timerCountdown1} seconds remaining`);
+    // console.log(`Timer: ${timerCountdown1} seconds remaining`);
     timerCountdown1--;
  // Emit the timer countdown to all connected clients
  io.emit('timerUpdate1', { countdown: timerCountdown1 });
