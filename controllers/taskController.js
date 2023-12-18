@@ -305,7 +305,7 @@ const markTaskCompleted = async (req, res) => {
   const mobile = req.body.mobile;
   try {
     // Check if the userTask already exists, if not, create a new entry
-    let userTask = await UserTask.findOne({ taskId, userId, sponsorId });
+    let userTask = await UserTask.findOne({ taskId, userId, sponsorId,mobile,name });
     // console.log(userId);
     if (!userTask) {
       await UserTask.create({
