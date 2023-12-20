@@ -509,116 +509,6 @@ app.get('/api/randomData1', async (req, res) => {
 });
 
 
-// const getRandomValue1 = (array) => {
-//   const randomIndex = Math.floor(Math.random() * array.length);
-//   return array[randomIndex];
-// };
-
-// const generateAndSaveRandomData1 = async () => {
-//   try {
-//     const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
-//     // const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
-//     // const randomLetter = getRandomValue1(["Small", "Big"]);
-// const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
-
-// let randomLetter;
-
-// if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
-//   randomLetter = getRandomValue1(["Small"]);
-// } else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
-//   randomLetter = getRandomValue1(["Big"]);
-// } else {
-//   // Handle unexpected cases
-//   console.error("Unexpected value for randomNumber");
-// }
-
-//     // Generate the session information
-//     const currentDate = new Date();
-//     const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Get current month with leading zero
-//     const currentDay = currentDate.getDate().toString().padStart(2, '0'); // Get current day with leading zero
-//     const currentMinutes = currentDate.getMinutes().toString().padStart(2, '0'); // Get current minutes with leading zero
-//     const sessionPrefix = 'PI11123';
-//     const session = `${sessionPrefix}${currentMonth}${currentDay}00${currentMinutes}`;
-    
-//     const newData = new RandomData1({
-//       color: randomColor,
-//       letter: randomLetter,
-//       number: randomNumber,
-//       session: session,
-//     });
-
-//     await newData.save();
-
-//     // console.log('Generated and saved random data:', newData);
-
-//     // Emit the new data to all connected clients
-//     io.emit('newData1', newData);
-
-//     return newData;
-//   } catch (error) {
-//     // console.error('Error generating and saving random data:', error);
-//     throw error;
-//   }
-// };
-
-// const displayDataAndRestartTimer1 = async () => {
-//   try {
-//     const newData = await generateAndSaveRandomData1();
-//     // console.log(`Generated and saved random data after timer end:`, newData);
-
-//     // Auto-restart the timer for 3 minutes
-//     startTimer1();
-//   } catch (error) {
-//     // console.error('Error fetching and saving random data after timer end:', error);
-//     // Log the error and continue; you might want to handle this more gracefully
-//   }
-// };
-
-// const startTimer1 = () => {
-//   let timerCountdown1 = 1 * 60; // 3 minutes
-
-//   const timerId1 = setInterval(async () => {
-//     try {
-//       const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData1');
-//       console.log('Automatic API call successful:', response.data);
-
-//       console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
-
-//       timerCountdown1 = 1 * 60; // Restart the timer
-
-//       // Emit the timer countdown to all connected clients
-//       io.emit('timerUpdate1', { countdown: timerCountdown1 });
-//     } catch (error) {
-//       // console.error('Error making automatic API call:', error.message);
-//     //   Log the error and continue; you might want to handle this more gracefully
-//     }
-
-//     // console.log(`Timer: ${timerCountdown1} seconds remaining`);
-//     timerCountdown1--;
-//  // Emit the timer countdown to all connected clients
-//  io.emit('timerUpdate1', { countdown: timerCountdown1 });
-//     if (timerCountdown1 < 0) {
-//       clearInterval(timerId1);
-//       displayDataAndRestartTimer1();
-//     }
-//   }, 1000);
-// };
-// startTimer1();
-
-// // Socket.io connection
-// io.on('connection', (socket) => {
-//   console.log('Client connected');
-
-//   // Send initial data and timer countdown to the client when connected
-//   RandomData1.findOne({}, {}, { sort: { 'created_at': -1 } }, (err, data) => {
-//     if (data) {
-//       socket.emit('initialData1', data);
-//     }
-
-//     // Emit the initial timer countdown to the client
-//     socket.emit('timerUpdate1', { countdown: 1 * 60 }); // Initial countdown value
-//   });
-// });
 const getRandomValue1 = (array) => {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
@@ -627,18 +517,20 @@ const getRandomValue1 = (array) => {
 const generateAndSaveRandomData1 = async () => {
   try {
     const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
-    const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
+    // const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
+    // const randomLetter = getRandomValue1(["Small", "Big"]);
+const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
 
-    let randomLetter;
+let randomLetter;
 
-    if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
-      randomLetter = getRandomValue1(["Small"]);
-    } else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
-      randomLetter = getRandomValue1(["Big"]);
-    } else {
-      // Handle unexpected cases
-      console.error("Unexpected value for randomNumber");
-    }
+if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
+  randomLetter = getRandomValue1(["Small"]);
+} else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
+  randomLetter = getRandomValue1(["Big"]);
+} else {
+  // Handle unexpected cases
+  console.error("Unexpected value for randomNumber");
+}
 
     // Generate the session information
     const currentDate = new Date();
@@ -647,7 +539,7 @@ const generateAndSaveRandomData1 = async () => {
     const currentMinutes = currentDate.getMinutes().toString().padStart(2, '0'); // Get current minutes with leading zero
     const sessionPrefix = 'PI11123';
     const session = `${sessionPrefix}${currentMonth}${currentDay}00${currentMinutes}`;
-
+    
     const newData = new RandomData1({
       color: randomColor,
       letter: randomLetter,
@@ -657,28 +549,60 @@ const generateAndSaveRandomData1 = async () => {
 
     await newData.save();
 
+    // console.log('Generated and saved random data:', newData);
+
     // Emit the new data to all connected clients
     io.emit('newData1', newData);
 
     return newData;
   } catch (error) {
+    // console.error('Error generating and saving random data:', error);
     throw error;
   }
 };
 
-const startTimer1 = () => {
-  setInterval(async () => {
-    try {
-      const newData = await generateAndSaveRandomData1();
-      // Emit the timer countdown to all connected clients
-      io.emit('timerUpdate1', { countdown: 60 }); // Assuming 60 seconds for a minute
-    } catch (error) {
-      console.error('Error generating and saving random data:', error);
-      // Log the error and continue; you might want to handle this more gracefully
-    }
-  }, 60 * 1000); // Run every 1 minute (60 seconds)
+const displayDataAndRestartTimer1 = async () => {
+  try {
+    const newData = await generateAndSaveRandomData1();
+    // console.log(`Generated and saved random data after timer end:`, newData);
+
+    // Auto-restart the timer for 3 minutes
+    startTimer1();
+  } catch (error) {
+    // console.error('Error fetching and saving random data after timer end:', error);
+    // Log the error and continue; you might want to handle this more gracefully
+  }
 };
 
+const startTimer1 = () => {
+  let timerCountdown1 = 1 * 60; // 3 minutes
+
+  const timerId1 = setInterval(async () => {
+    try {
+      const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData1');
+      console.log('Automatic API call successful:', response.data);
+
+      console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
+
+      timerCountdown1 = 1 * 60; // Restart the timer
+
+      // Emit the timer countdown to all connected clients
+      io.emit('timerUpdate1', { countdown: timerCountdown1 });
+    } catch (error) {
+      // console.error('Error making automatic API call:', error.message);
+    //   Log the error and continue; you might want to handle this more gracefully
+    }
+
+    // console.log(`Timer: ${timerCountdown1} seconds remaining`);
+    timerCountdown1--;
+ // Emit the timer countdown to all connected clients
+ io.emit('timerUpdate1', { countdown: timerCountdown1 });
+    if (timerCountdown1 < 0) {
+      clearInterval(timerId1);
+      displayDataAndRestartTimer1();
+    }
+  }, 1000);
+};
 startTimer1();
 
 // Socket.io connection
@@ -692,7 +616,7 @@ io.on('connection', (socket) => {
     }
 
     // Emit the initial timer countdown to the client
-    socket.emit('timerUpdate1', { countdown: 60 }); // Assuming 60 seconds for a minute
+    socket.emit('timerUpdate1', { countdown: 1 * 60 }); // Initial countdown value
   });
 });
 
