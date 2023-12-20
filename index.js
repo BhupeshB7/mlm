@@ -235,8 +235,8 @@ const io = socketIo(server, {
   app.use(cors({
     // origin:"https://powerfullindia.com",
     // origin:"https://www.powerfullindia.com",
-    // origin:"*",
-    origin:"http://localhost:3000",
+    origin:"*",
+    // origin:"http://localhost:3000",
   }));
 cloudinaryConfig();
 app.use(express.json());
