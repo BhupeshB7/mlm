@@ -37,28 +37,5 @@ router.post('/startGame', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-router.post('/winningGame', async (req, res) => {
-    const { userId, winnings } = req.body;
-  
-    try {
-      // Fetch the user's profile by userId
-      const userProfile = await GameProfile.findOne({ userId });
-  
-      if (!userProfile) {
-        return res.status(404).json({ message: 'User profile not found' });
-      }
-  
-        // Increase  the winnings fee in the winnings
-        userProfile.totalwin += winnings;
-  
-        // Save the updated user profile
-        await userProfile.save();
-  
-        // Return the updated user profile with the new balance
-        return res.json({ totalwin: userProfile.totalwin });
-    } catch (error) {
-      // console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
-  });
+
 module.exports = router;

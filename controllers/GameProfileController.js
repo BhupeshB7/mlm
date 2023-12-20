@@ -12,7 +12,7 @@ const getProfile = async (req, res) => {
     if (!gameProfile) {
       return res.status(404).json({ message: 'GameProfile not found' });
     }
-
+ 
     res.json(gameProfile);
   } catch (err) {
     console.error(err);
