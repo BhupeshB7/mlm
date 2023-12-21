@@ -138,17 +138,17 @@ router.post('/winningGame/user', async (req, res) => {
     const userProfile = await GameProfile.findOne({ userId });
 
     if (!userProfile) {
-      return res.status(404).json({ message: 'User profile not found' });
+      return res.status(404).json({ message: 'User Game profile not found' });
     }
 
       // Increase  the winnings fee in the winnings
-      userProfile.totalwin += winnings;
+      userProfile.balance += winnings;
 
       // Save the updated user profile
       await userProfile.save();
 
       // Return the updated user profile with the new balance
-      return res.json({ totalwin: userProfile.totalwin });
+      return res.json({ balance: userProfile.balance });
   } catch (error) {
     // console.error(error);
     return res.status(500).json({ message: 'Internal server error' });

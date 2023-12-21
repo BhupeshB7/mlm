@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const profileController = require('../controllers/GameProfileController');
 const GameProfile = require('../models/GameProfile');
-
+const cron = require('node-cron');
 // Define routes for CRUD operations
 router.get('/:gameProfileId', profileController.getProfile);
 
@@ -37,5 +37,16 @@ router.post('/startGame', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-
+// Schedule daily income reset using cron
+// cron.schedule('46 14 * * *', async () => {
+//   try {
+//     // Reset dailyIncome for all users
+//     await GameProfile.updateMany({}, { $set: { totalwin: 0 } });
+//     console.log('Daily income reset successful for incomeWallet of game profile');
+//   } catch (error) {
+//     console.error('Error resetting daily income:', error);
+//   }
+// }, {
+//   timezone: 'Asia/Kolkata', // Set the timezone to IST
+// });
 module.exports = router;
