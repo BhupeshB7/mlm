@@ -23,7 +23,7 @@ router.post("/depositSubmit", async (req, res) => {
 
 router.post("/withdrawalSubmit", async (req, res) => {
   try {
-    const { name, amount, userId, UPI } = req.body;
+    const { name, amount, userId, UPI,accountNo,IFSCCODE } = req.body;
     const check = await GameProfile.findOne({ userId: userId });
     if(!check){
         return res.status(404).json({ message: "UserId  not found" });
@@ -31,7 +31,7 @@ router.post("/withdrawalSubmit", async (req, res) => {
     if(amount > check.totalwin){
         return res.status(401).json({ message: "Insufficient Balance" });
     }
-    const userRequest = new GameWithdrawal({ name, amount, userId, UPI });
+    const userRequest = new GameWithdrawal({ name, amount, userId, UPI,accountNo,IFSCCODE });
     await userRequest.save();
     check.totalwin -= amount;
     await check.save();

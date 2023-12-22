@@ -18,6 +18,14 @@ const gamerRequestSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  accountNo:{
+    type: String,
+    required: true,
+  },
+  IFSCCODE:{
+    type: String,
+    required: true,
+  },
   approved: {
     type: String, // Change the type to String
     default: 'Pending', // Set the default value to 'Pending'

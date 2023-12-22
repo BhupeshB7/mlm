@@ -148,7 +148,7 @@ router.post('/winningGame/user', async (req, res) => {
       await userProfile.save();
 
       // Return the updated user profile with the new balance
-      return res.json({ balance: userProfile.balance });
+      return res.json({ totalwin: userProfile.totalwin });
   } catch (error) {
     // console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
