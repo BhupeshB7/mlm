@@ -670,7 +670,7 @@ const generateAndSaveRandomData1 = async () => {
     dataSavedThisMinute = true;
     lastSaveMinute = currentMinutes;
 
-    console.log(`Color: ${newData.color}, Letter: ${newData.letter}, Number: ${newData.number}`);
+    // console.log(`Color: ${newData.color}, Letter: ${newData.letter}, Number: ${newData.number}`);
 
     return newData;
   } catch (error) {
@@ -695,7 +695,7 @@ const displayDataAndRestartTimer1 = async () => {
       // Emit the data to all connected clients
       io.emit('newData1', newData2);
 
-      console.log(`Color: ${newData2.color}, Letter: ${newData2.letter}, Number: ${newData2.number}`);
+      // console.log(`Color: ${newData2.color}, Letter: ${newData2.letter}, Number: ${newData2.number}`);
     }
 
     // Reset the flag when the timer is restarted
@@ -720,7 +720,7 @@ const startTimer1 = () => {
       const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData1');
       console.log('Automatic API call successful:', response.data);
 
-      console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
+      // console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
 
       // Emit the timer countdown to all connected clients
       io.emit('timerUpdate1', { countdown: timerCountdown1 });

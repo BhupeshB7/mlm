@@ -142,7 +142,7 @@ router.post('/winningGame/user', async (req, res) => {
     }
 
       // Increase  the winnings fee in the winnings
-      userProfile.balance += winnings;
+      userProfile.totalwin += winnings;
 
       // Save the updated user profile
       await userProfile.save();
