@@ -717,6 +717,11 @@ const startTimer1 = () => {
 
   const handleTimerTick = async () => {
     try {
+      const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData1');
+      console.log('Automatic API call successful:', response.data);
+
+      console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
+
       // Emit the timer countdown to all connected clients
       io.emit('timerUpdate1', { countdown: timerCountdown1 });
     } catch (error) {
@@ -727,7 +732,7 @@ const startTimer1 = () => {
   // Initial tick to set up the timer
   handleTimerTick();
 
-  const timerId1 = setInterval(() => {
+  const timerId1 = setInterval(async () => {
     timerCountdown1--;
 
     // Emit the timer countdown to all connected clients
@@ -736,10 +741,13 @@ const startTimer1 = () => {
     if (timerCountdown1 <= 0) {
       clearInterval(timerId1);
       timerCountdown1 = 60; // Reset the countdown to 60 seconds
-      displayDataAndRestartTimer1();
+
+      // Call displayDataAndRestartTimer1 only when the timer completes
+      await displayDataAndRestartTimer1();
     }
   }, 1000); // Run every 1 second
 };
+
 
 startTimer1();
 
