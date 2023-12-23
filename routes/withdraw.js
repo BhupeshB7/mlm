@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 // import database models
 const User = require("../models/User");
 const WithdrawalReq = require("../models/WithdrawReq");
@@ -166,9 +167,9 @@ router.post("/user/:userId", async (req, res) => {
   }
 
   // Check if it's after 1 PM
-  // if (hours >= 13) {
-  //   return res.status(403).json({ error: 'Withdrawal not allowed After 1 PM.' });
-  // }
+  if (hours >= 13) {
+    return res.status(403).json({ error: 'Withdrawal not allowed After 1 PM.' });
+  }
 
   // Check if the withdrawal amount is greater than or equal to 500
   if (amount >= 500) {
@@ -448,8 +449,13 @@ router.put("/withdrawals/:id", async (req, res) => {
 // Add the following route for handling withdrawal rejection and refund
 router.put("/withdrawals/reject/:id", async (req, res) => {
   const { id } = req.params;
+  // Check if the provided ID is not a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
+
   try {
-    const withdrawalRequest = await WithdrawBalance.findById(id);
+    const withdrawalRequest = await WithdrawBalance.findByIdAndUpdate(id);
     if (!withdrawalRequest) {
       return res.status(404).json({ error: "Withdrawal request not found" });
     }
@@ -458,10 +464,10 @@ router.put("/withdrawals/reject/:id", async (req, res) => {
     if (withdrawalRequest.amount === undefined) {
       return res.status(400).json({ error: "Withdrawal amount not defined" });
     }
-
+         const useruserId = withdrawalRequest.userId;
     // Refund the amount to the user's wallet
     // Assuming you have a User model with a wallet field
-    const user = await User.findById(withdrawalRequest.userId);
+    const user = await User.findOne({userId: useruserId});
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -471,7 +477,7 @@ router.put("/withdrawals/reject/:id", async (req, res) => {
 
     // Refund the amount to the user's wallet
     user.balance += refundAmount;
-
+    user.withdrawalDone =false;
     withdrawalRequest.status = "rejected";
 
     // Use a transaction to ensure both updates (user wallet and withdrawal status) are atomic
