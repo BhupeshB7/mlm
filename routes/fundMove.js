@@ -123,9 +123,7 @@ router.post("/transfer/:userId", async (req, res) => {
     //   return res.status(400).json({ error: "Minimum Two active user required for fund transfer" });
     // }
 
-    if (transferAmount <= 100) {
-      return res.json({ error: 'Minimum/Low Balance' });
-    }
+    
 
     let checkDirectCount = await User.countDocuments({
       sponsorId: user.userId,
@@ -133,6 +131,9 @@ router.post("/transfer/:userId", async (req, res) => {
     });
     if(checkDirectCount <=2){
       return res.json({error:'Minimum two Active direct for Fund Transfer'})
+    }
+    if (transferAmount < 100) {
+      return res.json({ error: 'Minimum/Low Balance' });
     }
     if (transferAmount <= user.balance) {
       const deduction = transferAmount * 0.05; // 8% deduction
