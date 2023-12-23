@@ -129,7 +129,7 @@ router.post("/transfer/:userId", async (req, res) => {
       sponsorId: user.userId,
       is_active: true,
     });
-    if(checkDirectCount <=2){
+    if(checkDirectCount <2){
       return res.json({error:'Minimum two Active direct for Fund Transfer'})
     }
     if (transferAmount < 100) {
