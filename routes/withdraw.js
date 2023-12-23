@@ -445,6 +445,55 @@ router.put("/withdrawals/:id", async (req, res) => {
     res.status(500).json(error);
   }
 });
+// Add the following route for handling withdrawal rejection and refund
+router.put("/withdrawals/reject/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const withdrawalRequest = await WithdrawBalance.findById(id);
+    if (!withdrawalRequest) {
+      return res.status(404).json({ error: "Withdrawal request not found" });
+    }
+
+    // Check if amount is defined in the withdrawal request
+    if (withdrawalRequest.amount === undefined) {
+      return res.status(400).json({ error: "Withdrawal amount not defined" });
+    }
+
+    // Refund the amount to the user's wallet
+    // Assuming you have a User model with a wallet field
+    const user = await User.findById(withdrawalRequest.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Access the withdrawal amount
+    const refundAmount = withdrawalRequest.amount;
+
+    // Refund the amount to the user's wallet
+    user.balance += refundAmount;
+
+    withdrawalRequest.status = "rejected";
+
+    // Use a transaction to ensure both updates (user wallet and withdrawal status) are atomic
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      await user.save();
+      await withdrawalRequest.save();
+      await session.commitTransaction();
+      session.endSession();
+      res.json({ message: "Withdrawal rejected and amount refunded" });
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error);
+  }
+});
 
 // Delete a user
 router.delete("/withdrawalWallet/:id", async (req, res) => {

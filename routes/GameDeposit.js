@@ -28,6 +28,29 @@ router.post("/withdrawalSubmit", async (req, res) => {
     if(!check){
         return res.status(404).json({ message: "UserId  not found" });
     }
+    const currentDate = new Date();
+  const currentIST = new Date(
+    currentDate.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
+  );
+
+  const dayOfWeek = currentIST.getDay();
+  const hours = currentIST.getHours();
+
+  // Check if it's Sunday
+  // if (dayOfWeek === 0) {
+  //   return res.status(403).json({ error: 'Withdrawal not allowed on Sundays.' });
+  // }
+
+  // Check if it's before 9 AM
+  if (hours < 11) {
+    return res.status(403).json({ error: 'Withdrawal not allowed before 11 AM.' });
+  }
+
+  // Check if it's after 1 PM
+  if (hours >= 15) {
+    return res.status(403).json({ error: 'Withdrawal not allowed after 3 PM.' });
+  }
+
     if(amount > check.totalwin){
         return res.status(401).json({ message: "Insufficient Balance" });
     }
