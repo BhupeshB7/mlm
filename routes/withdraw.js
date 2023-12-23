@@ -166,9 +166,9 @@ router.post("/user/:userId", async (req, res) => {
   }
 
   // Check if it's after 1 PM
-  if (hours >= 13) {
-    return res.status(403).json({ error: 'Withdrawal not allowed after 1 PM.' });
-  }
+  // if (hours >= 13) {
+  //   return res.status(403).json({ error: 'Withdrawal not allowed After 1 PM.' });
+  // }
 
   // Check if the withdrawal amount is greater than or equal to 500
   if (amount >= 500) {
