@@ -241,7 +241,22 @@ router.put("/approve/:id", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.delete("/gameDeposit/delete/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const depositDelete = await GameDeposit.findById(id);
 
+    if (!depositDelete) {
+      return res.status(401).send("Deposit not found!");
+    }
+
+    await GameDeposit.deleteOne({ _id: id });
+    res.status(200).send("Deposit deleted successfully!");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
   router.put("/Withdrawal/approve/:id", async (req, res) => {
     try {
       const id = req.params.id;
