@@ -168,10 +168,10 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
 });
 
 // Schedule daily income reset using cron
-// cron.schedule('46 14 * * *', async () => {
+// cron.schedule('23 21 * * *', async () => {
 //   try {
 //     // Reset dailyIncome for all users
-//     await GameProfile.updateMany({}, { $set: { totalwin: 0 } });
+//     await GameProfile.updateMany({}, { $set: { balance: 30 } });
 //     console.log('Daily income reset successful for incomeWallet of game profile');
 //   } catch (error) {
 //     console.error('Error resetting daily income:', error);

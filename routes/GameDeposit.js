@@ -33,7 +33,6 @@ router.post("/withdrawalSubmit", async (req, res) => {
     currentDate.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
   );
 
-  const dayOfWeek = currentIST.getDay();
   const hours = currentIST.getHours();
 
   // Check if it's Sunday
