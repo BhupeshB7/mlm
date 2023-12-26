@@ -306,7 +306,7 @@ router.get('/statistics', async (req, res) => {
             $gte: sevenDaysAgo,
             $lte: today,
           },
-          approved: 'Pending',
+          isApproved:true,
         },
       },
       {
@@ -325,7 +325,7 @@ router.get('/statistics', async (req, res) => {
             $gte: sevenDaysAgo,
             $lte: today,
           },
-          approved: 'Approved',
+          isApproved:true,
         },
       },
       {
@@ -344,7 +344,7 @@ router.get('/statistics', async (req, res) => {
             $gte: yesterday,
             $lte: today,
           },
-          approved: 'Approved',
+          isApproved:true,
         },
       },
       {
