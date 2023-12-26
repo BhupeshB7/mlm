@@ -293,7 +293,7 @@ router.get('/statistics', async (req, res) => {
       {
         $group: {
           _id: null,
-          totalAmount: { $sum: '$amount' },
+          totalAmount: { $sum: '$depositAmount' },
         },
       },
     ]);
@@ -312,7 +312,7 @@ router.get('/statistics', async (req, res) => {
       {
         $group: {
           _id: null,
-          totalPendingAmount: { $sum: '$amount' },
+          totalPendingAmount: { $sum: '$depositAmount' },
         },
       },
     ]);
@@ -331,7 +331,7 @@ router.get('/statistics', async (req, res) => {
       {
         $group: {
           _id: null,
-          totalApprovedAmount: { $sum: '$amount' },
+          totalApprovedAmount: { $sum: '$depositAmount' },
         },
       },
     ]);
@@ -350,7 +350,7 @@ router.get('/statistics', async (req, res) => {
       {
         $group: {
           _id: null,
-          yesterdayApprovedAmount: { $sum: '$amount' },
+          yesterdayApprovedAmount: { $sum: '$depositAmount' },
         },
       },
     ]);
@@ -368,7 +368,7 @@ router.get('/statistics', async (req, res) => {
       {
         $group: {
           _id: null,
-          yesterdayTotalAmount: { $sum: '$amount' },
+          yesterdayTotalAmount: { $sum: '$depositAmount' },
         },
       },
     ]);
