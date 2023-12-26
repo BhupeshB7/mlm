@@ -372,6 +372,60 @@ router.get('/statistics', async (req, res) => {
         },
       },
     ]);
+    // Find yesterday's approved amount
+    const yesterdayWithdrawalAmount = await GameWithdrawal.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: yesterday,
+            $lte: today,
+          },
+          approved:'Approved',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          yesterdayWithdrawalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+    // Find yesterday's approved amount
+    const yesterdayWithdrawalPendingAmount = await GameWithdrawal.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: yesterday,
+            $lte: today,
+          },
+          approved:'Pending',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          yesterdayWithdrawalPendingAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    // Find yesterday's total amount
+    const yesterdayTotalWithdrawalAmount = await GameWithdrawal.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: yesterday,
+            $lte: today,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          yesterdayTotalWithdrawalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
 
     res.json({
       sevenDayTotalAmount: sevenDayTotalAmount[0]?.totalAmount || 0,
@@ -379,6 +433,9 @@ router.get('/statistics', async (req, res) => {
       sevenDayApprovedAmount: sevenDayApprovedAmount[0]?.totalApprovedAmount || 0,
       yesterdayApprovedAmount: yesterdayApprovedAmount[0]?.yesterdayApprovedAmount || 0,
       yesterdayTotalAmount: yesterdayTotalAmount[0]?.yesterdayTotalAmount || 0,
+      yesterdayWithdrawalAmount: yesterdayWithdrawalAmount[0]?.yesterdayWithdrawalAmount || 0,
+      yesterdayWithdrawalPendingAmount: yesterdayWithdrawalPendingAmount[0]?.yesterdayWithdrawalPendingAmount || 0,
+      yesterdayTotalWithdrawalAmount: yesterdayTotalWithdrawalAmount[0]?.yesterdayTotalWithdrawalAmount || 0,
     });
   } catch (error) {
     console.error(error);
