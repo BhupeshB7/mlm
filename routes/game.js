@@ -154,4 +154,31 @@ router.post('/winningGame/user', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
+// Game Balance update
+// Get user details by ID
+router.get('/gamer/profile/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const user = await GameProfile.findOne({ userId });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Update user details by ID
+router.put('/gamer/profile/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  const { balance, totalwin } = req.body;
+console.log('balance: ' + balance);
+console.log(balance);
+  try {
+    const user = await GameProfile.findOneAndUpdate({ userId }, { balance, totalwin }, { new: true });
+    res.json(user);
+    console.log('updated')
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 module.exports = router;
