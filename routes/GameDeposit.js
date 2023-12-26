@@ -306,7 +306,7 @@ router.get('/statistics', async (req, res) => {
             $gte: sevenDaysAgo,
             $lte: today,
           },
-          isApproved:true,
+          isApproved:false,
         },
       },
       {
