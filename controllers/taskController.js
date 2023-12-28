@@ -297,16 +297,378 @@ const getTaskById = async (req, res) => {
 //   }
 // };
 
+// const markTaskCompleted = async (req, res) => {
+//   const taskId = req.params.id;
+//   const userId = req.body.userId; // Assuming you send userId in the request body
+//   const sponsorId = req.body.sponsorId; // Assuming you send userId in the request body
+//   const name = req.body.name;
+//   const mobile = req.body.mobile;
+//   try {
+//     // Check if the userTask already exists, if not, create a new entry
+//     let userTask = await UserTask.findOne({ taskId, userId, sponsorId,mobile,name });
+//     // console.log(userId);
+//     if (!userTask) {
+//       await UserTask.create({
+//         taskId,
+//         userId,
+//         sponsorId,
+//         mobile,
+//         name,
+//         completed: true,
+//         WalletUpdated: false,
+//       });
+//     }
+
+//     // Retrieve the userTask again (or the newly created one)
+//     userTask = await UserTask.findOne({ taskId, userId });
+
+//     if (!userTask) {
+//       return res.status(404).send("UserTask not found");
+//     }
+//     if (userTask.WalletUpdated) {
+//       return res.status(400).send("Wallet already Updated");
+//     }
+//     // Check if the task is completed
+//     if (userTask.completed) {
+//       // Mark the task as completed
+//       userTask.completed = true;
+//      // Check if all tasks are completed for the user
+//     //  const allTasksCompleted = await UserTask.find({ userId, completed: false }).countDocuments() === 0;
+//     // Fetch all Task5 IDs
+//     const allTask5Ids = await Task.find({}, '_id');
+
+//     // Fetch all UserTask IDs for the user
+//     const userTaskIds = await UserTask.find({
+//       userId,
+//     }).distinct('taskId');
+
+//     // Check if all Task5 IDs are present in UserTask IDs
+//     const allTasksCompleted = allTask5Ids.every(taskId => userTaskIds.includes(taskId.toString()));
+
+//      if (allTasksCompleted) {
+//       // Update WalletUpdated to true
+//       userTask.WalletUpdated = true;
+
+//       await userTask.save();
+
+//       // Update user's balance, income, and selfIncome
+//       let user = await User.findOne({ userId: userId });
+//       if (!user) {
+//         return res.status(404).send("User not found");
+//       }
+//       // Calculate and update dailyIncome
+//       // Get the current date and time
+//       let currentDate = new Date();
+
+//       // // Convert to IST (Indian Standard Time)
+//       // let options = { timeZone: "Asia/Kolkata" };
+//       // let currentISTTime = currentDate.toLocaleString("en-US", options);
+
+//       // console.log("Current time in IST:", currentISTTime);
+
+//       // console.log(currentDate);
+//       // console.log(user.lastIncomeUpdate);
+
+//       // // Format user.lastIncomeUpdate in IST
+//       // let lastIncomeUpdateIST = user.lastIncomeUpdate
+//       //   ? user.lastIncomeUpdate.toLocaleString("en-US", options)
+//       //   : null;
+
+//       // // Check if it's a new day
+//       // if (
+//       //   !lastIncomeUpdateIST ||
+//       //   lastIncomeUpdateIST.slice(0, 10) !== currentISTTime.slice(0, 10)
+//       // ) {
+//       //   // Reset dailyIncome to 0 if it's a new day
+//       //   user.dailyIncome = 0;
+//       //   console.log("Resetting dailyIncome to 0");
+//       // } else {
+//       //   console.log("It's the same day");
+//       // }
+//       // console.log("CurrentIST time in India:",currentISTTime)
+
+//       // user.balance += 25;
+//       // user.income += 25;
+//       // user.selfIncome += 25;
+//       // user.dailyIncome += 25;
+//       // user.lastIncomeUpdate = currentISTTime; //
+//       // console.log("CurrentIST time:",currentISTTime)
+           
+//       user.balance += 25;
+//       user.income += 25;
+//       user.selfIncome += 25;
+//       user.dailyIncome += 25;
+//       user.lastIncomeUpdate = currentDate; //
+//       await user.save();
+//       if (user.is_active) {
+//         let sponsor = await User.findOne({ userId: user.sponsorId });
+//         // let sponsorTest = await User.find({ sponsorId: sponsor.userId }).select("name userId sponsorId");
+//         // console.log(sponsor);
+//         // console.log(sponsorTest)
+//         let sponsorDownCount = await User.countDocuments({
+//           sponsorId: sponsor.userId,
+//           is_active: true,
+//         });
+//         // console.log(user.sponsorId);
+//         // console.log("Total Count");
+//         // console.log("Level1");
+//         // console.log(sponsorDownCount);
+//         if (sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
+//           sponsor.balance += 4;
+//           sponsor.teamIncome += 4;
+//           sponsor.dailyIncome += 4;
+//           sponsor.lastIncomeUpdate = currentDate; //
+//           await sponsor.save();
+
+//           let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
+
+//           if (sponsor2 && sponsor2.is_active) {
+//             let sponsor2DownCount = await User.countDocuments({
+//               sponsorId: sponsor2.userId,
+//               is_active: true,
+//             });
+//             console.log(sponsor2);
+//             console.log("Total Count");
+//             console.log("Level1");
+//             console.log(sponsor2DownCount);
+//             if (sponsor2DownCount >= 4) {
+//               sponsor2.teamIncome += 3;
+//               sponsor2.balance += 3;
+//               sponsor2.income += 3;
+//               sponsor2.dailyIncome += 3;
+//               sponsor2.lastIncomeUpdate = currentDate; //
+//               await sponsor2.save();
+
+//               let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
+
+//               if (sponsor3 && sponsor3.is_active) {
+//                 let sponsor3CountUser = await User.countDocuments({
+//                   sponsorId: sponsor3.userId,
+//                   is_active: true,
+//                 });
+//                 // console.log(user.sponsorId);
+//                 // console.log("Level1");
+//                 // console.log("Total Count");
+//                 // console.log(sponsor3CountUser);
+//                 if (sponsor3CountUser >= 6) {
+//                   sponsor3.balance += 2;
+//                   sponsor3.teamIncome += 2;
+//                   sponsor3.income += 2;
+//                   sponsor3.dailyIncome += 2;
+//                   sponsor3.lastIncomeUpdate = currentDate; //
+//                   await sponsor3.save();
+
+//                   let sponsor4 = await User.findOne({
+//                     userId: sponsor3.sponsorId,
+//                   });
+
+//                   if (sponsor4 && sponsor4.is_active) {
+//                     let sponsor4CountUser = await User.countDocuments({
+//                       sponsorId: sponsor4.userId,
+//                       is_active: true,
+//                     });
+
+//                     if (sponsor4CountUser >= 8) {
+//                       sponsor4.balance += 1;
+//                       sponsor4.teamIncome += 1;
+//                       sponsor4.income += 1;
+//                       sponsor4.dailyIncome += 1;
+//                       sponsor4.lastIncomeUpdate = currentDate; //
+//                       await sponsor4.save();
+
+//                       let sponsor5 = await User.findOne({
+//                         userId: sponsor4.sponsorId,
+//                       });
+
+//                       if (sponsor5 && sponsor5.is_active) {
+//                         let sponsor5CountUser = await User.countDocuments({
+//                           sponsorId: sponsor5.userId,
+//                           is_active: true,
+//                         });
+
+//                         if (sponsor5CountUser >= 10) {
+//                           sponsor5.balance += 0.5;
+//                           sponsor5.teamIncome += 0.5;
+//                           sponsor5.income += 0.5;
+//                           sponsor5.dailyIncome += 0.5;
+//                           sponsor5.lastIncomeUpdate = currentDate; //
+//                           await sponsor5.save();
+//                         }
+//                       }
+//                     }
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//       // Additional logic for updating sponsors and their incomes goes here
+//       // console.log("Update");
+//       res.send("Account increased successfully");
+//     }} else {
+//       // console.log("error");
+//       res.send("All Task has been not updated successfully");
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "Failed to mark the task as completed" });
+//   }
+// };
+const updateWallet= async(userId)=>{
+  const allTask5Ids = await Task.find({}, '_id');
+  const userTaskIds = await UserTask.find({ userId }).distinct('taskId');
+  const allTasksCompleted = allTask5Ids.every(taskId => userTaskIds.includes(taskId.toString()));
+ const  userTask = await UserTask.findOne({
+    userId,
+  });
+
+  if (allTasksCompleted) {
+    // Update WalletUpdated to true
+    // userTask.WalletUpdated = true;
+
+    await userTask.save();
+
+    // Update user's balance, income, and selfIncome
+    let user = await User.findOne({ userId: userId });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    // Calculate and update dailyIncome
+    // Get the current date and time
+    let currentDate = new Date();
+    user.balance += 25;
+    user.income += 25;
+    user.selfIncome += 25;
+    user.dailyIncome += 25;
+    user.lastIncomeUpdate = currentDate; //
+    await user.save();
+    if (user.is_active) {
+      let sponsor = await User.findOne({ userId: user.sponsorId });
+      // let sponsorTest = await User.find({ sponsorId: sponsor.userId }).select("name userId sponsorId");
+      // console.log(sponsor);
+      // console.log(sponsorTest)
+      let sponsorDownCount = await User.countDocuments({
+        sponsorId: sponsor.userId,
+        is_active: true,
+      });
+      // console.log(user.sponsorId);
+      // console.log("Total Count");
+      // console.log("Level1");
+      // console.log(sponsorDownCount);
+      if (sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
+        sponsor.balance += 4;
+        sponsor.teamIncome += 4;
+        sponsor.dailyIncome += 4;
+        sponsor.lastIncomeUpdate = currentDate; //
+        await sponsor.save();
+
+        let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
+
+        if (sponsor2 && sponsor2.is_active) {
+          let sponsor2DownCount = await User.countDocuments({
+            sponsorId: sponsor2.userId,
+            is_active: true,
+          });
+          console.log(sponsor2);
+          console.log("Total Count");
+          console.log("Level1");
+          console.log(sponsor2DownCount);
+          if (sponsor2DownCount >= 4) {
+            sponsor2.teamIncome += 3;
+            sponsor2.balance += 3;
+            sponsor2.income += 3;
+            sponsor2.dailyIncome += 3;
+            sponsor2.lastIncomeUpdate = currentDate; //
+            await sponsor2.save();
+
+            let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
+
+            if (sponsor3 && sponsor3.is_active) {
+              let sponsor3CountUser = await User.countDocuments({
+                sponsorId: sponsor3.userId,
+                is_active: true,
+              });
+              // console.log(user.sponsorId);
+              // console.log("Level1");
+              // console.log("Total Count");
+              // console.log(sponsor3CountUser);
+              if (sponsor3CountUser >= 6) {
+                sponsor3.balance += 2;
+                sponsor3.teamIncome += 2;
+                sponsor3.income += 2;
+                sponsor3.dailyIncome += 2;
+                sponsor3.lastIncomeUpdate = currentDate; //
+                await sponsor3.save();
+
+                let sponsor4 = await User.findOne({
+                  userId: sponsor3.sponsorId,
+                });
+
+                if (sponsor4 && sponsor4.is_active) {
+                  let sponsor4CountUser = await User.countDocuments({
+                    sponsorId: sponsor4.userId,
+                    is_active: true,
+                  });
+
+                  if (sponsor4CountUser >= 8) {
+                    sponsor4.balance += 1;
+                    sponsor4.teamIncome += 1;
+                    sponsor4.income += 1;
+                    sponsor4.dailyIncome += 1;
+                    sponsor4.lastIncomeUpdate = currentDate; //
+                    await sponsor4.save();
+
+                    let sponsor5 = await User.findOne({
+                      userId: sponsor4.sponsorId,
+                    });
+
+                    if (sponsor5 && sponsor5.is_active) {
+                      let sponsor5CountUser = await User.countDocuments({
+                        sponsorId: sponsor5.userId,
+                        is_active: true,
+                      });
+
+                      if (sponsor5CountUser >= 10) {
+                        sponsor5.balance += 0.5;
+                        sponsor5.teamIncome += 0.5;
+                        sponsor5.income += 0.5;
+                        sponsor5.dailyIncome += 0.5;
+                        sponsor5.lastIncomeUpdate = currentDate; //
+                        await sponsor5.save();
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    // Additional logic for updating sponsors and their incomes goes here
+    // console.log("Update");
+    res.send("Account increased successfully");
+  }
+}
+
+// Update the markTaskCompleted function
 const markTaskCompleted = async (req, res) => {
   const taskId = req.params.id;
-  const userId = req.body.userId; // Assuming you send userId in the request body
-  const sponsorId = req.body.sponsorId; // Assuming you send userId in the request body
+  const userId = req.body.userId;
+  const sponsorId = req.body.sponsorId;
   const name = req.body.name;
   const mobile = req.body.mobile;
+
   try {
-    // Check if the userTask already exists, if not, create a new entry
-    let userTask = await UserTask.findOne({ taskId, userId, sponsorId,mobile,name });
-    // console.log(userId);
+    let userTask = await UserTask.findOne({
+      taskId,
+      userId,
+      sponsorId,
+      mobile,
+      name,
+    });
+
     if (!userTask) {
       await UserTask.create({
         taskId,
@@ -319,203 +681,30 @@ const markTaskCompleted = async (req, res) => {
       });
     }
 
-    // Retrieve the userTask again (or the newly created one)
-    userTask = await UserTask.findOne({ taskId, userId });
+    userTask = await UserTask.findOne({
+      taskId,
+      userId,
+    });
 
     if (!userTask) {
       return res.status(404).send("UserTask not found");
     }
+
     if (userTask.WalletUpdated) {
       return res.status(400).send("Wallet already Updated");
     }
-    // Check if the task is completed
-    if (userTask.completed) {
-      // Mark the task as completed
-      userTask.completed = true;
-     // Check if all tasks are completed for the user
-    //  const allTasksCompleted = await UserTask.find({ userId, completed: false }).countDocuments() === 0;
-    // Fetch all Task5 IDs
-    const allTask5Ids = await Task.find({}, '_id');
 
-    // Fetch all UserTask IDs for the user
-    const userTaskIds = await UserTask.find({
-      userId,
-    }).distinct('taskId');
+    userTask.completed = true;
 
-    // Check if all Task5 IDs are present in UserTask IDs
-    const allTasksCompleted = allTask5Ids.every(taskId => userTaskIds.includes(taskId.toString()));
+    // Call the function to update the wallet
+    await updateWallet(userId);
 
-     if (allTasksCompleted) {
-      // Update WalletUpdated to true
-      userTask.WalletUpdated = true;
-
-      await userTask.save();
-
-      // Update user's balance, income, and selfIncome
-      let user = await User.findOne({ userId: userId });
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-      // Calculate and update dailyIncome
-      // Get the current date and time
-      let currentDate = new Date();
-
-      // // Convert to IST (Indian Standard Time)
-      // let options = { timeZone: "Asia/Kolkata" };
-      // let currentISTTime = currentDate.toLocaleString("en-US", options);
-
-      // console.log("Current time in IST:", currentISTTime);
-
-      // console.log(currentDate);
-      // console.log(user.lastIncomeUpdate);
-
-      // // Format user.lastIncomeUpdate in IST
-      // let lastIncomeUpdateIST = user.lastIncomeUpdate
-      //   ? user.lastIncomeUpdate.toLocaleString("en-US", options)
-      //   : null;
-
-      // // Check if it's a new day
-      // if (
-      //   !lastIncomeUpdateIST ||
-      //   lastIncomeUpdateIST.slice(0, 10) !== currentISTTime.slice(0, 10)
-      // ) {
-      //   // Reset dailyIncome to 0 if it's a new day
-      //   user.dailyIncome = 0;
-      //   console.log("Resetting dailyIncome to 0");
-      // } else {
-      //   console.log("It's the same day");
-      // }
-      // console.log("CurrentIST time in India:",currentISTTime)
-
-      // user.balance += 25;
-      // user.income += 25;
-      // user.selfIncome += 25;
-      // user.dailyIncome += 25;
-      // user.lastIncomeUpdate = currentISTTime; //
-      // console.log("CurrentIST time:",currentISTTime)
-           
-      user.balance += 25;
-      user.income += 25;
-      user.selfIncome += 25;
-      user.dailyIncome += 25;
-      user.lastIncomeUpdate = currentDate; //
-      await user.save();
-      if (user.is_active) {
-        let sponsor = await User.findOne({ userId: user.sponsorId });
-        // let sponsorTest = await User.find({ sponsorId: sponsor.userId }).select("name userId sponsorId");
-        // console.log(sponsor);
-        // console.log(sponsorTest)
-        let sponsorDownCount = await User.countDocuments({
-          sponsorId: sponsor.userId,
-          is_active: true,
-        });
-        // console.log(user.sponsorId);
-        // console.log("Total Count");
-        // console.log("Level1");
-        // console.log(sponsorDownCount);
-        if (sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
-          sponsor.balance += 4;
-          sponsor.teamIncome += 4;
-          sponsor.dailyIncome += 4;
-          sponsor.lastIncomeUpdate = currentDate; //
-          await sponsor.save();
-
-          let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
-
-          if (sponsor2 && sponsor2.is_active) {
-            let sponsor2DownCount = await User.countDocuments({
-              sponsorId: sponsor2.userId,
-              is_active: true,
-            });
-            console.log(sponsor2);
-            console.log("Total Count");
-            console.log("Level1");
-            console.log(sponsor2DownCount);
-            if (sponsor2DownCount >= 4) {
-              sponsor2.teamIncome += 3;
-              sponsor2.balance += 3;
-              sponsor2.income += 3;
-              sponsor2.dailyIncome += 3;
-              sponsor2.lastIncomeUpdate = currentDate; //
-              await sponsor2.save();
-
-              let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
-
-              if (sponsor3 && sponsor3.is_active) {
-                let sponsor3CountUser = await User.countDocuments({
-                  sponsorId: sponsor3.userId,
-                  is_active: true,
-                });
-                // console.log(user.sponsorId);
-                // console.log("Level1");
-                // console.log("Total Count");
-                // console.log(sponsor3CountUser);
-                if (sponsor3CountUser >= 6) {
-                  sponsor3.balance += 2;
-                  sponsor3.teamIncome += 2;
-                  sponsor3.income += 2;
-                  sponsor3.dailyIncome += 2;
-                  sponsor3.lastIncomeUpdate = currentDate; //
-                  await sponsor3.save();
-
-                  let sponsor4 = await User.findOne({
-                    userId: sponsor3.sponsorId,
-                  });
-
-                  if (sponsor4 && sponsor4.is_active) {
-                    let sponsor4CountUser = await User.countDocuments({
-                      sponsorId: sponsor4.userId,
-                      is_active: true,
-                    });
-
-                    if (sponsor4CountUser >= 8) {
-                      sponsor4.balance += 1;
-                      sponsor4.teamIncome += 1;
-                      sponsor4.income += 1;
-                      sponsor4.dailyIncome += 1;
-                      sponsor4.lastIncomeUpdate = currentDate; //
-                      await sponsor4.save();
-
-                      let sponsor5 = await User.findOne({
-                        userId: sponsor4.sponsorId,
-                      });
-
-                      if (sponsor5 && sponsor5.is_active) {
-                        let sponsor5CountUser = await User.countDocuments({
-                          sponsorId: sponsor5.userId,
-                          is_active: true,
-                        });
-
-                        if (sponsor5CountUser >= 10) {
-                          sponsor5.balance += 0.5;
-                          sponsor5.teamIncome += 0.5;
-                          sponsor5.income += 0.5;
-                          sponsor5.dailyIncome += 0.5;
-                          sponsor5.lastIncomeUpdate = currentDate; //
-                          await sponsor5.save();
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      // Additional logic for updating sponsors and their incomes goes here
-      // console.log("Update");
-      res.send("Account increased successfully");
-    }} else {
-      // console.log("error");
-      res.send("All Task has been not updated successfully");
-    }
+    res.send("Account increased successfully");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to mark the task as completed" });
   }
 };
-
 module.exports = {
   markTaskCompleted,
 };
