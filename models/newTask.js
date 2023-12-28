@@ -59,7 +59,7 @@ const taskSchema = new mongoose.Schema({
   },
   videoLink: {
     type: String,
-    required: true,
+    required: true, 
   },
   userTasks: [{
     type: mongoose.Schema.Types.ObjectId,

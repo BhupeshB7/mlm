@@ -333,7 +333,17 @@ const markTaskCompleted = async (req, res) => {
       // Mark the task as completed
       userTask.completed = true;
      // Check if all tasks are completed for the user
-     const allTasksCompleted = await UserTask.find({ userId, completed: false }).countDocuments() === 0;
+    //  const allTasksCompleted = await UserTask.find({ userId, completed: false }).countDocuments() === 0;
+    // Fetch all Task5 IDs
+    const allTask5Ids = await Task.find({}, '_id');
+
+    // Fetch all UserTask IDs for the user
+    const userTaskIds = await UserTask.find({
+      userId,
+    }).distinct('taskId');
+
+    // Check if all Task5 IDs are present in UserTask IDs
+    const allTasksCompleted = allTask5Ids.every(taskId => userTaskIds.includes(taskId.toString()));
 
      if (allTasksCompleted) {
       // Update WalletUpdated to true
