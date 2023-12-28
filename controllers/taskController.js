@@ -332,7 +332,10 @@ const markTaskCompleted = async (req, res) => {
     if (userTask.completed) {
       // Mark the task as completed
       userTask.completed = true;
+     // Check if all tasks are completed for the user
+     const allTasksCompleted = await UserTask.find({ userId, completed: false }).countDocuments() === 0;
 
+     if (allTasksCompleted) {
       // Update WalletUpdated to true
       userTask.WalletUpdated = true;
 
@@ -493,9 +496,9 @@ const markTaskCompleted = async (req, res) => {
       // Additional logic for updating sponsors and their incomes goes here
       // console.log("Update");
       res.send("Account increased successfully");
-    } else {
+    }} else {
       // console.log("error");
-      res.send("Account is already increased");
+      res.send("All Task has been not updated successfully");
     }
   } catch (error) {
     console.log(error);

@@ -8,6 +8,12 @@ const userTaskSchema = new mongoose.Schema({
   sponsorId: {
     type:String
   },
+  mobile: {
+    type:String
+  },
+  name: {
+    type:String
+  },
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task',
