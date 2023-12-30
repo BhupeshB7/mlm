@@ -263,6 +263,11 @@ router.post("/user/:userId", async (req, res) => {
       sponsorId: userId,
       is_active: true,
     });
+    if (!user.withdrawalDone) {
+      return res
+        .status(403)
+        .json({ error: "First complete the withdrawal of Rs 200 and then you will be able to withdraw Rs 400." });
+    }
     // console.log(count1)
     // Check if user has already made a withdrawal of 200 Rs
     if (user.withdrawalDoneFour && amount === 400) {
@@ -302,7 +307,62 @@ router.post("/user/:userId", async (req, res) => {
     await user.save();
 
     return res.json({ success: true });
-  } else {
+  } else if (amount === 800) {
+    const count1 = await User.countDocuments({
+      sponsorId: userId,
+      is_active: true,
+    });
+    if (!user.withdrawalDone) {
+      return res
+        .status(403)
+        .json({ error: "First complete the withdrawal of Rs 200 and then you will be able to withdraw Rs 400." });
+    }
+    if (!user.withdrawalDoneFour) {
+      return res
+        .status(403)
+        .json({ error: "First complete the withdrawal of Rs 400 and then you will be able to withdraw Rs 800." });
+    }
+    // console.log(count1)
+    // Check if user has already made a withdrawal of 200 Rs
+    if (user.withdrawalDoneEight && amount === 800) {
+      return res
+        .status(403)
+        .json({ error: "Withdrawal of 800 Rs already done" });
+    }
+    if (count1 < 2) {
+      return res
+        .status(400)
+        .json({ error: "Minimum Two Direct for Withdrawal" });
+    }
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if user balance is sufficient for the withdrawal
+    if (user.balance < amount) {
+      return res.status(400).json({ error: "Insufficient balance" });
+    }
+
+    // Create a new withdrawal request
+    const withdrawalRequest = new WithdrawBalance({
+      userId,
+      amount,
+      ifscCode,
+      accountNo,
+      accountHolderName,
+    });
+
+    await withdrawalRequest.save();
+
+    // Update user withdrawal and balance
+    user.withdrawal += amount;
+    user.balance -= amount;
+    user.withdrawalDoneEight = true;
+    await user.save();
+
+    return res.json({ success: true });
+  }
+   else {
     return res
       .status(400)
       .json({ error: "Minimum withdrawal amount is 500 Rs" });
