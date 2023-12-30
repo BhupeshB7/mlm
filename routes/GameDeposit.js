@@ -46,9 +46,9 @@ router.post("/withdrawalSubmit", async (req, res) => {
   }
 
   // Check if it's after 1 PM
-  // if (hours >= 15) {
-  //   return res.status(403).json({ error: 'Withdrawal not allowed after 3 PM.' });
-  // }
+  if (hours >= 15) {
+    return res.status(403).json({ error: 'Withdrawal not allowed after 3 PM.' });
+  }
 
     if(amount > check.totalwin){
         return res.status(401).json({ message: "Insufficient Balance" });
