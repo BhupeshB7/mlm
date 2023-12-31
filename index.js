@@ -291,7 +291,7 @@ const randomDataSchema1 = new mongoose.Schema(
   { timestamps: true }
 );
 
-const RandomData1 = mongoose.model("RandomData1", randomDataSchema1);
+const RandomData12 = mongoose.model("RandomData12", randomDataSchema1);
 
 // 3minutes Games Schema End
 //
@@ -867,7 +867,7 @@ const generateAndSaveRandomData1 = async () => {
     
     const session = `${sessionPrefix}${currentMonth}${currentDay}${currentMinutes}`;
 
-    const newData = new RandomData1({
+    const newData = new RandomData12({
       color: randomColor,
       letter: randomLetter,
       number: randomNumber,
@@ -957,7 +957,7 @@ io.on('connection', (socket) => {
   console.log('Client connected');
 
   // Send initial data and timer countdown to the client when connected
-  RandomData1.findOne({}, {}, { sort: { 'created_at': -1 } }, (err, data) => {
+  RandomData12.findOne({}, {}, { sort: { 'created_at': -1 } }, (err, data) => {
     if (data) {
       socket.emit('initialData1', data);
     }
