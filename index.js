@@ -712,9 +712,9 @@ const generateAndSaveRandomData1 = async () => {
     
     // Increment the session counter and format it with leading zeros
     sessionCounter++;
-    const sessionNumber = sessionCounter.toString().padStart(6, '0');
+    const sessionNumber = sessionCounter.toString().padStart(4, '0');
     
-    const session = `${sessionPrefix}${currentMonth}${currentDay}00${currentMinutes}${sessionNumber}`;
+    const session = `${sessionPrefix}${currentMonth}${currentDay}${sessionNumber}`;
 
     const newData = new RandomData1({
       color: randomColor,
