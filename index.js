@@ -886,7 +886,35 @@ const generateAndSaveRandomData1 = async () => {
   }
 };
 
-// ...
+let timerStartTime1 = new Date().getTime(); // Store the start time of the timer
+
+const displayDataAndRestartTimer1 = async () => {
+  try {
+    // Calculate the remaining time
+    const currentTime = new Date().getTime();
+    const elapsedTime = Math.floor((currentTime - timerStartTime1) / 1000);
+    const remainingTime = Math.max(0, 60 - elapsedTime); // Adjust as needed
+
+    io.emit('timerUpdate1', { countdown: remainingTime });
+
+    if (remainingTime === 0) {
+      const newData2 = await generateAndSaveRandomData1();
+
+      // Emit the data to all connected clients
+      io.emit('newData1', newData2);
+
+      // console.log(`Color: ${newData2.color}, Letter: ${newData2.letter}, Number: ${newData2.number}`);
+    }
+
+    // Reset the flag when the timer is restarted
+    lastSaveTimestamp = null; // Reset the timestamp
+    timerStartTime1 = currentTime; // Update the timer start time
+
+    startTimer1();
+  } catch (error) {
+    // Handle error
+  }
+};
 
 const startTimer1 = () => {
   let timerCountdown1 = 60; // Initial countdown value in seconds
@@ -917,16 +945,13 @@ const startTimer1 = () => {
       clearInterval(timerId1);
       timerCountdown1 = 60; // Reset the countdown to 60 seconds
 
-      // Call generateAndSaveRandomData1 only when the timer completes
-      await generateAndSaveRandomData1();
-
       // Call displayDataAndRestartTimer1 only when the timer completes
       await displayDataAndRestartTimer1();
     }
   }, 1000); // Run every 1 second
 };
 
-// ...
+startTimer1();
 
 io.on('connection', (socket) => {
   console.log('Client connected');
