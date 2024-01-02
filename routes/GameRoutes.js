@@ -149,7 +149,8 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
     const userId = req.params.userId;
     const page = parseInt(req.params.page) || 1;
     const pageSize = 10;
-
+    const totalDocuments = await GmeRecord.countDocuments()
+    const totalPages = Math.ceil(totalDocuments / pageSize);
     // Calculate the skip value based on the page number
     const skip = (page - 1) * pageSize;
 
@@ -160,7 +161,7 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
       .limit(pageSize);
 
     // Send the user details to the frontend
-    res.json(userResults);
+    res.json({userResults,totalPages});
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

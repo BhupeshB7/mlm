@@ -691,7 +691,7 @@ let lastSaveMinute;
 //     if (dataSavedThisMinute && currentMinutes1 === lastSaveMinute) {
 //       console.log('Data already saved in this minute. Skipping...');
 //       return null; // Skip saving data if it has already been saved in this minute
-//     }
+//     }    
 
 //     const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
 //     const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
