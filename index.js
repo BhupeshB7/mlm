@@ -673,25 +673,86 @@ app.get("/api/randomData1", async (req, res) => {
 // };
 
 // Testing Code start
+// const getRandomValue1 = (array) => {
+//   const randomIndex = Math.floor(Math.random() * array.length);
+//   return array[randomIndex];
+// };
+let dataSavedThisMinute = false;
+let lastSaveMinute;
+
+// let sessionCounter = 0;
+
+// const generateAndSaveRandomData1 = async () => {
+//   try {
+//     const currentDate1 = new Date();
+//     const currentMinutes1 = currentDate1.getMinutes();
+
+//     // Check if data has already been saved in the current minute
+//     if (dataSavedThisMinute && currentMinutes1 === lastSaveMinute) {
+//       console.log('Data already saved in this minute. Skipping...');
+//       return null; // Skip saving data if it has already been saved in this minute
+//     }
+
+//     const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
+//     const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
+
+//     let randomLetter;
+
+//     if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
+//       randomLetter = getRandomValue1(["Small"]);
+//     } else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
+//       randomLetter = getRandomValue1(["Big"]);
+//     } else {
+//       console.error("Unexpected value for randomNumber");
+//     }
+
+//     const currentDate = new Date();
+//     const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+//     const currentDay = currentDate.getDate().toString().padStart(2, '0');
+//     const currentMinutes = currentDate.getMinutes().toString().padStart(2, '0');
+//     const sessionPrefix = 'PI';
+    
+//     // Increment the session counter and format it with leading zeros
+//     sessionCounter++;
+//     const sessionNumber = sessionCounter.toString().padStart(4, '0');
+    
+//     const session = `${sessionPrefix}${currentMonth}${currentDay}${currentMinutes}${sessionNumber}`;
+
+//     const newData = new RandomData1({
+//       color: randomColor,
+//       letter: randomLetter,
+//       number: randomNumber,
+//       session: session,
+//     });
+
+//     // Save the data to the database
+//     await newData.save();
+
+//     // Set the flag to true, indicating that data has been saved in the current minute
+//     dataSavedThisMinute = true;
+//     lastSaveMinute = currentMinutes;
+
+//     // console.log(`Color: ${newData.color}, Letter: ${newData.letter}, Number: ${newData.number}`);
+
+//     return newData;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+// let timerStartTime1 = new Date().getTime(); // Store the start time of the timer
 const getRandomValue1 = (array) => {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 };
-let dataSavedThisMinute = false;
-let lastSaveMinute;
 
+const savedSessionsThisMinute = new Map();
 let sessionCounter = 0;
 
 const generateAndSaveRandomData1 = async () => {
   try {
     const currentDate1 = new Date();
     const currentMinutes1 = currentDate1.getMinutes();
-
-    // Check if data has already been saved in the current minute
-    if (dataSavedThisMinute && currentMinutes1 === lastSaveMinute) {
-      console.log('Data already saved in this minute. Skipping...');
-      return null; // Skip saving data if it has already been saved in this minute
-    }
 
     const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
     const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
@@ -718,6 +779,12 @@ const generateAndSaveRandomData1 = async () => {
     
     const session = `${sessionPrefix}${currentMonth}${currentDay}${currentMinutes}${sessionNumber}`;
 
+    // Check if the session has already been saved in the current minute
+    if (savedSessionsThisMinute.has(session)) {
+      console.log('Session already saved in this minute. Skipping...');
+      return null; // Skip saving data if the session has already been saved
+    }
+
     const newData = new RandomData1({
       color: randomColor,
       letter: randomLetter,
@@ -728,11 +795,8 @@ const generateAndSaveRandomData1 = async () => {
     // Save the data to the database
     await newData.save();
 
-    // Set the flag to true, indicating that data has been saved in the current minute
-    dataSavedThisMinute = true;
-    lastSaveMinute = currentMinutes;
-
-    // console.log(`Color: ${newData.color}, Letter: ${newData.letter}, Number: ${newData.number}`);
+    // Add the session to the map to indicate that it has been saved in this minute
+    savedSessionsThisMinute.set(session, true);
 
     return newData;
   } catch (error) {
@@ -810,6 +874,8 @@ const startTimer1 = () => {
   }, 1000); // Run every 1 second
 };
 
+
+startTimer1();
 
 io.on('connection', (socket) => {
   console.log('Client connected');
