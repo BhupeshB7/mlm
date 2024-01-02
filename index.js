@@ -291,7 +291,7 @@ const randomDataSchema1 = new mongoose.Schema(
   { timestamps: true }
 );
 
-const RandomData12 = mongoose.model("RandomData12", randomDataSchema1);
+const RandomData1 = mongoose.model("RandomData1", randomDataSchema1);
 
 // 3minutes Games Schema End
 //
@@ -672,176 +672,23 @@ app.get("/api/randomData1", async (req, res) => {
 //   }
 // };
 
-//Testing Code start
-// const getRandomValue1 = (array) => {
-//   const randomIndex = Math.floor(Math.random() * array.length);
-//   return array[randomIndex];
-// };
-// let dataSavedThisMinute = false;
-// let lastSaveMinute;
-
-// let sessionCounter = 0;
-
-// const generateAndSaveRandomData1 = async () => {
-//   try {
-//     const currentDate1 = new Date();
-//     const currentMinutes1 = currentDate1.getMinutes();
-
-//     // Check if data has already been saved in the current minute
-//     if (dataSavedThisMinute && currentMinutes1 === lastSaveMinute) {
-//       console.log('Data already saved in this minute. Skipping...');
-//       return null; // Skip saving data if it has already been saved in this minute
-//     }
-
-//     const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
-//     const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
-
-//     let randomLetter;
-
-//     if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
-//       randomLetter = getRandomValue1(["Small"]);
-//     } else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
-//       randomLetter = getRandomValue1(["Big"]);
-//     } else {
-//       console.error("Unexpected value for randomNumber");
-//     }
-
-//     const currentDate = new Date();
-//     const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-//     const currentDay = currentDate.getDate().toString().padStart(2, '0');
-//     const currentMinutes = currentDate.getMinutes().toString().padStart(2, '0');
-//     const sessionPrefix = 'PI';
-    
-//     // Increment the session counter and format it with leading zeros
-//     sessionCounter++;
-//     const sessionNumber = sessionCounter.toString().padStart(4, '0');
-    
-//     const session = `${sessionPrefix}${currentMonth}${currentDay}${currentMinutes}${sessionNumber}`;
-
-//     const newData = new RandomData1({
-//       color: randomColor,
-//       letter: randomLetter,
-//       number: randomNumber,
-//       session: session,
-//     });
-
-//     // Save the data to the database
-//     await newData.save();
-
-//     // Set the flag to true, indicating that data has been saved in the current minute
-//     dataSavedThisMinute = true;
-//     lastSaveMinute = currentMinutes;
-
-//     // console.log(`Color: ${newData.color}, Letter: ${newData.letter}, Number: ${newData.number}`);
-
-//     return newData;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
-// let timerStartTime1 = new Date().getTime(); // Store the start time of the timer
-
-// const displayDataAndRestartTimer1 = async () => {
-//   try {
-//     // Calculate the remaining time
-//     const currentTime = new Date().getTime();
-//     const elapsedTime = Math.floor((currentTime - timerStartTime1) / 1000);
-//     const remainingTime = Math.max(0, 60 - elapsedTime); // Adjust as needed
-
-//     io.emit('timerUpdate1', { countdown: remainingTime });
-
-//     if (remainingTime === 0) {
-//       const newData2 = await generateAndSaveRandomData1();
-
-//       // Emit the data to all connected clients
-//       io.emit('newData1', newData2);
-
-//       // console.log(`Color: ${newData2.color}, Letter: ${newData2.letter}, Number: ${newData2.number}`);
-//     }
-
-//     // Reset the flag when the timer is restarted
-//     dataSavedThisMinute = false;
-//     timerStartTime1 = currentTime; // Update the timer start time
-
-//     startTimer1();
-//   } catch (error) {
-//     // Handle error
-//   }
-// };
-
-
-
-
-
-// const startTimer1 = () => {
-//   let timerCountdown1 = 60; // Initial countdown value in seconds
-
-//   const handleTimerTick = async () => {
-//     try {
-//       const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData1');
-//       console.log('Automatic API call successful:', response.data);
-
-//       // console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
-
-//       // Emit the timer countdown to all connected clients
-//       io.emit('timerUpdate1', { countdown: timerCountdown1 });
-//     } catch (error) {
-//       // Handle error
-//     }
-//   };
-
-//   // Initial tick to set up the timer
-//   handleTimerTick();
-
-//   const timerId1 = setInterval(async () => {
-//     timerCountdown1--;
-
-//     // Emit the timer countdown to all connected clients
-//     io.emit('timerUpdate1', { countdown: timerCountdown1 });
-
-//     if (timerCountdown1 <= 0) {
-//       clearInterval(timerId1);
-//       timerCountdown1 = 60; // Reset the countdown to 60 seconds
-
-//       // Call displayDataAndRestartTimer1 only when the timer completes
-//       await displayDataAndRestartTimer1();
-//     }
-//   }, 1000); // Run every 1 second
-// };
-
-
-// startTimer1();
-
-// io.on('connection', (socket) => {
-//   console.log('Client connected');
-
-//   // Send initial data and timer countdown to the client when connected
-//   RandomData1.findOne({}, {}, { sort: { 'created_at': -1 } }, (err, data) => {
-//     if (data) {
-//       socket.emit('initialData1', data);
-//     }
-
-//     // Emit the initial timer countdown to the client
-//     socket.emit('timerUpdate1', { countdown: 60 }); // Initial countdown value
-//   });
-// });
-
-//Testing Code End
-
+// Testing Code start
 const getRandomValue1 = (array) => {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 };
+let dataSavedThisMinute = false;
+let lastSaveMinute;
 
-let lastSaveTimestamp; // Store the timestamp of the last saved data
+let sessionCounter = 0;
 
 const generateAndSaveRandomData1 = async () => {
   try {
-    const currentTimestamp = new Date().getTime();
-    
+    const currentDate1 = new Date();
+    const currentMinutes1 = currentDate1.getMinutes();
+
     // Check if data has already been saved in the current minute
-    if (lastSaveTimestamp && currentTimestamp - lastSaveTimestamp < 60000) {
+    if (dataSavedThisMinute && currentMinutes1 === lastSaveMinute) {
       console.log('Data already saved in this minute. Skipping...');
       return null; // Skip saving data if it has already been saved in this minute
     }
@@ -865,9 +712,13 @@ const generateAndSaveRandomData1 = async () => {
     const currentMinutes = currentDate.getMinutes().toString().padStart(2, '0');
     const sessionPrefix = 'PI';
     
-    const session = `${sessionPrefix}${currentMonth}${currentDay}${currentMinutes}`;
+    // Increment the session counter and format it with leading zeros
+    sessionCounter++;
+    const sessionNumber = sessionCounter.toString().padStart(4, '0');
+    
+    const session = `${sessionPrefix}${currentMonth}${currentDay}${currentMinutes}${sessionNumber}`;
 
-    const newData = new RandomData12({
+    const newData = new RandomData1({
       color: randomColor,
       letter: randomLetter,
       number: randomNumber,
@@ -878,7 +729,10 @@ const generateAndSaveRandomData1 = async () => {
     await newData.save();
 
     // Set the flag to true, indicating that data has been saved in the current minute
-    lastSaveTimestamp = currentTimestamp;
+    dataSavedThisMinute = true;
+    lastSaveMinute = currentMinutes;
+
+    // console.log(`Color: ${newData.color}, Letter: ${newData.letter}, Number: ${newData.number}`);
 
     return newData;
   } catch (error) {
@@ -907,7 +761,7 @@ const displayDataAndRestartTimer1 = async () => {
     }
 
     // Reset the flag when the timer is restarted
-    lastSaveTimestamp = null; // Reset the timestamp
+    dataSavedThisMinute = false;
     timerStartTime1 = currentTime; // Update the timer start time
 
     startTimer1();
@@ -916,14 +770,19 @@ const displayDataAndRestartTimer1 = async () => {
   }
 };
 
+
+
+
+
 const startTimer1 = () => {
   let timerCountdown1 = 60; // Initial countdown value in seconds
 
   const handleTimerTick = async () => {
     try {
-      // Move the API call logic here if you want it to be triggered on each timer tick
       const response = await axios.post('https://mlm-production.up.railway.app/api/generateRandomData1');
       console.log('Automatic API call successful:', response.data);
+
+      // console.log(`Color: ${response.data.data.color}, Letter: ${response.data.data.letter}, Number: ${response.data.data.number}`);
 
       // Emit the timer countdown to all connected clients
       io.emit('timerUpdate1', { countdown: timerCountdown1 });
@@ -951,13 +810,14 @@ const startTimer1 = () => {
   }, 1000); // Run every 1 second
 };
 
+
 startTimer1();
 
 io.on('connection', (socket) => {
   console.log('Client connected');
 
   // Send initial data and timer countdown to the client when connected
-  RandomData12.findOne({}, {}, { sort: { 'created_at': -1 } }, (err, data) => {
+  RandomData1.findOne({}, {}, { sort: { 'created_at': -1 } }, (err, data) => {
     if (data) {
       socket.emit('initialData1', data);
     }
@@ -966,6 +826,9 @@ io.on('connection', (socket) => {
     socket.emit('timerUpdate1', { countdown: 60 }); // Initial countdown value
   });
 });
+
+//Testing Code End
+
 
 
 // New 1Minutes updated code End
