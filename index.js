@@ -751,22 +751,6 @@ let sessionCounter = 0;
 
 const generateAndSaveRandomData1 = async () => {
   try {
-    const currentDate1 = new Date();
-    const currentMinutes1 = currentDate1.getMinutes();
-
-    const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
-    const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
-
-    let randomLetter;
-
-    if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
-      randomLetter = getRandomValue1(["Small"]);
-    } else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
-      randomLetter = getRandomValue1(["Big"]);
-    } else {
-      console.error("Unexpected value for randomNumber");
-    }
-
     const currentDate = new Date();
     const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
     const currentDay = currentDate.getDate().toString().padStart(2, '0');
@@ -783,6 +767,32 @@ const generateAndSaveRandomData1 = async () => {
     if (savedSessionsThisMinute.has(session)) {
       console.log('Session already saved in this minute. Skipping...');
       return null; // Skip saving data if the session has already been saved
+    }
+
+    // Check if the session has been saved in the last 2 minutes in the database
+    const twoMinutesAgo = new Date(currentDate.getTime() - 2 * 60 * 1000); // 2 minutes ago
+    const existingSession = await RandomData1.findOne({
+      session: session,
+      createdAt: { $gte: twoMinutesAgo },
+    });
+
+    if (existingSession) {
+      console.log('Session already saved in the last 2 minutes. Skipping...');
+      savedSessionsThisMinute.set(session, true);
+      return null; // Skip saving data if the session has been saved in the last 2 minutes
+    }
+
+    const randomColor = getRandomValue1(["Violet", "Red", "Green"]);
+    const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
+
+    let randomLetter;
+
+    if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
+      randomLetter = getRandomValue1(["Small"]);
+    } else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
+      randomLetter = getRandomValue1(["Big"]);
+    } else {
+      console.error("Unexpected value for randomNumber");
     }
 
     const newData = new RandomData1({
@@ -803,6 +813,7 @@ const generateAndSaveRandomData1 = async () => {
     throw error;
   }
 };
+
 
 let timerStartTime1 = new Date().getTime(); // Store the start time of the timer
 
