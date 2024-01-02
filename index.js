@@ -811,8 +811,6 @@ const startTimer1 = () => {
 };
 
 
-startTimer1();
-
 io.on('connection', (socket) => {
   console.log('Client connected');
 
