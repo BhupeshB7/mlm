@@ -770,7 +770,7 @@ const generateAndSaveRandomData1 = async () => {
     }
 
     // Check if the session has been saved in the last 2 minutes in the database
-    const twoMinutesAgo = new Date(currentDate.getTime() - 2 * 60 * 1000); // 2 minutes ago
+    const twoMinutesAgo = new Date(currentDate.getTime() - 1 * 60 * 1000); // 2 minutes ago
     const existingSession = await RandomData1.findOne({
       session: session,
       createdAt: { $gte: twoMinutesAgo },
