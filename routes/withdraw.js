@@ -205,7 +205,11 @@ router.post("/user/:userId", async (req, res) => {
     if (user.balance < amount) {
       return res.status(400).json({ error: "Insufficient balance" });
     }
-
+    if (!user.withdrawalDone && !user.withdrawalDoneFour && !user.withdrawalDoneEight) {
+      return res
+        .status(403)
+        .json({ error: "First complete the withdrawal of Rs 200,400 and 800 then you will be able to withdraw Rs 500 or more." });
+    }
     // Create a new withdrawal request
     const withdrawalRequest = new WithdrawBalance({
       userId,
