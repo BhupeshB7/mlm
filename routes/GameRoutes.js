@@ -80,7 +80,7 @@ router.post('/checkChoices', async (req, res) => {
     if (!conditionMatched && userChoiceNumber && userChoiceNumber === choiceNumber) {
       result = 'success';
       message = 'ChoiceNumber matched!';
-      amount = parseFloat(betAmount) * 4; // Change this multiplier as per your winning logic
+      amount = parseFloat(betAmount) * 2; // Change this multiplier as per your winning logic
       userGamerProfile.totalwin += amount;
       userChoice = userChoiceNumber;
       choice = choiceNumber;
