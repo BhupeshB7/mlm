@@ -1,180 +1,10 @@
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const multer = require('multer');
-// const cors = require('cors');
-// const axios = require('axios');
-// require('dotenv').config();
-// const cron = require('node-cron');
-// const app = express();
-// const http = require('http');
-// const socketIo = require('socket.io');
-// const profileRoutes = require('./routes/profile');
-// const passwordRoute = require('./routes/passwordReset');
-// const register = require('./routes/register');
-// const taskRoutes = require('./routes/taskRoute');
-// const userTaskRoute = require('./routes/userTaskRoute');
-// // const cloudinaryConfig = require("./cloudinaryConfig");
-// const cloudinaryConfig= require("./cloudinaryConfig");
-// const User = require('./models/User');
-// // Connect to MongoDB database
-// mongoose.connect(process.env.MONGO_URL, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-//   })
-//     .then(() => console.log('Connected to MongoDB'))
-
-//     .catch((error) => console.error(error));
-
-//   const server = http.createServer(app);
-//   const io = socketIo(server, {
-//     cors: {
-//       origin: "*", // Replace with your React frontend URL
-//       // origin: "http://127.0.0.1:5501", // Replace with your React frontend URL
-//       // origin: "http://localhost:5173", // Replace with your React frontend URL
-//       methods: ["GET", "POST"]
-//     }
-//   });
-//   // Middleware
-//   app.use(cors({
-//     // origin:"https://globalsuccesspoint.netlify.app"
-//     // origin:"https://powerfullindia.com",
-//     // origin:"https://www.powerfullindia.com",
-//     // origin:"http://localhost:3000",
-//   }));
-//   cloudinaryConfig();
-//   app.use(express.json());
-//   // app.use(fileUpload())
-// // error handler middleware
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(500).send('Something broke!');
-// });
-
-// // Routes
-// app.use("/api/auth", require("./routes/auth"));
-// //For Task
-// app.use('/api/task', require('./routes/task'));
-// //
-// app.use("/api/users", require("./routes/users"));
-// //for User Register
-// app.use('/api/users', register);
-// //for User ReTopup
-// app.use('/api/users',require('./routes/ReTopupUser'));
-// //for password Reset
-// app.use('/api/auth', passwordRoute);
-// //Activation Routes
-// app.use('/api/active',require('./routes/UserAuthTask'));
-// // profile Routes
-// app.use('/api/users', profileRoutes);
-// //Admin Routes
-// app.use("/api/admin", require('./routes/Admin/admin'));
-//   //Deposit Routes
-//   app.use('/api/deposit', require('./routes/deposit'));
-// //Withdraw request
-// app.use('/api/withdraw', require('./routes/withdraw'));
-// //direct request
-// app.use('/api', require('./routes/direct'));
-// //Task Completion
-// app.use('/api', require('./routes/level'));
-// //level
-// // app.use('/api', require('./routes/userLevel'));
-// app.use('/api', require('./routes/DailyLevelincome'))
-// // for fund Transfer
-// app.use('/api', require('./routes/fundMove'))
-// //contact
-// app.use('/api', require('./routes/contact'));
-// app.use('/api', taskRoutes);
-// app.use('/userTasks', userTaskRoute);
-// // Routes
-// app.use('/api/gameProfile',require('./routes/GameRoutes'));
-// app.use('/api/game',require('./routes/game'));
-// app.use('/api',require('./routes/LiveGameUser'));
-// app.use('/api',require('./routes/GameDeposit'));
-// app.use('/api',require('./routes/image'));
-// app.use('/api',require('./routes/WalletTransfer'));
-// app.use('/api',require('./routes/changePassword'));
-// app.use('/api/notice',require('./routes/notice'));
-// // router.use(express.json());
-
-// cron.schedule('50 23 * * *', async () => {
-//   try {
-//     // Reset dailyIncome for all users
-//     await User.updateMany({}, { $set: { dailyIncome: 0 } });
-//     console.log('Daily income reset successful');
-//   } catch (error) {
-//     console.error('Error resetting daily income:', error);
-//   }
-// }, {
-//   timezone: 'Asia/Kolkata', // Set the timezone to IST
-// });
-// const imageSchema = new mongoose.Schema({
-//   name: String,
-//   data: Buffer,
-//   contentType: String,
-// });
-
-// const Image = mongoose.model('CarouselImage', imageSchema);
-
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage });
-
-// app.use(express.json());
-
-// app.post('/upload', upload.single('image'), async (req, res) => {
-//   try {
-//     const { originalname, buffer, mimetype } = req.file;
-//     const image = new Image({
-//       name: originalname,
-//       data: buffer,
-//       contentType: mimetype,
-//     });
-//     await image.save();
-//     res.status(201).send('Image uploaded successfully');
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// });
-
-// app.get('/images', async (req, res) => {
-//   try {
-//     const images = await Image.find();
-//     res.json(images);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// });
-
-// app.delete('/delete/:id', async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     await Image.findByIdAndDelete(id);
-//     res.status(200).send('Image deleted successfully');
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// });
-
-// //
-//   app.use((err, req, res, next) => {
-//     console.error(err.stack);
-//     res.status(500).send('Server error');
-//   });
-
-//   //
-
-//   // Start server
-//   const PORT = process.env.PORT || 5000;
-//   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
 const axios = require("axios");
 const cron = require("node-cron");
+const schedule = require('node-schedule');
 const http = require("http");
 const socketIo = require("socket.io");
 const dotenv = require("dotenv");
@@ -290,9 +120,52 @@ const randomDataSchema1 = new mongoose.Schema(
   },
   { timestamps: true }
 );
+// Define Timer schema
+const timerSchema = new mongoose.Schema({
+  time: Number,
+},{timestamps:true});
+
+const Timer = mongoose.model('Timer', timerSchema);
 
 const RandomData1 = mongoose.model("RandomData1", randomDataSchema1);
+// API endpoint for admin to set the timer
+app.post('/api/admin/setTimer', async (req, res) => {
+    try {
+      const { time } = req.body;
+      await Timer.findOneAndUpdate({}, { time }, { upsert: true });
+  
+      // Schedule job to delete the timer after the specified time
+      schedule.scheduleJob(new Date(Date.now() + time * 60 * 1000), async () => {
+        await Timer.deleteMany({});
+      });
+  
+      res.status(200).json({ message: 'Timer set successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 
+app.get('/api/user/getTimer', async (req, res) => {
+    try {
+      const timer = await Timer.findOne();
+      
+      if (!timer || !timer.updatedAt) {
+        // If no timer is set or createdAt is missing, return 0
+        return res.status(200).json({ time: 0 });
+      }
+  
+      const currentTime = Date.now();
+      const scheduledDeletionTime = timer.updatedAt.getTime() + timer.time * 60 * 1000;
+      const remainingTimeInSeconds = Math.max(0, Math.floor((scheduledDeletionTime - currentTime) / 1000));
+  
+      res.status(200).json({ time: remainingTimeInSeconds });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
 // 3minutes Games Schema End
 //
 // Image upload routes
