@@ -81,7 +81,7 @@ router.get('/teamTaskMember/:userId', async (req, res) => {
         return null;
       }
   
-      const user = await UserTask.findOne({ userId }).select('userId completed').lean();
+      const user = await UserTask.findOne({ userId }).select('userId completed name mobile sponsorId ').lean();
   
       if (!user) {
         return null;
@@ -92,6 +92,9 @@ router.get('/teamTaskMember/:userId', async (req, res) => {
         level: 6-depth,
         userId: user.userId,
         status: activeStatus,
+        name: user.name,
+        sponsorId: user.sponsorId,
+        mobile: user.mobile,
         downlineCount: 0,
         allUsersCount: 0,
         downline: [],
