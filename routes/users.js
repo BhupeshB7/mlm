@@ -237,16 +237,16 @@ function getHighestAchievedRank(activeUsersByLevel) {
   for (let level = 1; level <= 5; level++) {
     const count = activeUsersByLevel[level] || 0;
         console.log(count);
-    if (level === 1 && count > rankThresholds.Bronze) {
+    if (level === 1 && count >= rankThresholds.Bronze) {
       highestAchievedRank = 'Bronze';
-    } else if (level === 2 && count > rankThresholds.Silver) {
+    } else if (level === 2 && count >= rankThresholds.Silver) {
       highestAchievedRank = 'Silver';
-    } else if (level === 3 && count > rankThresholds.Gold) {
+    } else if (level === 3 && count >= rankThresholds.Gold) {
       highestAchievedRank = 'Gold';
-    } else if (level === 4 && count > rankThresholds.RoyalStar) {
+    } else if (level === 4 && count >= rankThresholds.RoyalStar) {
       highestAchievedRank = 'RoyalStar';
     }
-    else if (level === 5 && count > rankThresholds.Diamond) {
+    else if (level === 5 && count >= rankThresholds.Diamond) {
       highestAchievedRank = 'Diamond';
     }
   }
