@@ -4,6 +4,8 @@ const router = express.Router();
 const Game = require('../models/Game');
 const GameProfile = require('../models/GameProfile');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
+const WithdrawalForm = require('../models/WithdrawalForm');
 
 // Route to save game details
 router.post('/saveGame', async (req, res) => {
@@ -169,7 +171,7 @@ router.get('/gamer/profile/:userId', async (req, res) => {
 
 // Update user details by ID
 router.put('/gamer/profile/:userId', async (req, res) => {
-  const userId = req.params.userId;
+  const userId = req.params;
   const { balance, totalwin } = req.body;
 console.log('balance: ' + balance);
 console.log(balance);
@@ -179,6 +181,62 @@ console.log(balance);
     console.log('updated')
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+router.get("/withdrawal/profile/:userId",  async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const user = await GameProfile.findOne({userId:userId}).select("-balance -totalwin -levelIncome -sponsorId -name");  // Access userId from params
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+
+router.post('/withdrawal/profileUpdate/:userId',auth, async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    // const user = await User.findById(req.user.id);
+    const user = await GameProfile.findOne({userId : userId});
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    if (req.body.accountHolderName) {
+      user.accountHolderName = req.body.accountHolderName.trim();
+    }
+    if (req.body.accountNo) {
+      user.accountNo = req.body.accountNo.trim();
+    }
+    if (req.body.ifscCode) {
+      user.ifscCode = req.body.ifscCode.trim();
+    }
+     //For google Pay
+     if (req.body.GPay) {
+      const GPay = req.body.GPay.trim();
+      const GPayExists = await User.findOne({ GPay });
+      if (GPayExists && GPayExists._id.toString() !== user._id.toString()) {
+        return res.status(400).json({ error: 'Gpay number already exists' });
+      }
+      user.GPay = GPay;
+    }
+    user.updateCount += 1;
+
+    // Mark details as updated
+    if(user.updateCount ===3){
+      user.detailsUpdated = true;
+    }
+    await user.save();
+
+    res.json({ message: 'Profile updated successfully' });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error for updation');
   }
 });
 module.exports = router;
