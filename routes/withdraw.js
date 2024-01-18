@@ -172,7 +172,7 @@ router.post("/user/:userId", async (req, res) => {
   }
 
   // Check if the withdrawal amount is greater than or equal to 500
-  if (amount >= 500) {
+  if (amount === 500) {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -369,7 +369,7 @@ router.post("/user/:userId", async (req, res) => {
    else {
     return res
       .status(400)
-      .json({ error: "Minimum withdrawal amount is 500 Rs" });
+      .json({ error: " withdrawal amount Should be 500 Rs" });
   }
 });
 // Withdrawal code ENd
