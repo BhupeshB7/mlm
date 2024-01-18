@@ -128,6 +128,8 @@ activationTime: {
     type: Date,
     default: null,
   },
+  detailsUpdated: { type: Boolean, default: false },
+  updateCount: { type: Number, default: 0 },
 date: {Date},
  }, {timestamps: true},
  

@@ -77,8 +77,12 @@ router.post('/profileUpdate', auth, async (req, res) => {
     if (req.body.aadhar) {
       user.aadhar = req.body.aadhar;
     }
-    await user.save();
+    user.updateCount += 1;
 
+    // Mark details as updated
+    user.detailsUpdated = true;
+    await user.save();
+      
     res.json({ message: 'Profile updated successfully' });
   } catch (error) {
     console.error(error.message);
