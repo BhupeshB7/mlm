@@ -467,7 +467,12 @@ if (req.body.aadhar) {
       }
       user.email = email;
     }
+    user.updateCount += 1;
 
+    // Mark details as updated
+    if(user.updateCount ===3){
+      user.detailsUpdated = true;
+    }
     await user.save();
 
     res.json({ message: 'Profile updated successfully' });
