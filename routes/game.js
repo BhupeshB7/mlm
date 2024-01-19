@@ -197,7 +197,7 @@ router.get("/withdrawal/profile/:userId",  async (req, res) => {
 
 
 
-router.post('/withdrawal/profileUpdate/:userId',auth, async (req, res) => {
+router.post('/withdrawal/profileUpdate/:userId', async (req, res) => {
   const userId = req.params.userId;
 
   try {

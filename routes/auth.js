@@ -68,6 +68,57 @@ router.put('/unblock/:id', async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+router.get('/bonanzaOffers/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId; // Assuming it's a POST request and user ID is in the request body
+    const currentDate = new Date();
+    
+    // Check if the current day is Sunday (day of the week: 0)
+    if (currentDate.getDay() !== 0) {
+      return res.status(400).json({ error: "Bonanza Offers are only allowed on Sundays" });
+    }
+
+    currentDate.setHours(0, 0, 0, 0);
+     // Check if the user with the specified userId exists
+    const sponsorExists = await User.exists({ userId: req.params.userId });
+    
+    if (!sponsorExists) {
+      return res.status(404).json({ error: "User Not Found" });
+    }
+
+    // Fetch direct downline users with activationTime matching the current date
+    const downlineUsers = await User.find({
+      sponsorId: userId,
+      activationTime: { $gte: currentDate, $lt: new Date(currentDate.getTime() + 86400000) } // Adding 24 hours to get the next day
+    }).select("userId sponsorId name mobile activationTime");
+   if(!downlineUsers){
+    res.status(400).json({error:"User Not Found"})
+   }
+    // Count the downline users
+    const downlineCount = downlineUsers.length;
+
+    // Respond with the downline count and details
+    res.status(200).json({ count: downlineCount, details: downlineUsers });
+  } catch (error) {
+    console.error(error);
+
+    // Advanced error handling
+    let errorMessage = "Internal Server Error";
+    let statusCode = 500;
+
+    if (error.name === "CastError") {
+      errorMessage = "Invalid user ID format";
+      statusCode = 400;
+    } else if (error.name === "ValidationError") {
+      errorMessage = "Validation error";
+      statusCode = 422;
+    }
+
+    res.status(statusCode).json({ error: errorMessage });
+  }
+});
+
+
 // Route to update all users' balances to 0
 router.post('/resetBalances', async (req, res) => {
   const controller = new AbortController();
