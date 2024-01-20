@@ -58,8 +58,7 @@ router.put('/block/:id', async (req, res) => {
   } catch (error) {
     res.status(500).send(error.message);
   }
-});
-
+});  
 router.put('/unblock/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { isBlocked: false }, { new: true });

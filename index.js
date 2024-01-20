@@ -79,6 +79,7 @@ app.use("/api", require("./routes/image"));
 app.use("/api", require("./routes/WalletTransfer"));
 app.use("/api", require("./routes/changePassword"));
 app.use("/api/notice", require("./routes/notice"));
+app.use("/api/gift", require("./routes/GiftCode"));
 
 // Schedule daily income reset using cron
 cron.schedule(
