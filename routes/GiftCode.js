@@ -2,7 +2,8 @@
 const express = require('express');
 const Session = require('../models/Gift');
 const cron = require('node-cron');
-
+const GiftReward = require('../models/GiftReward');
+const GameProfile = require('../models/GameProfile');
 const router = express.Router();
 
 function generateRandomCode() {
@@ -70,28 +71,45 @@ router.post('/generateCode', async (req, res) => {
 
 router.post('/checkCode', async (req, res) => {
   try {
-    const { code } = req.body;
-
+    const { code, userId } = req.body;
+console.log(userId)
     if (!code) {
       return res.status(400).json({ success: false, error: 'Code is required.' });
     }
-
-    const session = await Session.findOne({ code });
-
-    if (!session) {
-      return res.status(404).json({ success: false, error: 'Session not found. Please check the code.' });
+    const user = await GameProfile.findOne({userId:userId});
+    if(!user){
+      return res.status(404).json({ success: false, error: 'User Not found.' });
     }
-
+    const session = await Session.findOne({ code });
+    
     const currentTime = new Date();
     if (currentTime > session.expirationTime) {
       // Code is expired
       return res.status(404).json({ success: false, message: 'Code is expired.' });
     }
+    if (!session) {
+      return res.status(404).json({ success: false, error: 'Session not found. Please check the code.' });
+    }
+   const rewrdBalance = user.balance;
+   console.log(rewrdBalance);
+console.log(user.name);
+console.log(user.userId);
 
     // Code is valid, fetch the last amount and generate a random number
     const lastAmount = session.amount || 0;
     const randomNumber = Math.floor(Math.random() * (lastAmount + 1));
-
+    user.balance+=randomNumber;
+   // Save the updated user object to the database
+   await user.save();
+    console.log(`balance: ${user.balance}`);
+    const Rewards = new GiftReward({
+      userId:user.userId,
+      code:code,
+      reward:randomNumber
+    })
+    await Rewards.save();
+    console.log(Rewards);
+    console.log(user.balance);
     res.json({
       success: true,
       message: 'Code is valid.',

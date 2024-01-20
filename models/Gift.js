@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const sessionSchema = new mongoose.Schema({
-  PI: { type: String, default: 'PI2024000' },
+  // PI: { type: String, default: 'PI2024000' },
   giftTime: { type: Number, default: 0 },
   code: String,
   amount: Number,
