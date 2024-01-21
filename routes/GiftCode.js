@@ -72,28 +72,32 @@ router.post('/generateCode', async (req, res) => {
 router.post('/checkCode', async (req, res) => {
   try {
     const { code, userId } = req.body;
-console.log(userId)
+// console.log(userId)
     if (!code) {
       return res.status(400).json({ success: false, error: 'Code is required.' });
     }
+   const codeExist =await GiftReward.findOne({code: code});
+   if(codeExist){
+    return res.status(400).json({success:false, error: 'Already Rewarded!.'})
+   }
     const user = await GameProfile.findOne({userId:userId});
     if(!user){
       return res.status(404).json({ success: false, error: 'User Not found.' });
     }
     const session = await Session.findOne({ code });
-    
+    if (!session) {
+      return res.status(404).json({ success: false, error: 'Code not found. Please check the code.' });
+    }
     const currentTime = new Date();
     if (currentTime > session.expirationTime) {
       // Code is expired
-      return res.status(404).json({ success: false, message: 'Code is expired.' });
+      return res.status(400).json({ success: false, error: 'Code is expired.' });
     }
-    if (!session) {
-      return res.status(404).json({ success: false, error: 'Session not found. Please check the code.' });
-    }
-   const rewrdBalance = user.balance;
-   console.log(rewrdBalance);
-console.log(user.name);
-console.log(user.userId);
+    
+//    const rewrdBalance = user.balance;
+//    console.log(rewrdBalance);
+// console.log(user.name);
+// console.log(user.userId);
 
     // Code is valid, fetch the last amount and generate a random number
     const lastAmount = session.amount || 0;
@@ -108,8 +112,8 @@ console.log(user.userId);
       reward:randomNumber
     })
     await Rewards.save();
-    console.log(Rewards);
-    console.log(user.balance);
+    // console.log(Rewards);
+    // console.log(user.balance);
     res.json({
       success: true,
       message: 'Code is valid.',
@@ -121,5 +125,32 @@ console.log(user.userId);
     res.status(500).json({ success: false, error: 'Internal Server Error. Please try again later.' });
   }
 });
+// API endpoint for fetching 10 data at a time based on userId
+router.get("/gift-rewards/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const perPage = 10;
+  const page = req.query.page || 1;
+  try {
+    const user = await GiftReward.findOne({userId: userId});
+if(!user){
+  return res.status(400).json({success: false, error:'User not found'});
+}
+    const data = await GiftReward.find({userId:userId})
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * perPage)
+    .limit(perPage);
 
+  const totalDocuments = await GiftReward.countDocuments({userId:userId});
+  const totalPages = Math.ceil(totalDocuments / perPage);
+
+  res.json({
+    data,
+    totalPages,
+    currentPage: page,
+  });   
+  } catch (error) {
+    console.error("Error fetching gift rewards:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 module.exports = router;
