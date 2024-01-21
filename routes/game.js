@@ -170,19 +170,41 @@ router.get('/gamer/profile/:userId', async (req, res) => {
 });
 
 // Update user details by ID
+// router.put('/gamer/profile/:userId', async (req, res) => {
+//   const userId = req.params;
+//   const { balance, totalwin } = req.body;
+// console.log('balance: ' + balance);
+// console.log(balance);
+//   try {
+//     const user = await GameProfile.findOneAndUpdate({ userId }, { balance, totalwin }, { new: true });
+//     res.json(user);
+//     console.log('updated')
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({success:false, error: 'Internal Server Error' });
+//   }
+// });
 router.put('/gamer/profile/:userId', async (req, res) => {
-  const userId = req.params;
+  const userId = req.params.userId; // Extract the userId from params
   const { balance, totalwin } = req.body;
-console.log('balance: ' + balance);
-console.log(balance);
+
+  console.log('balance: ' + balance);
+  console.log(balance);
+
   try {
     const user = await GameProfile.findOneAndUpdate({ userId }, { balance, totalwin }, { new: true });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
     res.json(user);
-    console.log('updated')
+    console.log('updated');
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
+
 router.get("/withdrawal/profile/:userId",  async (req, res) => {
   const userId = req.params.userId;
   try {
