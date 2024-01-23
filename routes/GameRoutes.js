@@ -169,10 +169,10 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
 });
 
 // Schedule daily income reset using cron
-// cron.schedule('23 21 * * *', async () => {
+// cron.schedule('42 16 * * *', async () => {
 //   try {
 //     // Reset dailyIncome for all users
-//     await GameProfile.updateMany({}, { $set: { balance: 30 } });
+//     await GameProfile.updateMany({},{ $set: { totalwin: 0 } });
 //     console.log('Daily income reset successful for incomeWallet of game profile');
 //   } catch (error) {
 //     console.error('Error resetting daily income:', error);
@@ -180,4 +180,17 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
 // }, {
 //   timezone: 'Asia/Kolkata', // Set the timezone to IST
 // });
+
+// Schedule delete Game History of 1Minute  using cron
+cron.schedule('59 23 * * *', async () => {
+  try {
+    // Reset dailyIncome for all users
+    await GmeRecord.deleteMany({});
+    console.log('Game Record deleted Successfully');
+  } catch (error) {
+    console.error('Error resetting daily income:', error);
+  }
+}, {
+  timezone: 'Asia/Kolkata', // Set the timezone to IST
+});
 module.exports = router;

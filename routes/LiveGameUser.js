@@ -205,7 +205,7 @@ router.post("/saveSelection", async (req, res) => {
         const updatedBalance = entryFee * 2;
         await GameProfile.findOneAndUpdate(
           { userId },
-          { $inc: { balance: updatedBalance } }
+          { $inc: { totalwin: updatedBalance } }
         );
       });
       await Promise.all(colorUpdatePromises);
@@ -218,7 +218,7 @@ router.post("/saveSelection", async (req, res) => {
         const updatedBalance = entryFee * 2;
         await GameProfile.findOneAndUpdate(
           { userId },
-          { $inc: { balance: updatedBalance } }
+          { $inc: { totalwin: updatedBalance } }
         );
       });
       await Promise.all(sizeUpdatePromises);
@@ -231,7 +231,7 @@ router.post("/saveSelection", async (req, res) => {
         const updatedBalance = entryFee * 4;
         await GameProfile.findOneAndUpdate(
           { userId },
-          { $inc: { balance: updatedBalance } }
+          { $inc: { totalwin: updatedBalance } }
         );
       });
       await Promise.all(numberUpdatePromises);
