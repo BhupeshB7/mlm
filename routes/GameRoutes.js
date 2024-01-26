@@ -5,6 +5,9 @@ const profileController = require('../controllers/GameProfileController');
 const GameProfile = require('../models/GameProfile');
 const cron = require('node-cron');
 const GmeRecord = require('../models/GmeRecord');
+const oneMinuteGameRecord = require('../models/OneMGameRecord');
+const threeMinuteGameRecord = require('../models/ThreeMGameHistory');
+const oneMinuteGameHistory = require('../models/OneMinuteHistory');
 // Define routes for CRUD operations
 router.get('/:gameProfileId', profileController.getProfile);
 
@@ -149,13 +152,13 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
     const userId = req.params.userId;
     const page = parseInt(req.params.page) || 1;
     const pageSize = 10;
-    const totalDocuments = await GmeRecord.countDocuments({userId:userId})
+    const totalDocuments = await oneMinuteGameRecord.countDocuments({userId:userId})
     const totalPages = Math.ceil(totalDocuments / pageSize);
     // Calculate the skip value based on the page number
     const skip = (page - 1) * pageSize;
 
     // Fetch user details with pagination and sorting by timestamp in descending order
-    const userResults = await GmeRecord.find({ userId })
+    const userResults = await oneMinuteGameRecord.find({ userId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(pageSize);
@@ -167,7 +170,53 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+router.get('/userDetails/history/:userId/:page', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const page = parseInt(req.params.page) || 1;
+    const pageSize = 10;
+    const totalDocuments = await oneMinuteGameHistory.countDocuments({userId:userId})
+    const totalPages = Math.ceil(totalDocuments / pageSize);
+    // Calculate the skip value based on the page number
+    const skip = (page - 1) * pageSize;
 
+    // Fetch user details with pagination and sorting by timestamp in descending order
+    const userResults = await oneMinuteGameHistory.find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
+
+    // Send the user details to the frontend
+    res.json({userResults,totalPages});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+// Route to get user details with pagination and sorting
+router.get('/userDetails3/:userId/:page', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const page = parseInt(req.params.page) || 1;
+    const pageSize = 10;
+    const totalDocuments = await threeMinuteGameRecord.countDocuments({userId:userId})
+    const totalPages = Math.ceil(totalDocuments / pageSize);
+    // Calculate the skip value based on the page number
+    const skip = (page - 1) * pageSize;
+
+    // Fetch user details with pagination and sorting by timestamp in descending order
+    const userResults = await threeMinuteGameRecord.find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
+
+    // Send the user details to the frontend
+    res.json({userResults,totalPages});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 // Schedule daily income reset using cron
 // cron.schedule('42 16 * * *', async () => {
 //   try {

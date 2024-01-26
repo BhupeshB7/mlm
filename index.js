@@ -11,6 +11,8 @@ const dotenv = require("dotenv");
 const cloudinaryConfig = require("./cloudinaryConfig");
 const User = require("./models/User");
 const taskRoutes = require("./routes/taskRoute");
+const sessionRoutes = require("./routes/sessionRoutes");
+const sessionRoutes3 = require("./routes/threeMinuteRoutes");
 // Load environment variables from .env file
 dotenv.config();
 
@@ -80,6 +82,8 @@ app.use("/api", require("./routes/WalletTransfer"));
 app.use("/api", require("./routes/changePassword"));
 app.use("/api/notice", require("./routes/notice"));
 app.use("/api/gift", require("./routes/GiftCode"));
+app.use("/", sessionRoutes);
+app.use("/three", sessionRoutes3);
 
 // Schedule daily income reset using cron
 cron.schedule(
@@ -660,7 +664,6 @@ const generateAndSaveRandomData1 = async () => {
     const randomNumber = getRandomValue1(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]);
 
     let randomLetter;
-
     if (parseInt(randomNumber) >= 0 && parseInt(randomNumber) <= 4) {
       randomLetter = getRandomValue1(["Small"]);
     } else if (parseInt(randomNumber) >= 5 && parseInt(randomNumber) <= 9) {
@@ -788,5 +791,5 @@ app.use((err, req, res, next) => {
 });
    
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5500;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
