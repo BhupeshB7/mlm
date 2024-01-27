@@ -6,7 +6,7 @@ const GameProfile1 = require("../models/GameProfile");
 const oneMinuteGameRecord = require("../models/OneMGameRecord");
 async function getNextSessionId() {
   const lastSession = await MinuteColorPredictGame.findOne(
-    {},
+    {}, 
     {},
     { sort: { sessionId: -1 } }
   );
@@ -21,7 +21,7 @@ async function getNextSessionId() {
     return nextSessionId;
   } else {
     return "PI2410001";
-  }
+  } 
 }
 
 async function createSession(req, res) {

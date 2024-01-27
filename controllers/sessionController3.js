@@ -23,7 +23,7 @@ async function getNextSessionId() {
     return nextSessionId;
   } else {
     return "PI2430001";
-  }
+  } 
 }
 
 async function createSession3(req, res) {
