@@ -7,7 +7,7 @@ const threeMinuteGameResultSchema = new mongoose.Schema(
     number: String,
     sessionIds: {
       type: String,
-      unique:true
+      // unique:true
     },
   },
   { timestamps: true }
