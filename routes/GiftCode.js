@@ -72,21 +72,21 @@ router.post('/generateCode', async (req, res) => {
 router.post('/checkCode', async (req, res) => {
   try {
     const { code, userId } = req.body;
-console.log(userId)
+// console.log(userId)
     if (!code) {
       return res.status(400).json({ success: false, error: 'Code is required.' });
     }
    const codeExist =await GiftReward.findOne({code: code});
    // Add the following console.log statement to check the details of codeExist
-   console.log('Code Exist:', codeExist);
-   const codeExistsUser = codeExist.userId;
-   const codeCheck = codeExist.code;
-   console.log('Code UserId:', codeExistsUser);
-   console.log('Code :', codeCheck);
-   if(codeCheck && codeExistsUser){
-    return res.status(400).json({success:false, error: 'Already Rewarded!.'})
-   }
-   console.log(codeExist)
+  //  console.log('Code Exist:', codeExist);
+    if (codeExist) {
+      // Code exists, check if it's already rewarded for the given user
+      if (codeExist.userId === userId) {
+        return res.status(400).json({ success: false, error: 'Already Rewarded!' });
+      }
+      // Code exists but not for the given user, proceed with the regular code validation
+    }
+  //  console.log(codeExist)
     const user = await GameProfile.findOne({userId:userId});
     if(!user){
       return res.status(404).json({ success: false, error: 'User Not found.' });
