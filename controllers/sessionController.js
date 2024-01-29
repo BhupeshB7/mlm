@@ -4,6 +4,25 @@ const oneMinuteGameHistory = require("../models/OneMinuteHistory");
 const oneMinuteGameResult = require("../models/OneMinuteResult");
 const GameProfile1 = require("../models/GameProfile");
 const oneMinuteGameRecord = require("../models/OneMGameRecord");
+// async function getNextSessionId() {
+//   const lastSession = await MinuteColorPredictGame.findOne(
+//     {}, 
+//     {},
+//     { sort: { sessionId: -1 } }
+//   );
+
+//   if (lastSession) {
+//     const lastSessionId = lastSession.sessionId;
+//     const lastSessionNumber = parseInt(lastSessionId.substring(6), 10);
+//     const nextSessionNumber = lastSessionNumber + 1;
+//     const nextSessionId = `PI241${nextSessionNumber
+//       .toString()
+//       .padStart(4, "0")}`;
+//     return nextSessionId;
+//   } else {
+//     return "PI2410001";
+//   } 
+// }
 async function getNextSessionId() {
   const lastSession = await MinuteColorPredictGame.findOne(
     {}, 
@@ -17,10 +36,10 @@ async function getNextSessionId() {
     const nextSessionNumber = lastSessionNumber + 1;
     const nextSessionId = `PI241${nextSessionNumber
       .toString()
-      .padStart(4, "0")}`;
+      .padStart(6, "0")}`; // Update padStart to 6 characters
     return nextSessionId;
   } else {
-    return "PI2410001";
+    return "PI241000001";
   } 
 }
 

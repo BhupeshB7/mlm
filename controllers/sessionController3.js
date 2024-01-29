@@ -6,9 +6,29 @@ const ThreeMinuteHistory = require("../models/ThreeMinuteGameHistory");
 const threeMinuteGameRecord = require("../models/ThreeMGameHistory");
 const GameProfile = require("../models/GameProfile");
 // const GameProfile = require("../models/GameProfile");
+// async function getNextSessionId() {
+//   const lastSession = await ThreeMinuteColorGame.findOne(
+//     {},
+//     {},
+//     { sort: { sessionId: -1 } }
+//   );
+
+//   if (lastSession) {
+//     const lastSessionId = lastSession.sessionId;
+//     const lastSessionNumber = parseInt(lastSessionId.substring(6), 10);
+//     const nextSessionNumber = lastSessionNumber + 1;
+//     const nextSessionId = `PI243${nextSessionNumber
+//       .toString()
+//       .padStart(4, "0")}`;
+//     return nextSessionId;
+//   } else {
+//     return "PI2430001";
+//   } 
+// }
+
 async function getNextSessionId() {
   const lastSession = await ThreeMinuteColorGame.findOne(
-    {},
+    {}, 
     {},
     { sort: { sessionId: -1 } }
   );
@@ -19,10 +39,10 @@ async function getNextSessionId() {
     const nextSessionNumber = lastSessionNumber + 1;
     const nextSessionId = `PI243${nextSessionNumber
       .toString()
-      .padStart(4, "0")}`;
+      .padStart(6, "0")}`; // Update padStart to 6 characters
     return nextSessionId;
   } else {
-    return "PI2430001";
+    return "PI243000001";
   } 
 }
 
