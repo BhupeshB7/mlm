@@ -78,9 +78,11 @@ router.post('/checkCode', async (req, res) => {
     }
    const codeExist =await GiftReward.findOne({code: code});
    const codeExistsUser = codeExist.userId;
-   if(codeExist && codeExistsUser){
+   const codeCheck = codeExistsUser.code;
+   if(codeCheck && codeExistsUser){
     return res.status(400).json({success:false, error: 'Already Rewarded!.'})
    }
+   console.log.log(codeExist, codeCheck, codeExistsUser)
     const user = await GameProfile.findOne({userId:userId});
     if(!user){
       return res.status(404).json({ success: false, error: 'User Not found.' });
