@@ -77,7 +77,7 @@ router.post('/checkCode', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Code is required.' });
     }
    const codeExist =await GiftReward.findOne({code: code});
-   const codeExistsUser = await GiftReward.findOne({userId: userId});
+   const codeExistsUser = codeExist.userId;
    if(codeExist && codeExistsUser){
     return res.status(400).json({success:false, error: 'Already Rewarded!.'})
    }
