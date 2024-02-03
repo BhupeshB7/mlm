@@ -130,7 +130,7 @@ router.get("/liveGameHistory", async (req, res) => {
     const totalPages = Math.ceil(totalRecords / perPage);
 
     const liveGameUsers = await LiveGameHistory.find()
-      .skip((page - 1) * perPage)
+    .sort({ createdAt: -1 }).skip((page - 1) * perPage)
       .limit(perPage);
 
     const colorCounts = {};

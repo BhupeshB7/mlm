@@ -230,16 +230,5 @@ router.get('/userDetails3/:userId/:page', async (req, res) => {
 //   timezone: 'Asia/Kolkata', // Set the timezone to IST
 // });
 
-// Schedule delete Game History of 1Minute  using cron
-cron.schedule('59 23 * * *', async () => {
-  try {
-    // Reset dailyIncome for all users
-    await GmeRecord.deleteMany({});
-    console.log('Game Record deleted Successfully');
-  } catch (error) {
-    console.error('Error resetting daily income:', error);
-  }
-}, {
-  timezone: 'Asia/Kolkata', // Set the timezone to IST
-});
+
 module.exports = router;

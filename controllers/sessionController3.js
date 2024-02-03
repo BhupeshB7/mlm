@@ -466,6 +466,18 @@ cron.schedule("* * * * * *", async () => {
     throw error;
   }
 });
+// Schedule delete Game History of 1Minute  using cron
+cron.schedule('59 23 * * *', async () => {
+  try {
+    // Reset dailyIncome for all users
+    await threeMinuteGameRecord.deleteMany({});
+    console.log('Game Record deleted Successfully');
+  } catch (error) {
+    console.error('Error resetting daily income:', error);
+  }
+}, {
+  timezone: 'Asia/Kolkata', // Set the timezone to IST
+});
 module.exports = {
   createSession3,
   getTimer3,
