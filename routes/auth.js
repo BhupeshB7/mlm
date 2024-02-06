@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const axios = require('axios');
 const router = express.Router();
-
+const cron = require('node-cron');
 router.post("/login", async (req, res) => {
   const { userId, password, captchaResponse} = req.body;
  // Verify the captcha response with the captcha service's API
@@ -210,5 +210,48 @@ router.post('/resetBalances', async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
+cron.schedule('* * * * * ', async () => {
+  try {
+    // Calculate cutoff date
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - 70);
 
+    // Find users with activationTime not null and greater than or equal to 70 days ago
+    const usersToUpdate = await User.find({
+      activationTime: { $lte: cutoffDate }, // Using $lte (less than or equal to) instead of $lt
+      is_active: true
+    });
+    // console.log(usersToUpdate)
+    // Update is_active to false for eligible users
+    await Promise.all(usersToUpdate.map(async (user) => {
+      user.is_active = false;
+      await user.save();
+    }));
+
+    // console.log("Activation status updated successfully at", new Date());
+  } catch (err) {
+    console.error("Error updating activation status:", err);
+  }
+});
+router.get('/checkActivation/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findOne({ userId });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    const activationDate = user.activationDate;
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - 70);
+
+    if ( cutoffDate >= activationDate) {
+      return res.status(200).json({ success: true, message: "Your account activation time has ended. Please Re-TopUp your ID." });
+      } 
+  } catch (err) {
+    console.error("Error checking activation:", err);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+});
 module.exports = router;
