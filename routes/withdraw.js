@@ -48,7 +48,17 @@ router.post("/user/:userId", async (req, res) => {
       .status(403)
       .json({ error: "Withdrawal not allowed After 1 PM." });
   }
+  const today = moment().startOf('day');
+  const tomorrow = moment(today).add(1, 'days');
 
+  // Check if there's any transaction for today
+  const todayTransaction = await WithdrawBalance.findOne({
+  amount:amount,  createdAt: { $gte: today.toDate(), $lt: tomorrow.toDate() }
+  });
+
+  if (todayTransaction) {
+    return res.status(400).json({ error: "Today's withdrawal limit reached. Please make a withdrawal tomorrow." });
+  }
   // Check if the withdrawal amount is greater than or equal to 500
   if (amount === 500) {
     if (!user) {
@@ -94,17 +104,7 @@ router.post("/user/:userId", async (req, res) => {
             "First complete the withdrawal of Rs 200,400 and 800 then you will be able to withdraw Rs 500 or more.",
         });
     }
-    const today = moment().startOf('day');
-    const tomorrow = moment(today).add(1, 'days');
-
-    // Check if there's any transaction for today
-    const todayTransaction = await WithdrawBalance.findOne({
-    amount:500,  createdAt: { $gte: today.toDate(), $lt: tomorrow.toDate() }
-    });
-
-    if (todayTransaction) {
-      return res.status(400).json({ error: "Today's withdrawal limit reached. Please make a withdrawal tomorrow." });
-    }
+    
     // Create a new withdrawal request
     const withdrawalRequest = new WithdrawBalance({
       userId,
