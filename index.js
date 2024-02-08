@@ -78,7 +78,9 @@ app.use("/api/notice", require("./routes/notice"));
 app.use("/api/gift", require("./routes/GiftCode"));
 app.use("/", sessionRoutes);
 app.use("/three", sessionRoutes3);
-
+app.use("/server",(req,res)=>{
+  res.json({message:"Server Started!"});
+})
 // Schedule daily income reset using cron
 cron.schedule(
   "55 23 * * *",
