@@ -133,23 +133,23 @@ const generateAndSaveRandomData = async (sessionIds) => {
       )
       .reduce((acc, entry) => acc + parseFloat(entry.betAmount), 0);
 
-    console.log("Small Bet Amount:", smallBetAmount);
-    console.log("Big Bet Amount:", bigBetAmount);
+    // console.log("Small Bet Amount:", smallBetAmount);
+    // console.log("Big Bet Amount:", bigBetAmount);
 
     // Determine randomLetter based on the lowest total betAmount
     // const randomLetter = smallBetAmount <= bigBetAmount ? "small" : "big";
     // Check for tie condition
     let randomLetter;
     if (smallBetAmount === bigBetAmount) {
-      console.log("It's a tie!");
+      // console.log("It's a tie!");
       // If it's a tie, set randomLetter to a random value
       const options = ["small", "big"];
       randomLetter = getRandomValue(options);
-      console.log("Random Letter (Tie):", randomLetter);
+      // console.log("Random Letter (Tie):", randomLetter);
     } else {
       // Determine randomLetter based on the lowest total betAmount
       randomLetter = smallBetAmount < bigBetAmount ? "small" : "big";
-      console.log("Random Letter:", randomLetter);
+      // console.log("Random Letter:", randomLetter);
     }
 
     // Determine randomNumber based on randomLetter
@@ -180,9 +180,9 @@ const generateAndSaveRandomData = async (sessionIds) => {
       )
       .reduce((acc, entry) => acc + parseFloat(entry.betAmount), 0);
 
-    console.log("Red Bet Amount:", redBetAmount);
-    console.log("Green Bet Amount:", greenBetAmount);
-    console.log("Violet Bet Amount:", violetBetAmount);
+    // console.log("Red Bet Amount:", redBetAmount);
+    // console.log("Green Bet Amount:", greenBetAmount);
+    // console.log("Violet Bet Amount:", violetBetAmount);
 
     // Determine randomColor based on the smallest betAmount
     let randomColor;
