@@ -130,15 +130,15 @@ const generateAndSaveRandomData = async (sessionIds) => {
       )
       .reduce((acc, entry) => acc + parseFloat(entry.betAmount), 0);
 
-    // console.log("Small Bet Amount:", smallBetAmount);
-    // console.log("Big Bet Amount:", bigBetAmount);
+    console.log("Small Bet Amount:", smallBetAmount);
+    console.log("Big Bet Amount:", bigBetAmount);
 
     // Determine randomLetter based on the lowest total betAmount
     // const randomLetter = smallBetAmount <= bigBetAmount ? "small" : "big";
     // Check for tie condition
     let randomLetter;
     if (smallBetAmount === bigBetAmount) {
-      // console.log("It's a tie!");
+      console.log("It's a tie!");
       // If it's a tie, set randomLetter to a random value
       const options = ["small", "big"];
       randomLetter = getRandomValue(options);
@@ -223,7 +223,7 @@ const generateAndSaveRandomData = async (sessionIds) => {
       number: randomNumber,
       sessionIds: sessionIds,
     });
-
+console.log(newData)
     await newData.save();
   } catch (error) {
     console.error("Error generating and saving random data:", error);
@@ -439,7 +439,7 @@ async function getTimerf(sessionId) {
     );
     // Check if remaining time is 5 seconds
     if (remainingTimeInSeconds === 5) {
-      console.log("Remaining time");
+      console.log("Remaining time",remainingTimeInSeconds);
       // Call generateAndSaveRandomData with the sessionId
       await generateAndSaveRandomData(sessionId);
     }
