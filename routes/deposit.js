@@ -28,11 +28,7 @@ router.post('/userAmount', upload.single('image'), async (req, res) => {
     if (existingDeposit) {
       return res.status(400).json({ message: 'Transaction Id already exists' });
     }
-
-    // Save the uploaded image to a temporary file
-    const tempFilePath = path.join(__dirname, 'temp');
-    fs.writeFileSync(tempFilePath, image.buffer);
-
+    
     // Upload the image to Cloudinary from the temporary file
     const result = await cloudinary.uploader.upload(tempFilePath, {
       resource_type: 'auto', // Automatically detect the resource type (image, video, etc.)
