@@ -30,6 +30,16 @@ async function getNextSessionId() {
     {},
     { sort: { sessionId: -1 } }
   );
+  // const existingUser = await MinuteColorPredictGame.findOne({
+  //   sessionId: lastSession.sessionId,
+  //   createdAt: {
+  //     $gte: moment().subtract(40, 'seconds').toDate()
+  //   }
+  // }).sort({createdAt: -1});
+
+  // if (existingUser) {
+  //   return   console.log('MinuteColorPredict Game already saved in last 60 seconds');
+  // }
 
   if (lastSession) {
     const lastSessionId = lastSession.sessionId;
