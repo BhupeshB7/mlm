@@ -5,7 +5,7 @@ const oneMinuteGameResultSchema = new mongoose.Schema(
     color: String,
     letter: String,
     number: String,
-    sessionIds: {
+    sessionId: {
       type: String,
       // unique:true
     },

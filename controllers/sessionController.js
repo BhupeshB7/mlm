@@ -4,6 +4,7 @@ const oneMinuteGameHistory = require("../models/OneMinuteHistory");
 const oneMinuteGameResult = require("../models/OneMinuteResult");
 const GameProfile1 = require("../models/GameProfile");
 const oneMinuteGameRecord = require("../models/OneMGameRecord");
+const moment = require("moment");
 // async function getNextSessionId() {
 //   const lastSession = await MinuteColorPredictGame.findOne(
 //     {}, 
@@ -106,11 +107,32 @@ const getRandomValue = (array) => {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 };
-const generateAndSaveRandomData = async (sessionIds) => {
+const generateRandomDataController = async (req, res) => {
   try {
+    const { sessionId } = req.body;
+    await generateAndSaveRandomData(sessionId);
+    res.status(200).json({ message: "Random data generated and saved successfully." });
+  } catch (error) {
+    console.error("Error in generating and saving random data:", error);
+    res.status(500).json({ error: "An internal server error occurred." });
+  }
+};
+const generateAndSaveRandomData = async (sessionId) => {
+  try {
+       // Check if userId exists in last 60 seconds
+       const existingUser = await oneMinuteGameResult.findOne({
+        sessionId,
+        createdAt: {
+          $gte: moment().subtract(60, 'seconds').toDate()
+        }
+      }).sort({createdAt: -1});
+  
+      if (existingUser) {
+        return   console.log('Data  already saved in last 60 seconds');
+      }
     // Fetch oneMinuteHistory for the given sessionIds
     const history = await oneMinuteGameHistory.find({
-      sessionId: { $in: sessionIds },
+      sessionId: { $in: sessionId },
     });
 
     // Calculate the total betAmount for small and big choices
@@ -221,7 +243,7 @@ const generateAndSaveRandomData = async (sessionIds) => {
       color: randomColor,
       letter: randomLetter,
       number: randomNumber,
-      sessionIds: sessionIds,
+      sessionId: sessionId,
     });
 console.log(newData)
     await newData.save();
@@ -248,12 +270,7 @@ async function getTimer(req, res) {
       0,
       Math.floor((scheduledDeletionTime - currentTime) / 1000)
     );
-    // Check if remaining time is 5 seconds
-    // if (remainingTimeInSeconds === 15) {
-    //   console.log("Remaining time");
-    //   // Call generateAndSaveRandomData with the sessionId
-    //   await generateAndSaveRandomData(sessionId);
-    // }
+   
     res.status(201).json({ time: remainingTimeInSeconds });
   } catch (error) {
     console.error(error);
@@ -437,12 +454,7 @@ async function getTimerf(sessionId) {
       0,
       Math.floor((scheduledDeletionTime - currentTime) / 1000)
     );
-    // Check if remaining time is 5 seconds
-    if (remainingTimeInSeconds === 5) {
-      console.log("Remaining time",remainingTimeInSeconds);
-      // Call generateAndSaveRandomData with the sessionId
-      await generateAndSaveRandomData(sessionId);
-    }
+    
   } catch (error) {
     console.error(error);
   }
@@ -492,5 +504,6 @@ module.exports = {
   insertOneMinuteHistory,
   processGame,
   getGameHistory,
+  generateRandomDataController
   // getOneMinuteResult,
 };

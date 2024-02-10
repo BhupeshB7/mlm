@@ -9,6 +9,7 @@ router.get("/getLatestSession", sessionController.getLatestSession);
 router.post("/oneMinuteHistory", sessionController.insertOneMinuteHistory);
 router.post("/oneMinuteuserResult", sessionController.processGame);
 router.get("/oneMinuteResultHistory", sessionController.getGameHistory);
+router.post("/saveGameResult", sessionController.generateRandomDataController);
 // router.post("/oneMinuteResultofUser", sessionController.getOneMinuteResult);
 
 // {
