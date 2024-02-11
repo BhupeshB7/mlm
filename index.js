@@ -34,7 +34,7 @@ app.use(
   cors({
     // origin:"https://powerfullindia.com",
     origin:"https://www.powerfullindia.com",
-    origin: "*",
+    // origin: "*",
     // origin:"http://localhost:3000",
   })
 );
@@ -83,7 +83,7 @@ app.use("/server",(req,res)=>{
 })
 // Schedule daily income reset using cron
 cron.schedule(
-  "55 23 * * *",
+  "59 23 * * *",
   async () => {
     try {
       // Reset dailyIncome for all users
