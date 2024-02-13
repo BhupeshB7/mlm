@@ -34,7 +34,7 @@ app.use(
   cors({
     // origin:"https://powerfullindia.com",
     origin:"https://www.powerfullindia.com",
-    origin: "*",
+    // origin: "*",
     // origin:"http://localhost:3000",
   })
 );

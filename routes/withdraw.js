@@ -36,14 +36,14 @@ router.post("/user/:userId", async (req, res) => {
   }
 
   // Check if it's before 9 AM
-  if (hours < 9) {
+  if (hours < 16) {
     return res
       .status(403)
       .json({ error: "Withdrawal not allowed before 9 AM." });
   }
 
   // Check if it's after 1 PM
-  if (hours >= 13) {
+  if (hours >= 18) {
     return res
       .status(403)
       .json({ error: "Withdrawal not allowed After 1 PM." });
@@ -53,6 +53,7 @@ router.post("/user/:userId", async (req, res) => {
 
   // Check if there's any transaction for today
   const todayTransaction = await WithdrawBalance.findOne({
+    userId:userId,
   amount:amount,  createdAt: { $gte: today.toDate(), $lt: tomorrow.toDate() }
   });
 
