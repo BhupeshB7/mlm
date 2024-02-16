@@ -83,7 +83,7 @@ app.use("/server",(req,res)=>{
 })
 // Schedule daily income reset using cron
 cron.schedule(
-  "30 08 * * *",
+  "32 8 * * *",
   async () => {
     try {
       // Reset dailyIncome for all users
