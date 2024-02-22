@@ -176,12 +176,13 @@ router.get('/userDetails/history/:userId/:page', async (req, res) => {
     const page = parseInt(req.params.page) || 1;
     const pageSize = 10;
     const totalDocuments = await oneMinuteGameHistory.countDocuments({userId:userId})
+    console.log(totalDocuments);
     const totalPages = Math.ceil(totalDocuments / pageSize);
     // Calculate the skip value based on the page number
     const skip = (page - 1) * pageSize;
 
     // Fetch user details with pagination and sorting by timestamp in descending order
-    const userResults = await oneMinuteGameHistory.find({ userId })
+    const userResults = await oneMinuteGameHistory.find({ userId:userId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(pageSize);
