@@ -41,7 +41,7 @@ router.post("/withdrawalSubmit", async (req, res) => {
   // }
 
   // Check if it's before 9 AM
-  if (hours < 11) {
+  if (hours < 9) {
     return res.status(403).json({ error: 'Withdrawal not allowed before 11 AM.' });
   }
 
