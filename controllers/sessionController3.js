@@ -261,7 +261,7 @@ const processGame = async (req, res) => {
     try {
       const { sessionId, userId } = req.body;
   
-      const gameResult = await ThreeMinuteGameResult.findOne({ sessionIds: sessionId });
+      const gameResult = await ThreeMinuteGameResult.findOne({ sessionId: sessionId });
       const history = await ThreeMinuteHistory.findOne({
         sessionId: sessionId,
         userId: userId,
