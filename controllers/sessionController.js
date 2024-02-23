@@ -292,7 +292,7 @@ const processGame = async (req, res) => {
   try {
     const { sessionId, userId } = req.body;
 
-    const gameResult = await oneMinuteGameResult.findOne({ sessionIds: sessionId });
+    const gameResult = await oneMinuteGameResult.findOne({ sessionId: sessionId });
      // Check if gameResult is null
      if (!gameResult) {
       return res.status(404).json({ error: "Game result not found for the provided sessionId" });
@@ -301,6 +301,9 @@ const processGame = async (req, res) => {
       sessionId: sessionId,
       userId: userId,
     });
+    if(!history){
+      res.status(403).json({success:false,error:"Next ..."})
+    }
     const user = await GameProfile1.findOne({ userId: userId });
     const amount = history.betAmount;
     let betAmount = 0;
