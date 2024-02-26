@@ -242,16 +242,19 @@ router.get('/checkActivation/:userId', async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found." });
     }
 
-    const activationDate = user.activationDate;
+    const activationDate = user.activationTime;
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 70);
 
-    if ( cutoffDate >= activationDate) {
-      return res.status(200).json({ success: true, message: "Your account activation time has ended. Please Re-TopUp your ID." });
-      } 
+    if (cutoffDate >= activationDate) {
+      res.status(200).json({ success: true, reTopUpRequired: true, message: "Your account activation time has ended. Please Re-TopUp your Account." });
+    } else {
+      res.status(200).json({ success: true, reTopUpRequired: false, message: "Your account is still active." });
+    }
   } catch (err) {
     console.error("Error checking activation:", err);
     res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
+
 module.exports = router;

@@ -428,7 +428,7 @@ router.post("/topUpUserID/:userID", async (req, res) => {
       .exec();
 
     if (!deposit) {
-      return res.status(401).send("User not found!");
+      return res.status(401).json({success:'false',error:"User Not Found!"});
     }
 
     const { userId } = req.body;
