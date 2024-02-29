@@ -408,6 +408,7 @@ const markTaskCompleted = async (req, res) => {
           sponsor.balance += 4;
           sponsor.teamIncome += 4;
           sponsor.dailyIncome += 4;
+          sponsor.teamIncomeValidation+=4;
           sponsor.lastIncomeUpdate = currentDate; //
           await sponsor.save();
 
@@ -427,6 +428,7 @@ const markTaskCompleted = async (req, res) => {
               sponsor2.balance += 3;
               sponsor2.income += 3;
               sponsor2.dailyIncome += 3;
+              sponsor2.teamIncomeValidation+=3;
               sponsor2.lastIncomeUpdate = currentDate; //
               await sponsor2.save();
 
@@ -446,6 +448,7 @@ const markTaskCompleted = async (req, res) => {
                   sponsor3.teamIncome += 2;
                   sponsor3.income += 2;
                   sponsor3.dailyIncome += 2;
+                  sponsor3.teamIncomeValidation+=2;
                   sponsor3.lastIncomeUpdate = currentDate; //
                   await sponsor3.save();
 
@@ -464,6 +467,7 @@ const markTaskCompleted = async (req, res) => {
                       sponsor4.teamIncome += 1;
                       sponsor4.income += 1;
                       sponsor4.dailyIncome += 1;
+                      sponsor4.teamIncomeValidation+=1;
                       sponsor4.lastIncomeUpdate = currentDate; //
                       await sponsor4.save();
 
@@ -482,6 +486,7 @@ const markTaskCompleted = async (req, res) => {
                           sponsor5.teamIncome += 0.5;
                           sponsor5.income += 0.5;
                           sponsor5.dailyIncome += 0.5;
+                          sponsor5.teamIncomeValidation+=0.5;
                           sponsor5.lastIncomeUpdate = currentDate; //
                           await sponsor5.save();
                         }

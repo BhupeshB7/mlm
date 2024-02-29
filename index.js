@@ -9,9 +9,11 @@ const http = require("http");
 const dotenv = require("dotenv");
 const cloudinaryConfig = require("./cloudinaryConfig");
 const User = require("./models/User");
+const fs = require('fs'); // Import the file system module
 const taskRoutes = require("./routes/taskRoute");
 const sessionRoutes = require("./routes/sessionRoutes");
 const sessionRoutes3 = require("./routes/threeMinuteRoutes");
+const GameProfile = require("./models/GameProfile");
 // Load environment variables from .env file
 dotenv.config();
 
@@ -97,6 +99,29 @@ cron.schedule(
     timezone: "Asia/Kolkata", // Set the timezone to IST
   }
 );
+
+
+// Fetch all users data using async/await
+(async () => {
+  try {
+    const users = await GameProfile.find({});
+    
+    // Convert users data to JSON format
+    const jsonData = JSON.stringify(users, null, 2);
+    
+    // Write the JSON data to a new file
+    fs.writeFile('gameProfile.json', jsonData, (err) => {
+      if (err) {
+        console.error('Error writing file:', err);
+        return;
+      }
+      console.log('Users data has been saved to users.json');
+    });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  }
+})();
+
 // 3minutes Games Schema Start
 const randomDataSchema = new mongoose.Schema(
   {
