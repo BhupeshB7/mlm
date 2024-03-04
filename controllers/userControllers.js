@@ -21,10 +21,10 @@ exports.registerUser = async (req, res) => {
     }
 
     // Check if mobile number already exists
-    const mobileExists = await User.findOne({ mobile });
-    if (mobileExists) {
-      return res.status(400).json({ error: 'Mobile number already exists' });
-    }
+    // const mobileExists = await User.findOne({ mobile });
+    // if (mobileExists) {
+    //   return res.status(400).json({ error: 'Mobile number already exists' });
+    // }
 
     // Generate user ID
     const userId = generateUserId();
