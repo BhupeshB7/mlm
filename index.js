@@ -122,18 +122,6 @@ cron.schedule(
   }
 })();
 
-// 3minutes Games Schema Start
-const randomDataSchema = new mongoose.Schema(
-  {
-    color: String,
-    letter: String,
-    number: String,
-    session: String,
-  },
-  { timestamps: true }
-);
-
-const RandomData = mongoose.model("RandomData", randomDataSchema);
 
 // 3minutes Games Schema End
 // 3minutes Games Schema Start

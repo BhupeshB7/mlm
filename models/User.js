@@ -32,7 +32,6 @@ const userSchema = new mongoose.Schema({
   mobile: {
     type: String,
     required: true,
-    unique: true,
     validate: {
       validator: function (v) {
         return /^(\+\d{1,3}[- ]?)?\d{10}$/.test(v);
