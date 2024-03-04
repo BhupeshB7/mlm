@@ -89,7 +89,7 @@ cron.schedule(
   async () => {
     try {
       // Reset dailyIncome for all users
-      await User.updateMany({}, { $set: { dailyIncome: 0 } });
+      await User.updateMany({}, { $set: { dailyIncome: 0 },$set:{teamIncomeValidation:0} });
       console.log("Daily income reset successful");
     } catch (error) {
       console.error("Error resetting daily income:", error);
