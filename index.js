@@ -84,27 +84,13 @@ app.use("/server",(req,res)=>{
   res.json({message:"Server Started!"});
 })
 // Schedule daily income reset using cron
+
 cron.schedule(
   "46 23 * * *",
   async () => {
     try {
       // Reset dailyIncome for all users
-      await User.updateMany({}, { $set: { dailyIncome: 0 } });
-      console.log("Daily income reset successful");
-    } catch (error) {
-      console.error("Error resetting daily income:", error);
-    }
-  },
-  {
-    timezone: "Asia/Kolkata", // Set the timezone to IST
-  }
-);
-cron.schedule(
-  "45 23 * * *",
-  async () => {
-    try {
-      // Reset dailyIncome for all users
-      await User.updateMany({}, { $set: { dailyIncome: 0 } });
+      await User.updateMany({}, { $set: { dailyIncome: 0, teamIncomeValidation:0 } });
       console.log("Daily income reset successful");
     } catch (error) {
       console.error("Error resetting daily income:", error);
@@ -140,13 +126,6 @@ async function updateUserLogic() {
 
 // Schedule the function to run at 11:23 PM every day
 cron.schedule('45 23 * * *', async () => {
-  // Call the updateUserLogic function
-  await updateUserLogic();
-}, {
-  timezone: "Asia/Kolkata" // Specify your timezone here
-});
-// Schedule the function to run at 11:23 PM every day
-cron.schedule('46 23 * * *', async () => {
   // Call the updateUserLogic function
   await updateUserLogic();
 }, {
