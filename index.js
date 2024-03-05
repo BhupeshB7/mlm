@@ -85,7 +85,22 @@ app.use("/server",(req,res)=>{
 })
 // Schedule daily income reset using cron
 cron.schedule(
-  "40 8 * * *",
+  "50 23 * * *",
+  async () => {
+    try {
+      // Reset dailyIncome and teamIncomeValidation for all users
+      await User.updateMany({}, { $set: { dailyIncome: 0, teamIncomeValidation: 0 } });
+      console.log("Daily income reset successful");
+    } catch (error) {
+      console.error("Error resetting daily income:", error);
+    }
+  },
+  {
+    timezone: "Asia/Kolkata", // Set the timezone to IST
+  }
+);
+cron.schedule(
+  "47 23 * * *",
   async () => {
     try {
       // Reset dailyIncome and teamIncomeValidation for all users
