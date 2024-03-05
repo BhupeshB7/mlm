@@ -85,7 +85,7 @@ app.use("/server",(req,res)=>{
 })
 // Schedule daily income reset using cron
 cron.schedule(
-  "35 23 * * *",
+  "46 23 * * *",
   async () => {
     try {
       // Reset dailyIncome for all users
@@ -99,87 +99,81 @@ cron.schedule(
     timezone: "Asia/Kolkata", // Set the timezone to IST
   }
 );
+cron.schedule(
+  "45 23 * * *",
+  async () => {
+    try {
+      // Reset dailyIncome for all users
+      await User.updateMany({}, { $set: { dailyIncome: 0 } });
+      console.log("Daily income reset successful");
+    } catch (error) {
+      console.error("Error resetting daily income:", error);
+    }
+  },
+  {
+    timezone: "Asia/Kolkata", // Set the timezone to IST
+  }
+);
+// Function to update users according to the specified logic
+async function updateUserLogic() {
+  try {
+    // Find users where teamIncomeValidation is greater than or equal to 200
+    const usersToUpdate = await User.find({ teamIncomeValidation: { $gte: 200 } });
 
+    // Update selfIncome and teamIncomeValidation for each user
+    const promises = usersToUpdate.map(async (user) => {
+      user.selfIncome -= 25;
+      user.balance -= 25;
+      user.income -= 25;
+      user.teamIncomeValidation = 0;
+      await user.save();
+    });
+
+    // Wait for all updates to complete
+    await Promise.all(promises);
+
+    console.log('Users updated successfully');
+  } catch (err) {
+    console.error('Error updating users:', err);
+  }
+}
+
+// Schedule the function to run at 11:23 PM every day
+cron.schedule('45 23 * * *', async () => {
+  // Call the updateUserLogic function
+  await updateUserLogic();
+}, {
+  timezone: "Asia/Kolkata" // Specify your timezone here
+});
+// Schedule the function to run at 11:23 PM every day
+cron.schedule('46 23 * * *', async () => {
+  // Call the updateUserLogic function
+  await updateUserLogic();
+}, {
+  timezone: "Asia/Kolkata" // Specify your timezone here
+});
 
 // Fetch all users data using async/await
-(async () => {
-  try {
-    const users = await GameProfile.find({});
+// (async () => {
+//   try {
+//     const users = await GameProfile.find({});
     
-    // Convert users data to JSON format
-    const jsonData = JSON.stringify(users, null, 2);
+//     // Convert users data to JSON format
+//     const jsonData = JSON.stringify(users, null, 2);
     
-    // Write the JSON data to a new file
-    fs.writeFile('gameProfile.json', jsonData, (err) => {
-      if (err) {
-        console.error('Error writing file:', err);
-        return;
-      }
-      console.log('Users data has been saved to users.json');
-    });
-  } catch (error) {
-    console.error('Error fetching users:', error);
-  }
-})();
+//     // Write the JSON data to a new file
+//     fs.writeFile('gameProfile.json', jsonData, (err) => {
+//       if (err) {
+//         console.error('Error writing file:', err);
+//         return;
+//       }
+//       console.log('Users data has been saved to users.json');
+//     });
+//   } catch (error) {
+//     console.error('Error fetching users:', error);
+//   }
+// })();
 
-
-// 3minutes Games Schema End
-// 3minutes Games Schema Start
-const randomDataSchema1 = new mongoose.Schema(
-  {
-    color: String,
-    letter: String,
-    number: String,
-    session: String,
-  },
-  { timestamps: true }
-);
-// Define Timer schema
-const timerSchema = new mongoose.Schema({
-  time: Number,
-},{timestamps:true});
-
-const Timer = mongoose.model('Timer', timerSchema);
-
-const RandomData1 = mongoose.model("RandomData1", randomDataSchema1);
-// API endpoint for admin to set the timer
-app.post('/api/admin/setTimer', async (req, res) => {
-    try {
-      const { time } = req.body;
-      await Timer.findOneAndUpdate({}, { time }, { upsert: true });
-  
-      // Schedule job to delete the timer after the specified time
-      schedule.scheduleJob(new Date(Date.now() + time * 60 * 1000), async () => {
-        await Timer.deleteMany({});
-      });
-  
-      res.status(200).json({ message: 'Timer set successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  });
-
-app.get('/api/user/getTimer', async (req, res) => {
-    try {
-      const timer = await Timer.findOne();
-      
-      if (!timer || !timer.updatedAt) {
-        // If no timer is set or createdAt is missing, return 0
-        return res.status(200).json({ time: 0 });
-      }
-  
-      const currentTime = Date.now();
-      const scheduledDeletionTime = timer.updatedAt.getTime() + timer.time * 60 * 1000;
-      const remainingTimeInSeconds = Math.max(0, Math.floor((scheduledDeletionTime - currentTime) / 1000));
-  
-      res.status(200).json({ time: remainingTimeInSeconds });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  });
-  
 // 3minutes Games Schema End
 //
 // Image upload routes

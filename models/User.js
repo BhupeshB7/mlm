@@ -31,13 +31,13 @@ const userSchema = new mongoose.Schema({
   },
   mobile: {
     type: String,
-    required: true,
-    validate: {
-      validator: function (v) {
-        return /^(\+\d{1,3}[- ]?)?\d{10}$/.test(v);
-      },
-      message: 'Invalid mobile number'
-    }
+    // required: true,
+    // validate: {
+    //   validator: function (v) {
+    //     return /^(\+\d{1,3}[- ]?)?\d{10}$/.test(v);
+    //   },
+    //   message: 'Invalid mobile number'
+    // }
   },
   sponsorId: {
     type: String,
