@@ -86,7 +86,7 @@ app.use("/server",(req,res)=>{
 // Schedule daily income reset using cron
 
 cron.schedule(
-  "46 22 * * *",
+  "46 23 * * *",
   async () => {
     try {
       // Reset dailyIncome for all users
@@ -125,7 +125,7 @@ async function updateUserLogic() {
 }
 
 // Schedule the function to run at 11:23 PM every day
-cron.schedule('45 23 * * *', async () => {
+cron.schedule('45 22 * * *', async () => {
   // Call the updateUserLogic function
   await updateUserLogic();
 }, {
