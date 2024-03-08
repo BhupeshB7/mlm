@@ -128,7 +128,7 @@ router.post("/user/:userId", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const withdrawalReq = await WithdrawBalance.findOne({ userId: userId });
+    const withdrawalReq = await WithdrawBalance.findOne({ userId: userId,status: 'approved' });
     if (withdrawalReq) {
       return res
         .status(403)
