@@ -57,9 +57,9 @@ router.post("/user/:userId", async (req, res) => {
   amount:amount,  createdAt: { $gte: today.toDate(), $lt: tomorrow.toDate() }
   });
 
-  if (todayTransaction) {
-    return res.status(400).json({ error: "Today's withdrawal limit reached. Please make a withdrawal tomorrow." });
-  }
+  // if (todayTransaction) {
+  //   return res.status(400).json({ error: "Today's withdrawal limit reached. Please make a withdrawal tomorrow." });
+  // }
   // Check if the withdrawal amount is greater than or equal to 500
   if (amount === 500) {
     if (!user) {
