@@ -410,7 +410,7 @@ router.put("/withdrawals/reject/:id", async (req, res) => {
 
     // Access the withdrawal amount
     const refundAmount = withdrawalRequest.amount;
-    useruserId.amount -= refundAmount;
+    user.withdrawal -= refundAmount;
     // Refund the amount to the user's wallet
     user.balance += refundAmount;
     user.withdrawalDone = false;
