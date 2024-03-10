@@ -53,7 +53,7 @@ router.post('/userAmount', async (req, res) => {
 
     res.status(201).json({ message: 'Deposit record created successfully' });
   } catch (error) {
-    console.error('Error creating deposit:', error);
+     console.error('Error creating deposit:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
