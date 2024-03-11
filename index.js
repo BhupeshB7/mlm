@@ -108,9 +108,10 @@ async function updateUserLogic() {
 
     // Update selfIncome and teamIncomeValidation for each user
     const promises = usersToUpdate.map(async (user) => {
+      user.dailyIncome-=25;
       user.selfIncome -= 25;
       user.balance -= 25;
-      user.income -= 25;
+      user.income -= 25;   
       user.teamIncomeValidation = 0;
       await user.save();
     });
@@ -125,7 +126,7 @@ async function updateUserLogic() {
 }
 // {teamIncomeValidation:{$gte:150}}
 // Schedule the function to run at 11:23 PM every day
-cron.schedule('58 21 * * *', async () => {
+cron.schedule('57 21 * * *', async () => {
   // Call the updateUserLogic function
   await updateUserLogic();
 }, {
