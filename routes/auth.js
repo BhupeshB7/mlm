@@ -8,15 +8,15 @@ const cron = require('node-cron');
 router.post("/login", async (req, res) => {
   const { userId, password, captchaResponse} = req.body;
  // Verify the captcha response with the captcha service's API
- const captchaSecretKey = '6LdxqJ0pAAAAAKXlE0jI0hAI6XmcGw52OIIktwQv';
+//  const captchaSecretKey = '6LdxqJ0pAAAAAKXlE0jI0hAI6XmcGw52OIIktwQv';
 //  const captchaSecretKey = '6Lc1-wgmAAAAAFTFsy_Hkk_a33hV94dP1XNwTzig';
- const captchaVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${captchaSecretKey}&response=${captchaResponse}`;
+//  const captchaVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${captchaSecretKey}&response=${captchaResponse}`;
 
 
   try {
-    const response = await axios.post(captchaVerifyUrl);
-    const { success } = response.data;
-    if(success){
+    // const response = await axios.post(captchaVerifyUrl);
+    // const { success } = response.data;
+    // if(success){
       
     // Check if user exists
     const user = await User.findOne({ userId });
@@ -41,10 +41,10 @@ router.post("/login", async (req, res) => {
       expiresIn: "7h",
     });
     res.json({ token });
-    }else{
-       // Return an error response indicating invalid captcha
-       res.status(401).json({ error: 'Invalid captcha' });
-    }
+    // }else{
+    //    // Return an error response indicating invalid captcha
+    //    res.status(401).json({ error: 'Invalid captcha' });
+    // }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });

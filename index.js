@@ -14,6 +14,8 @@ const taskRoutes = require("./routes/taskRoute");
 const sessionRoutes = require("./routes/sessionRoutes");
 const sessionRoutes3 = require("./routes/threeMinuteRoutes");
 const GameProfile = require("./models/GameProfile");
+const captchaRoutes = require('./routes/captchaRoutes');
+
 // Load environment variables from .env file
 dotenv.config();
 
@@ -78,6 +80,7 @@ app.use("/api", require("./routes/WalletTransfer"));
 app.use("/api", require("./routes/changePassword"));
 app.use("/api/notice", require("./routes/notice"));
 app.use("/api/gift", require("./routes/GiftCode"));
+app.use('/captcha', captchaRoutes);
 app.use("/", sessionRoutes);
 app.use("/three", sessionRoutes3);
 app.use("/server",(req,res)=>{
