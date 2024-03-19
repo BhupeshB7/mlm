@@ -8,7 +8,7 @@ const cron = require('node-cron');
 router.post("/login", async (req, res) => {
   const { userId, password, captchaResponse} = req.body;
  // Verify the captcha response with the captcha service's API
- const captchaSecretKey = '6LesDAkmAAAAADqvqEelZH_MGPpueFiN8q6PEmp1';
+ const captchaSecretKey = '6LdxqJ0pAAAAAKXlE0jI0hAI6XmcGw52OIIktwQv';
 //  const captchaSecretKey = '6Lc1-wgmAAAAAFTFsy_Hkk_a33hV94dP1XNwTzig';
  const captchaVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${captchaSecretKey}&response=${captchaResponse}`;
 
