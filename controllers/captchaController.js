@@ -10,7 +10,6 @@ const generateCaptcha = () => {
   return captcha;
 };
 
-// Controller function to refresh captcha
 exports.refreshCaptcha = async (req, res) => {
   try {
     const captcha = generateCaptcha();
