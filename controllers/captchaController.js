@@ -21,7 +21,6 @@ exports.refreshCaptcha = async (req, res) => {
   }
 };
 
-// Controller function to verify captcha
 exports.verifyCaptcha = async (req, res) => {
   try {
     const { userInput } = req.body;
