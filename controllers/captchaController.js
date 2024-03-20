@@ -4,7 +4,7 @@ const Captcha = require('../models/Captcha');
 const generateCaptcha = () => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let captcha = '';
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 6; i++) {
     captcha += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return captcha;
