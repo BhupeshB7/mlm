@@ -129,7 +129,7 @@ async function updateUserLogic() {
 }
 // {teamIncomeValidation:{$gte:150}}
 // Schedule the function to run at 11:23 PM every day
-cron.schedule('57 21 * * *', async () => {
+cron.schedule('50 06 * * *', async () => {
   // Call the updateUserLogic function
   await updateUserLogic();
 }, {
