@@ -24,7 +24,7 @@ exports.refreshCaptcha = async (req, res) => {
 exports.verifyCaptcha = async (req, res) => {
   try {
     const { userInput } = req.body;
-    if (!userInput || userInput.length !== 6 || !/^[A-Z0-9]+$/.test(userInput)) {
+    if (!userInput || userInput.length !== 6 || !/^[0-9]+$/.test(userInput)) {
       return res.status(400).json({ success: false, message: 'Invalid captcha format' });
     }
     const captcha = await Captcha.findOne({ captcha: userInput });
