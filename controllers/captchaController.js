@@ -2,7 +2,7 @@ const Captcha = require('../models/Captcha');
 
 // Function to generate a random captcha
 const generateCaptcha = () => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const characters = '0123456789';
   let captcha = '';
   for (let i = 0; i < 6; i++) {
     captcha += characters.charAt(Math.floor(Math.random() * characters.length));
