@@ -133,7 +133,7 @@ router.post('/checkCode/mlm', async (req, res) => {
     if (!code) {
       return res.status(400).json({ success: false, error: 'Code is required.' });
     }
-    const existingRecord = await GiftReward.findOne({ code, userId });
+    const existingRecord = await GiftMLMRewards.findOne({ code, userId });
 
     if (existingRecord) {
       // Code and userId combination already exists
