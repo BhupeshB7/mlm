@@ -1,16 +1,3 @@
-// const express = require('express');
-// const taskController = require('../controllers/taskController');
-
-// const router = express.Router();
-
-// router.get('/', taskController.getAllTasks);
-// router.get('/:id', taskController.getTasks);
-// router.post('/', taskController.createTask);
-// router.delete('/:id', taskController.deleteTask);
-
-// module.exports = router;
-
-
 
 
 // taskRoute.js
@@ -48,7 +35,7 @@ router.get('/teamTaskMember/:userId', async (req, res) => {
     const teamStructure = await getUserTeam(userId, 6); // Set the depth to 5 levels
     res.json(teamStructure);
   } catch (error) {
-    console.error('Error fetching team structure:', error);
+    // console.error('Error fetching team structure:', error);
     res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
   }
 });
@@ -60,7 +47,7 @@ router.get('/teamTaskMember/:userId', async (req, res) => {
     const cachedData = cache.get(userId);
   
     if (cachedData) {
-      console.log("Serving from cache");
+      // console.log("Serving from cache");
       res.json(cachedData);
     } else {
       try {
@@ -69,7 +56,7 @@ router.get('/teamTaskMember/:userId', async (req, res) => {
         cache.set(userId, usersByLevel); // Cache the data
         res.json(usersByLevel);
       } catch (error) {
-        console.error('Error fetching team structure:', error);
+        // console.error('Error fetching team structure:', error);
         res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
       }
     }
@@ -115,7 +102,7 @@ router.get('/teamTaskMember/:userId', async (req, res) => {
      
       return teamStructure;
     } catch (error) {
-      console.error('Error fetching user:', error);
+      // console.error('Error fetching user:', error);
       throw error;
     }
   }
@@ -152,7 +139,7 @@ router.get('/teamTaskMember/:userId', async (req, res) => {
   
       return teamStructure;
     } catch (error) {
-      console.error('Error fetching user:', error);
+      // console.error('Error fetching user:', error);
       throw error;
     }
   }

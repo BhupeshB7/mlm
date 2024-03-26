@@ -91,7 +91,7 @@ router.get("/liveGameUsers", async (req, res) => {
       smallCount,
     });
   } catch (error) {
-    console.error("Error fetching live game users:", error);
+    // console.error("Error fetching live game users:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -170,7 +170,7 @@ router.get("/liveGameHistory", async (req, res) => {
       smallCount,
     });
   } catch (error) {
-    console.error("Error fetching live game users:", error);
+    // console.error("Error fetching live game users:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -237,14 +237,14 @@ router.post("/saveSelection", async (req, res) => {
       await Promise.all(numberUpdatePromises);
     }
 
-    console.log('Matches checked, balances updated!');
+    // console.log('Matches checked, balances updated!');
     await LiveGameData.deleteMany({});
     return res.json({
       success: true,
       message: "Game Saved SuccessFully!",
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });

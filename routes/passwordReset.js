@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 
 // send email Link For reset Password
 router.post("/sendpasswordlink",async(req,res)=>{
-    console.log(req.body)
+    // console.log(req.body)
 
     const {email} = req.body;
 
@@ -35,7 +35,7 @@ router.post("/sendpasswordlink",async(req,res)=>{
             expiresIn:"300s"
 
         });
-        console.log("token", token);
+        // console.log("token", token);
         const setusertoken = await User.findByIdAndUpdate({_id:userfind._id},{verifytoken:token},{new:true});
 
 
@@ -50,10 +50,10 @@ router.post("/sendpasswordlink",async(req,res)=>{
 
             transporter.sendMail(mailOptions,(error,info)=>{
                 if(error){
-                    console.log("error",error);
+                    // console.log("error",error);
                     res.status(401).json({status:401,message:"email not send"})
                 }else{
-                    console.log("Email sent",info.response);
+                    // console.log("Email sent",info.response);
                     res.status(201).json({status:201,message:"Email sent Succsfully"})
                 }
             })
@@ -62,7 +62,7 @@ router.post("/sendpasswordlink",async(req,res)=>{
 
     } catch (error) {
         res.status(401).json({status:401,message:"invalid user"})
-        console.log(error)
+        // console.log(error)
     }
 
 });
@@ -77,7 +77,7 @@ router.get("/forgotpassword/:id/:token",async(req,res)=>{
         
         const verifyToken = jwt.verify(token,process.env.JWT_SECRET);
 
-        console.log(verifyToken)
+        // console.log(verifyToken)
 
         if(validuser && verifyToken._id){
             res.status(201).json({status:201,validuser})
@@ -97,7 +97,7 @@ router.post("/:id/:token",async(req,res)=>{
     const {id,token} = req.params;
 
     const {password} = req.body;
-console.log(password);
+// console.log(password);
     try {
         const validuser = await User.findOne({_id:id,verifytoken:token});
         
@@ -116,7 +116,7 @@ console.log(password);
         }
     } catch (error) {
         res.status(401).json({status:401,error})
-        console.log(error);
+        // console.log(error);
     }
 })
 

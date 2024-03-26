@@ -70,7 +70,7 @@ exports.registerUser = async (req, res) => {
     }
     res.json({ userId, name, password, sponsorId});
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
 };

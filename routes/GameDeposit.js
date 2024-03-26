@@ -74,18 +74,7 @@ router.get('/history/:userId', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  // router.get('/withdraw/history', async (req, res) => {
-  //   try {
-     
-  //     // Assuming you have a Game model, you can use it to query the database
-  //     const gameHistory = await GameWithdrawal.find();
-  //     res.json(gameHistory);
-  //   } catch (err) {
-  //     console.error(`Error fetching game history: ${err}`);
-  //     res.status(500).json({ error: 'Internal Server Error' });
-  //   }
-  // });
-
+ 
 router.get('/withdraw/history', async (req, res) => {
   try {
     // Pagination parameters (page and perPage)
@@ -112,41 +101,6 @@ router.get('/withdraw/history', async (req, res) => {
   }
 });
 
-// Define a page and pageSize in your route
-
-// router.get('/history/:userId', async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-//     const page = parseInt(req.query.page) || 1; // Get the page from the query parameters or default to 1
-//     const pageSize = 20; // Set the page size (items per page)
-
-//     // Calculate the number of documents to skip based on the page and pageSize
-//     const skip = (page - 1) * pageSize;
-
-//     // Assuming you have a GameWithdrawal model, you can use it to query the database with skip and limit
-//     const totalCount = await GameWithdrawal.countDocuments({ userId: userId });
-
-//     const totalPages = Math.ceil(totalCount / pageSize);
-
-//     const gameHistory = await GameWithdrawal.find({ userId: userId })
-//       .skip(skip)
-//       .limit(pageSize)
-//       .sort({ createdAt: -1 });
-
-//     // Include page and itemsPerPage in the response
-//     res.json({
-//       page,
-//       itemsPerPage: pageSize,
-//       totalPages,
-//       gameHistory,
-//     });
-//   } catch (err) {
-//     console.error(`Error fetching game history: ${err}`);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
   router.get('/deposit/history/:userId', async (req, res) => {
     try {
       const userId = req.params.userId;
@@ -158,24 +112,6 @@ router.get('/withdraw/history', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-//Admin, Fetch Data
-  // router.get('/deposit/history', async (req, res) => {
-  //   try {
-  //     const page = parseInt(req.params.page) ||1;
-  //     const pageSize =3;
-  //     const skip = (page - 1) * pageSize
-  //     const totalCount = await Game.countDocuments();
-
-  //   const totalPages = Math.ceil(totalCount / pageSize);
-
-  //     // Assuming you have a Game model, you can use it to query the database
-  //     const gameHistory = await GameDeposit.find().skip(skip).limit(pageSize).sort({createdAt: -1});
-  //     res.json({gameHistory,page, itemsPerPage: pageSize, totalPages});
-  //   } catch (err) {
-  //     console.error(`Error fetching game history: ${err}`);
-  //     res.status(500).json({ error: 'Internal Server Error' });
-  //   }
-  // });
 
 router.get('/deposit/history', async (req, res) => {
   try {
@@ -199,7 +135,7 @@ router.get('/deposit/history', async (req, res) => {
 
     res.json({ gameHistory, paginationInfo });
   } catch (err) {
-    console.error(`Error fetching game history: ${err}`);
+    // console.error(`Error fetching game history: ${err}`);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -253,7 +189,7 @@ router.delete("/gameDeposit/delete/:id", async (req, res) => {
     await GameDeposit.deleteOne({ _id: id });
     res.status(200).send("Deposit deleted successfully!");
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send(error);
   }
 });
@@ -438,7 +374,7 @@ router.get('/statistics', async (req, res) => {
       yesterdayTotalWithdrawalAmount: yesterdayTotalWithdrawalAmount[0]?.yesterdayTotalWithdrawalAmount || 0,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

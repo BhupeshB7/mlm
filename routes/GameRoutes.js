@@ -37,7 +37,7 @@ router.post('/startGame', async (req, res) => {
       return res.status(400).json({ message: 'Insufficient balance to play' });
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
@@ -141,7 +141,7 @@ router.post('/checkChoices', async (req, res) => {
 
     return res.status(200).json({ result, message, amount, userChoice, choice });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -166,7 +166,7 @@ router.get('/userDetails/:userId/:page', async (req, res) => {
     // Send the user details to the frontend
     res.json({userResults,totalPages});
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -176,7 +176,7 @@ router.get('/userDetails/history/:userId/:page', async (req, res) => {
     const page = parseInt(req.params.page) || 1;
     const pageSize = 10;
     const totalDocuments = await oneMinuteGameHistory.countDocuments({userId:userId})
-    console.log(totalDocuments);
+    // console.log(totalDocuments);
     const totalPages = Math.ceil(totalDocuments / pageSize);
     // Calculate the skip value based on the page number
     const skip = (page - 1) * pageSize;
@@ -190,7 +190,7 @@ router.get('/userDetails/history/:userId/:page', async (req, res) => {
     // Send the user details to the frontend
     res.json({userResults,totalPages});
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -214,7 +214,7 @@ router.get('/userDetails3/:userId/:page', async (req, res) => {
     // Send the user details to the frontend
     res.json({userResults,totalPages});
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).send('Internal Server Error');
   }
 });

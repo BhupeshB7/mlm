@@ -47,7 +47,7 @@ router.get('/team/:userId', async (req, res) => {
     const teamStructure = await getUserTeam(userId, 6); // Set the depth to 5 levels
     res.json(teamStructure);
   } catch (error) {
-    console.error('Error fetching team structure:', error);
+    // console.error('Error fetching team structure:', error);
     res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
   }
 });
@@ -96,7 +96,7 @@ async function getUserTeam(userId, depth) {
 
     return teamStructure;
   } catch (error) {
-    console.error('Error fetching user:', error);
+    // console.error('Error fetching user:', error);
     throw error;
   }
 }
@@ -109,7 +109,7 @@ router.get('/teamStructure/:userId', async (req, res) => {
   const cachedData = cache.get(userId);
 
   if (cachedData) {
-    console.log("Serving from cache");
+    // console.log("Serving from cache");
     res.json(cachedData);
   } else {
     try {
@@ -118,7 +118,7 @@ router.get('/teamStructure/:userId', async (req, res) => {
       cache.set(userId, usersByLevel); // Cache the data
       res.json(usersByLevel);
     } catch (error) {
-      console.error('Error fetching team structure:', error);
+      // console.error('Error fetching team structure:', error);
       res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
     }
   }
@@ -156,7 +156,7 @@ async function getUserTeamStructure(userId, depth) {
 
     return teamStructure;
   } catch (error) {
-    console.error('Error fetching user:', error);
+    // console.error('Error fetching user:', error);
     throw error;
   }
 }
@@ -201,7 +201,7 @@ router.get('/teamStructureRank/:userId', async (req, res) => {
     const rankedUser = getHighestAchievedRank(activeUsersByLevel);
     res.json(rankedUser);
   } catch (error) {
-    console.error('Error fetching team structure:', error);
+    // console.error('Error fetching team structure:', error);
     res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
   }
 });
@@ -236,7 +236,7 @@ function getHighestAchievedRank(activeUsersByLevel) {
 
   for (let level = 1; level <= 5; level++) {
     const count = activeUsersByLevel[level] || 0;
-        console.log(count);
+        // console.log(count);
     if (level === 1 && count >= rankThresholds.Bronze) {
       highestAchievedRank = 'Bronze';
     } else if (level === 2 && count >= rankThresholds.Silver) {
@@ -397,7 +397,7 @@ router.get("/profile", auth, async (req, res) => {
     const user = await User.findById(req.user.id).select("-password");
     res.json(user);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -477,7 +477,7 @@ if (req.body.aadhar) {
 
     res.json({ message: 'Profile updated successfully' });
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
     res.status(500).send('Server Error for updation');
   }
 });
@@ -524,7 +524,7 @@ router.post('/activeuser/:userId', async (req, res) => {
 
     res.json(data);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -577,7 +577,7 @@ router.get('/api/users-created', async (req, res) => {
 
     res.json(formattedData);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -610,7 +610,7 @@ router.get('/new/users-created', async (req, res) => {
 
     res.json(formattedData);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

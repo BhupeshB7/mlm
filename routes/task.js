@@ -10,7 +10,7 @@ router.get('/tasks', async (req, res) => {
       const tasks = await Task.find();
       res.status(200).json(tasks);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       res.status(500).json({ message: 'Server error' });
     }
   });
@@ -23,7 +23,7 @@ router.post('/tasks', async (req, res) => {
     await task.save();
     res.status(201).json(task);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -35,7 +35,7 @@ router.delete('/tasks/:id', async (req, res) => {
     await Task.findByIdAndDelete(id);
     res.status(200).json({ message: 'Task deleted successfully' });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -47,7 +47,7 @@ router.get('/income-wallet', async (req, res) => {
     const incomeWallet = await User.findOne({ userId });
     res.status(200).json(incomeWallet);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -65,7 +65,7 @@ router.put('/wallet',auth, async (req, res) => {
     await user.save();
      res.status(200).json({ message: 'Wallet updated' });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });

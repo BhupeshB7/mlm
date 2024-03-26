@@ -14,7 +14,7 @@ const checkTaskCompletion = async (req, res) => {
 
     res.status(200).json({ completed: userTask.completed });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ error: 'Failed to check task completion' });
   }
 };

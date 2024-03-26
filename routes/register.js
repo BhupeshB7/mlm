@@ -13,7 +13,7 @@ router.get("/getSponsorName/:sponsorId", async (req, res) => {
       res.status(404).json({ error: "Sponsor ID not found" });
     }
   } catch (error) {
-    console.error("Error fetching sponsor name:", error);
+    // console.error("Error fetching sponsor name:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -71,7 +71,7 @@ router.get('/daily-new-users', async (req, res) => {
   
       res.json({ count: newUsersCount });
     } catch (err) {
-        console.error(err);
+        // console.error(err);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });

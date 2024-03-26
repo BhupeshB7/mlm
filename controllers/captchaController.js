@@ -16,7 +16,7 @@ exports.refreshCaptcha = async (req, res) => {
     await Captcha.create({ captcha });
     res.json({ captcha });
   } catch (error) {
-    console.error('Error creating captcha:', error);
+    // console.error('Error creating captcha:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
@@ -35,7 +35,7 @@ exports.verifyCaptcha = async (req, res) => {
       res.json({ success: false, message: 'Captcha does not match' });
     }
   } catch (error) {
-    console.error('Error verifying captcha:', error);
+    // console.error('Error verifying captcha:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };

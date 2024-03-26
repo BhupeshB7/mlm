@@ -75,7 +75,7 @@ async function getLatestSession3(req, res) {
       res.json({ sessionId: "", time: 0 });
     }
   } catch (error) {
-    console.error("Error fetching latest session info:", error);
+    // console.error("Error fetching latest session info:", error);
     res.status(500).send("Internal Server Error");
   }
 }
@@ -229,7 +229,7 @@ const generateAndSaveRandomData = async (sessionIds) => {
 
     await newData.save();
   } catch (error) {
-    console.error("Error generating and saving random data:", error);
+    // console.error("Error generating and saving random data:", error);
     throw error;
   }
 };
@@ -253,7 +253,7 @@ async function getTimer3(req, res) {
     );
     res.status(201).json({ time: remainingTimeInSeconds });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
@@ -384,7 +384,7 @@ const processGame = async (req, res) => {
   
       res.json({ betAmount });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
@@ -408,7 +408,7 @@ const processGame = async (req, res) => {
         currentPage: page,
       });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
@@ -431,12 +431,12 @@ async function getTimerf(sessionId) {
     );
     // Check if remaining time is 5 seconds
     if (remainingTimeInSeconds === 5) {
-      console.log("Remaining time");
+      // console.log("Remaining time");
       // Call generateAndSaveRandomData with the sessionId
       await generateAndSaveRandomData(sessionId);
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 }
 
@@ -445,7 +445,7 @@ cron.schedule("*/3 * * * *", async () => {
     const sessionId = await getNextSessionId();
     const newSession = new ThreeMinuteColorGame({ sessionId, time: 3 });
     await newSession.save();
-    console.log("New session created of 3 Minute:", newSession);
+    // console.log("New session created of 3 Minute:", newSession);
   } catch (error) {
     console.error("Error creating new session:", error);
   }
@@ -471,9 +471,10 @@ cron.schedule('59 23 * * *', async () => {
   try {
     // Reset dailyIncome for all users
     await threeMinuteGameRecord.deleteMany({});
-    console.log('Game Record deleted Successfully');
+    // console.log('Game Record deleted Successfully');
   } catch (error) {
-    console.error('Error resetting daily income:', error);
+    console.error('Error resetting daily income:');
+    // console.error('Error resetting daily income:', error);
   }
 }, {
   timezone: 'Asia/Kolkata', // Set the timezone to IST

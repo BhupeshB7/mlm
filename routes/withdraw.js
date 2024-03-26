@@ -83,7 +83,7 @@ router.post("/user/:userId", async (req, res) => {
       sponsorId: userId,
       is_active: true,
     });
-    console.log(count);
+    // console.log(count);
     if (count < 2) {
       return res
         .status(400)
@@ -378,7 +378,7 @@ router.put("/withdrawals/:id", async (req, res) => {
     await withdrawalRequest.save();
     res.json(withdrawalRequest);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json(error);
   }
 });
@@ -432,7 +432,7 @@ router.put("/withdrawals/reject/:id", async (req, res) => {
       throw error;
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json(error);
   }
 });

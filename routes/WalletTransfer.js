@@ -110,7 +110,7 @@ router.get('/topupHistory/:userID', async (req, res) => {
       totalPages,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -135,7 +135,7 @@ router.get('/topupUser/:userID', async (req, res) => {
       totalPages,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });

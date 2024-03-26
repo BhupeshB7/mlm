@@ -60,7 +60,7 @@ async function createSession(req, res) {
     const newSession = new MinuteColorPredictGame({ sessionId, time: 1 });
     await newSession.save();
     res.send("New session created successfully");
-    console.log("New session created successfully");
+    // console.log("New session created successfully");
   } catch (error) {
     res.status(500).send("Internal Server Error");
   }
@@ -83,7 +83,7 @@ async function getLatestSession(req, res) {
       res.json({ sessionId: "", time: 0 });
     }
   } catch (error) {
-    console.error("Error fetching latest session info:", error);
+    // console.error("Error fetching latest session info:", error);
     res.status(500).send("Internal Server Error");
   }
 }
@@ -123,7 +123,7 @@ const generateRandomDataController = async (req, res) => {
     await generateAndSaveRandomData(sessionId);
     res.status(200).json({ message: "Random data generated and saved successfully." });
   } catch (error) {
-    console.error("Error in generating and saving random data:", error);
+    // console.error("Error in generating and saving random data:", error);
     res.status(500).json({ error: "An internal server error occurred." });
   }
 };
@@ -138,7 +138,8 @@ const generateAndSaveRandomData = async (sessionId) => {
       }).sort({createdAt: -1});
   
       if (existingUser) {
-        return   console.log('Data  already saved in last 60 seconds');
+        return   
+        // console.log('Data  already saved in last 60 seconds');
       }
     // Fetch oneMinuteHistory for the given sessionIds
     const history = await oneMinuteGameHistory.find({
@@ -162,15 +163,15 @@ const generateAndSaveRandomData = async (sessionId) => {
       )
       .reduce((acc, entry) => acc + parseFloat(entry.betAmount), 0);
 
-    console.log("Small Bet Amount:", smallBetAmount);
-    console.log("Big Bet Amount:", bigBetAmount);
+    // console.log("Small Bet Amount:", smallBetAmount);
+    // console.log("Big Bet Amount:", bigBetAmount);
 
     // Determine randomLetter based on the lowest total betAmount
     // const randomLetter = smallBetAmount <= bigBetAmount ? "small" : "big";
     // Check for tie condition
     let randomLetter;
     if (smallBetAmount === bigBetAmount) {
-      console.log("It's a tie!");
+      // console.log("It's a tie!");
       // If it's a tie, set randomLetter to a random value
       const options = ["small", "big"];
       randomLetter = getRandomValue(options);
@@ -255,10 +256,10 @@ const generateAndSaveRandomData = async (sessionId) => {
       number: randomNumber,
       sessionId: sessionId,
     });
-console.log(newData)
+// console.log(newData)
     await newData.save();
   } catch (error) {
-    console.error("Error generating and saving random data:", error);
+    // console.error("Error generating and saving random data:", error);
     throw error;
   }
 };
@@ -283,7 +284,7 @@ async function getTimer(req, res) {
    
     res.status(201).json({ time: remainingTimeInSeconds });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
@@ -421,7 +422,7 @@ const processGame = async (req, res) => {
 
     res.json({ betAmount });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -445,7 +446,7 @@ const getGameHistory = async (req, res) => {
       currentPage: page,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -469,7 +470,7 @@ async function getTimerf(sessionId) {
     );
     
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 }
 
@@ -478,7 +479,7 @@ cron.schedule("* * * * *", async () => {
     const sessionId = await getNextSessionId();
     const newSession = new MinuteColorPredictGame({ sessionId, time: 1 });
     await newSession.save();
-    console.log("New session created:", sessionId);
+    // console.log("New session created:", sessionId);
   } catch (error) {
     console.error("Error creating new session:", error);
   }
@@ -505,7 +506,7 @@ cron.schedule('59 23 * * *', async () => {
     await oneMinuteGameRecord.deleteMany({});
     console.log('Game Record deleted Successfully');
   } catch (error) {
-    console.error('Error resetting daily income:', error);
+    // console.error('Error resetting daily income:', error);
   }
 }, {
   timezone: 'Asia/Kolkata', // Set the timezone to IST

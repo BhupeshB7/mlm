@@ -39,19 +39,6 @@ router.post('/saveGame', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-// router.get('/history/:userId', async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-//     // Assuming you have a Game model, you can use it to query the database
-//     const gameHistory = await Game.find({ userId: userId });
-//     res.json(gameHistory);
-//   } catch (err) {
-//     console.error(`Error fetching game history: ${err}`);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-// Modify the route to fetch all user data based on email
-
 router.get('/history/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -79,7 +66,7 @@ router.get('/history/:userId', async (req, res) => {
       gameHistory,
     });
   } catch (err) {
-    console.error(`Error fetching game history: ${err}`);
+    // console.error(`Error fetching game history: ${err}`);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -93,7 +80,7 @@ router.get('/gamer/:userId', async (req, res) => {
     }
     res.json(user);
   } catch (err) {
-    console.error(`Error fetching user data: ${err}`);
+    // console.error(`Error fetching user data: ${err}`);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -109,7 +96,7 @@ router.get('/balance/:userId', async (req, res) => {
       res.status(404).json({ message: 'User not found' });
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
@@ -127,7 +114,7 @@ router.put('/balance/:userId', async (req, res) => {
       res.status(404).json({ message: 'User not found' });
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
@@ -168,22 +155,6 @@ router.get('/gamer/profile/:userId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-// Update user details by ID
-// router.put('/gamer/profile/:userId', async (req, res) => {
-//   const userId = req.params;
-//   const { balance, totalwin } = req.body;
-// console.log('balance: ' + balance);
-// console.log(balance);
-//   try {
-//     const user = await GameProfile.findOneAndUpdate({ userId }, { balance, totalwin }, { new: true });
-//     res.json(user);
-//     console.log('updated')
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({success:false, error: 'Internal Server Error' });
-//   }
-// });
 router.put('/gamer/profile/:userId', async (req, res) => {
   const userId = req.params.userId; // Extract the userId from params
   const { balance, totalwin } = req.body;
@@ -200,7 +171,7 @@ router.put('/gamer/profile/:userId', async (req, res) => {
     res.json(user);
     console.log('updated');
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
@@ -211,7 +182,7 @@ router.get("/withdrawal/profile/:userId",  async (req, res) => {
     const user = await GameProfile.findOne({userId:userId}).select("-balance -totalwin -levelIncome -sponsorId -name");  // Access userId from params
     res.json(user);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -257,7 +228,7 @@ router.post('/withdrawal/profileUpdate/:userId', async (req, res) => {
 
     res.json({ message: 'Profile updated successfully' });
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
     res.status(500).send('Server Error for updation');
   }
 });

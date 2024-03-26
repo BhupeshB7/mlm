@@ -24,7 +24,7 @@ router.post('/send-email', async (req, res) => {
     await transporter.sendMail(mailOptions);
     res.sendStatus(200);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.sendStatus(500);
   }
 });
@@ -55,7 +55,7 @@ router.post('/contactInfo', async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({ error: 'Invalid data provided' })
-    console.error(error);
+    // console.error(error);
   }
 });
 

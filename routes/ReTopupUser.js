@@ -9,7 +9,7 @@ router.post('/reTopup', async (req, res) => {
       await newUser.save();
       res.status(201).json(newUser);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       res.status(500).json({ message: 'Server error' });
     }
   });
@@ -19,7 +19,7 @@ router.get('/reTopup', async (req, res) => {
       const users = await reTopup.find({});
       res.status(200).json(users);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       res.status(500).json({ message: 'Server error' });
     }
   });
@@ -34,7 +34,7 @@ router.get('/reTopup', async (req, res) => {
   
       res.status(200).json(user);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       res.status(500).json({ message: 'Server error' });
     }
   });

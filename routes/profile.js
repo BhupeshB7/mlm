@@ -9,7 +9,7 @@ router.get("/profile", auth, async (req, res) => {
     const user = await User.findById(req.user._id).select("-password");
     res.json(user);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -85,7 +85,7 @@ router.post('/profileUpdate', auth, async (req, res) => {
       
     res.json({ message: 'Profile updated successfully' });
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
     res.status(500).send('Server Error for updation');
   }
 });

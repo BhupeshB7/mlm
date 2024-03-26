@@ -37,7 +37,7 @@ try {
 
     res.json({ message: 'Image uploaded successfully' });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Failed to upload image' });
   }
 });

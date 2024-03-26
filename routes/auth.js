@@ -203,7 +203,7 @@ router.post('/resetBalances', async (req, res) => {
     res.json({ success: true, message: 'Balances reset successfully.' });
   } catch (error) {
     if (error.name === 'AbortError') {
-      console.log('Request aborted during the operation.');
+      // console.log('Request aborted during the operation.');
       return;
     }
 
@@ -230,7 +230,7 @@ cron.schedule('* * * * * ', async () => {
 
     // console.log("Activation status updated successfully at", new Date());
   } catch (err) {
-    console.error("Error updating activation status:", err);
+    // console.error("Error updating activation status:", err);
   }
 });
 router.get('/checkActivation/:userId', async (req, res) => {
@@ -252,7 +252,7 @@ router.get('/checkActivation/:userId', async (req, res) => {
       res.status(200).json({ success: true, reTopUpRequired: false, message: "Your account is still active." });
     }
   } catch (err) {
-    console.error("Error checking activation:", err);
+    // console.error("Error checking activation:", err);
     res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
