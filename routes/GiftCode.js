@@ -5,6 +5,7 @@ const cron = require('node-cron');
 const GiftReward = require('../models/GiftReward');
 const GameProfile = require('../models/GameProfile');
 const User = require('../models/User');
+const GiftMLMRewards = require('../models/GiftMLMRewards');
 const router = express.Router();
 
 function generateRandomCode() {
@@ -162,12 +163,12 @@ router.post('/checkCode/mlm', async (req, res) => {
    // Save the updated user object to the database
    await user.save();
     // console.log(`balance: ${user.balance}`);
-    // const Rewards = new GiftReward({
-    //   userId:user.userId,
-    //   code:code,
-    //   reward:randomNumber
-    // })
-    // await Rewards.save();
+    const Rewards = new GiftMLMRewards({
+      userId:user.userId,
+      code:code,
+      reward:randomNumber
+    })
+    await Rewards.save();
     // console.log(Rewards);
     // console.log(user.balance);
     res.json({
@@ -179,6 +180,33 @@ router.post('/checkCode/mlm', async (req, res) => {
   } catch (error) {
     // console.error('Error checking code:', error);
     res.status(500).json({ success: false, error: 'Internal Server Error. Please try again later.' });
+  }
+});
+router.get("/gift-rewards/mlm/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const perPage = 10;
+  const page = req.query.page || 1;
+  try {
+    const user = await GiftMLMRewards.findOne({userId: userId});
+if(!user){
+  return res.status(400).json({success: false, error:'User not found'});
+}
+    const data = await GiftMLMRewards.find({userId:userId})
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * perPage)
+    .limit(perPage);
+
+  const totalDocuments = await GiftMLMRewards.countDocuments({userId:userId});
+  const totalPages = Math.ceil(totalDocuments / perPage);
+
+  res.json({
+    data,
+    totalPages,
+    currentPage: page,
+  });   
+  } catch (error) {
+    // console.error("Error fetching gift rewards:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 // MLM gift code end
