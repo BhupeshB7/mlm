@@ -66,7 +66,6 @@ app.use("/api/deposit", require("./routes/deposit"));
 app.use("/api/withdraw", require("./routes/withdraw"));
 app.use("/api", require("./routes/direct"));
 app.use("/api", require("./routes/level"));
-app.use("/api", require("./routes/DailyLevelincome"));
 app.use("/api", require("./routes/fundMove"));
 app.use("/api", require("./routes/contact"));
 app.use("/api", require("./routes/fundMove"));
