@@ -15,10 +15,10 @@ exports.registerUser = async (req, res) => {
 
 
     // Check if email already exists
-    const emailExists = await User.findOne({ email });
-    if (emailExists) {
-      return res.status(400).json({ error: 'Email already exists' });
-    }
+    // const emailExists = await User.findOne({ email });
+    // if (emailExists) {
+    //   return res.status(400).json({ error: 'Email already exists' });
+    // }
 
     // Check if mobile number already exists
     // const mobileExists = await User.findOne({ mobile });
