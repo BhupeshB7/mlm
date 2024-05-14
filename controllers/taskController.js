@@ -153,14 +153,14 @@ const markTaskCompleted = async (req, res) => {
       // user.dailyIncome += 25;
       // user.lastIncomeUpdate = currentISTTime; //
       // console.log("CurrentIST time:",currentISTTime)
-      if (user.package === 500) {
+      if (user.package === 500||user.package===499) {
         user.balance += 20;
         user.income += 20;
         user.selfIncome += 20;
         user.dailyIncome += 20;
         user.lastIncomeUpdate = currentDate; //
       }
-      else if(user.package ===1000){
+      else if(user.package ===1000||user.package===999){
        user.balance += 50;
        user.income += 50;
        user.selfIncome += 50;
