@@ -113,7 +113,7 @@ router.get('/teamStructure/:userId', async (req, res) => {
     res.json(cachedData);
   } else {
     try {
-      const teamStructure = await getUserTeamStructure(userId, 6);
+      const teamStructure = await getUserTeamStructure(userId, 5);
       const usersByLevel = countUsersByLevel(teamStructure);
       cache.set(userId, usersByLevel); // Cache the data
       res.json(usersByLevel);
@@ -139,7 +139,7 @@ async function getUserTeamStructure(userId, depth) {
 
     const activeStatus = user.is_active ? 'active' : 'not active';
     const teamStructure = {
-      level: 6 - depth,
+      level: 5 - depth,
       userId: user.userId,
       status: activeStatus,
       downline: [],

@@ -17,7 +17,22 @@ router.get("/transferDetail", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+// router.delete('/pending-transfers', async (req, res) => {
+//   try {
+//     const result = await User.updateMany({}, { $set: { pendingTransfer: [] } });
 
+//     if (result.ok) {
+//       const { modifiedCount } = result;
+//       res.status(200).json({ message: `Removed pending transfers for ${modifiedCount} users` });
+//     } else {
+//       console.error('Failed to update documents:', result);
+//       res.status(500).json({ error: 'Failed to remove pending transfers' });
+//     }
+//   } catch (error) {
+//     console.error('Error removing pending transfers:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 router.post("/transfer/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
