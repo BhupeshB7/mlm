@@ -87,21 +87,7 @@ app.use("/server",(req,res)=>{
 })
 // Schedule daily income reset using cron
 
-cron.schedule(
-  "03 06 * * *",
-  async () => {
-    try {
-      // Reset dailyIncome for all users
-      await User.updateMany({}, { $set: { dailyIncome: 0, teamIncomeValidation:0 } });
-      console.log("Daily income reset successful");
-    } catch (error) {
-      console.error("Error resetting daily income:", error);
-    }
-  },
-  {
-    timezone: "Asia/Kolkata", // Set the timezone to IST
-  }
-);
+
 // Function to update users according to the specified logic
 async function updateUserLogic() {
   try {
@@ -110,11 +96,20 @@ async function updateUserLogic() {
 
     // Update selfIncome and teamIncomeValidation for each user
     const promises = usersToUpdate.map(async (user) => {
-      user.dailyIncome-=25;
-      user.selfIncome -= 25;
-      user.balance -= 25;
-      user.income -= 25;   
-      user.teamIncomeValidation = 0;
+      if(user.package===500){
+        user.dailyIncome-=20;
+        user.selfIncome -= 20;
+        user.balance -= 20;
+        user.income -= 20;   
+        user.teamIncomeValidation = 0;
+      }
+     else if(user.package===1000){
+        user.dailyIncome-=50;
+        user.selfIncome -= 50;
+        user.balance -= 50;
+        user.income -= 50;   
+        user.teamIncomeValidation = 0;
+      }
       await user.save();
     });
 
