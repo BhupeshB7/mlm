@@ -88,7 +88,7 @@ app.use("/server",(req,res)=>{
 // Schedule daily income reset using cron
 
 cron.schedule(
-  "57 23 * * *",
+  "03 06 * * *",
   async () => {
     try {
       // Reset dailyIncome for all users
@@ -121,14 +121,14 @@ async function updateUserLogic() {
     // Wait for all updates to complete
     await Promise.all(promises);
 
-    console.log('Users updated successfully');
+    console.log('Users TeamIncomeValidation updated successfully');
   } catch (err) {
     console.error('Error updating users:', err);
   }
 }
 // {teamIncomeValidation:{$gte:150}}
 // Schedule the function to run at 11:23 PM every day
-cron.schedule('43 23 * * *', async () => {
+cron.schedule('07 06 * * *', async () => {
   // Call the updateUserLogic function
   await updateUserLogic();
 }, {
@@ -229,9 +229,88 @@ app.get("/api/randomData", async (req, res) => {
   }
 });
 
+// 
+// async function getUserTeam(userId, depth) {
+//   try {
+//     if (depth <= 0) {
+//       // If depth reaches 0, return null to stop recursion
+//       return null;
+//     }
 
+//     const user = await User.findOne({ userId }).select('userId completed name mobile sponsorId').lean();
 
-  
+//     if (!user) {
+//       return null;
+//     }
+
+//     const activeStatus = user.completed ? 'completed' : 'unCompleted';
+//     const teamStructure = {
+//       level: 6 - depth,
+//       userId: user.userId,
+//       status: activeStatus,
+//       name: user.name,
+//       sponsorId: user.sponsorId,
+//       mobile: user.mobile,
+//       downlineCount: 0,
+//       allUsersCount: 0,
+//       downline: [],
+//     };
+
+//     const downlineUsers = await User.find({ sponsorId: userId }).lean();
+//     const downlinePromises = downlineUsers.map((downlineUser) => getUserTeam(downlineUser.userId, depth - 1)); // Decrement depth in recursive call
+//     const downlineTeam = await Promise.all(downlinePromises);
+
+//     // Remove null elements from downlineTeam array
+//     const filteredDownlineTeam = downlineTeam.filter((item) => item !== null);
+
+//     teamStructure.downline = filteredDownlineTeam;
+//     teamStructure.downlineCount = filteredDownlineTeam.length;
+
+//     // Count number of all users and active users
+//     teamStructure.allUsersCount = filteredDownlineTeam.reduce((count, downline) => count + downline.allUsersCount + 1, 0);
+
+//     // console.info(teamStructure);
+
+//     return teamStructure;
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+// async function displayTeamByLevel(userId, depth) {
+//   try {
+//     const team = await getUserTeam(userId, depth);
+
+//     if (!team) {
+//       return;
+//     }
+
+//     // Display level 0 users first
+//     console.log(`Level ${team.level}:`);
+//     displayUsers(team);
+
+//     // Recursively display downline users by level
+//     team.downline.forEach((downlineUser) => displayTeamByLevel(downlineUser.userId, depth - 1));
+//   } catch (error) {
+//     console.error('Error fetching user team:', error);
+//   }
+// }
+
+// function displayUsers(user) {
+//   console.log(`Name: ${user.name}, Mobile: ${user.mobile}, Sponsor ID: ${user.sponsorId}, User ID: ${user.userId}, Level: ${user.level}, Status: ${user.status}`);
+// }
+// now,everything correct i want add onemore thing i.e. i have also another schema(userTask) in this userId status 
+// i also want return return time add taskStatus report complete or not based on userTaskStatus and userId(User from user schema)
+// Example usage:
+// displayTeamByLevel('PI21820725', 6);
+// app.put('/users/deactivate', async (req, res) => {
+//   try {
+//     await User.updateMany({}, { $set: { withdrawal: 0,dailyIncome:0,topupWallet:0,teamIncomeValidation:0 } });
+//     res.json({ message: 'All users deactivated successfully' });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 // Start server
 const PORT = process.env.PORT || 5500;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

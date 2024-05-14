@@ -114,6 +114,7 @@ rewards:{type:Number, default:0},
     return this.selfIncome + this.teamIncome + this.rewards;
   },
 },
+package:{type:Number},
 topupWallet: { type: Number, default: 0 },
 pendingTransfer: [pendingTransferSchema],
 activationTime: {
@@ -132,7 +133,7 @@ activationTime: {
   updateCount: { type: Number, default: 0 },
 date: {Date},
  }, {timestamps: true},
- 
+
 );
 // Define a pre-save hook to update 'income' based on 'selfIncome', 'teamIncome', and 'rewards'
 // userSchema.pre('save', function (next) {

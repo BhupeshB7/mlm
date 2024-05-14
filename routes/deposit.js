@@ -290,9 +290,9 @@ router.post("/topUpUserID/:userID", async (req, res) => {
       return res.status(401).json({success:'false',error:"User Not Found!"});
     }
 
-    const { userId } = req.body;
+    const { userId,amount } = req.body;
     const activeUser = await User.findOne({ userId })
-      .select("userId is_active topupWallet name")
+      .select("userId is_active topupWallet name package")
       .lean()
       .exec();
 
@@ -308,14 +308,19 @@ router.post("/topUpUserID/:userID", async (req, res) => {
     const activationStatus = await activateUser(userId);
 
     if (activationStatus) {
-      const topUpAmount = 850;
+      const topUpAmount = amount;
       const activeDeposit = await User.findOne({ userId: userID });
-
-      if (activeDeposit.topupWallet < topUpAmount) {
+      const topUpUser = await User.findOne({ userId:userId});
+      if (activeDeposit.topupWallet < amount) {
         return res.status(400).json({ error: "Low Balance" });
       }
 
       activeDeposit.topupWallet -= topUpAmount;
+      topUpUser.package = amount;
+      await topUpUser.save();
+      // console.log(amount);
+      // console.log("Package amount saved successfully", amount);
+      // console.log("Package saved successfully", activeDeposit.package);
       await activeDeposit.save();
 
       // Create a new TopupHistory record for the top-up
@@ -323,6 +328,7 @@ router.post("/topUpUserID/:userID", async (req, res) => {
         // name: activeUser.name,
         userId: userID,
         targetUserId: userId,
+        package: amount
       });
 
       // Save the top-up history record

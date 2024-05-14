@@ -13,7 +13,6 @@ const getAllTasks = async (req, res) => {
   }
 };
 
-
 const createTask = async (req, res) => {
   const { title, videoLink } = req.body;
 
@@ -71,7 +70,13 @@ const markTaskCompleted = async (req, res) => {
   const mobile = req.body.mobile;
   try {
     // Check if the userTask already exists, if not, create a new entry
-    let userTask = await UserTask.findOne({ taskId, userId, sponsorId,mobile,name });
+    let userTask = await UserTask.findOne({
+      taskId,
+      userId,
+      sponsorId,
+      mobile,
+      name,
+    });
     // console.log(userId);
     if (!userTask) {
       await UserTask.create({
@@ -98,11 +103,9 @@ const markTaskCompleted = async (req, res) => {
     if (userTask.completed) {
       // Mark the task as completed
       userTask.completed = true;
-     // Check if all tasks are completed for the user
-    //  const allTasksCompleted = await UserTask.find({ userId, completed: false }).countDocuments() === 0;
-    
-   
-    
+      // Check if all tasks are completed for the user
+      //  const allTasksCompleted = await UserTask.find({ userId, completed: false }).countDocuments() === 0;
+
       // Update WalletUpdated to true
       userTask.WalletUpdated = true;
 
@@ -150,12 +153,20 @@ const markTaskCompleted = async (req, res) => {
       // user.dailyIncome += 25;
       // user.lastIncomeUpdate = currentISTTime; //
       // console.log("CurrentIST time:",currentISTTime)
-           
-      user.balance += 25;
-      user.income += 25;
-      user.selfIncome += 25;
-      user.dailyIncome += 25;
-      user.lastIncomeUpdate = currentDate; //
+      if (user.package === 500) {
+        user.balance += 20;
+        user.income += 20;
+        user.selfIncome += 20;
+        user.dailyIncome += 20;
+        user.lastIncomeUpdate = currentDate; //
+      }
+      else if(user.package ===1000){
+       user.balance += 50;
+       user.income += 50;
+       user.selfIncome += 50;
+       user.dailyIncome += 50;
+       user.lastIncomeUpdate = currentDate; //
+      }
       await user.save();
       if (user.is_active) {
         let sponsor = await User.findOne({ userId: user.sponsorId });
@@ -174,7 +185,7 @@ const markTaskCompleted = async (req, res) => {
           sponsor.balance += 4;
           sponsor.teamIncome += 4;
           sponsor.dailyIncome += 4;
-          sponsor.teamIncomeValidation+=4;
+          sponsor.teamIncomeValidation += 4;
           sponsor.lastIncomeUpdate = currentDate; //
           await sponsor.save();
 
@@ -194,7 +205,7 @@ const markTaskCompleted = async (req, res) => {
               sponsor2.balance += 3;
               sponsor2.income += 3;
               sponsor2.dailyIncome += 3;
-              sponsor2.teamIncomeValidation+=3;
+              sponsor2.teamIncomeValidation += 3;
               sponsor2.lastIncomeUpdate = currentDate; //
               await sponsor2.save();
 
@@ -214,7 +225,7 @@ const markTaskCompleted = async (req, res) => {
                   sponsor3.teamIncome += 2;
                   sponsor3.income += 2;
                   sponsor3.dailyIncome += 2;
-                  sponsor3.teamIncomeValidation+=2;
+                  sponsor3.teamIncomeValidation += 2;
                   sponsor3.lastIncomeUpdate = currentDate; //
                   await sponsor3.save();
 
@@ -233,7 +244,7 @@ const markTaskCompleted = async (req, res) => {
                       sponsor4.teamIncome += 1;
                       sponsor4.income += 1;
                       sponsor4.dailyIncome += 1;
-                      sponsor4.teamIncomeValidation+=1;
+                      sponsor4.teamIncomeValidation += 1;
                       sponsor4.lastIncomeUpdate = currentDate; //
                       await sponsor4.save();
 
@@ -248,11 +259,11 @@ const markTaskCompleted = async (req, res) => {
                         });
 
                         if (sponsor5CountUser >= 10) {
-                          sponsor5.balance += 0.5;
-                          sponsor5.teamIncome += 0.5;
-                          sponsor5.income += 0.5;
-                          sponsor5.dailyIncome += 0.5;
-                          sponsor5.teamIncomeValidation+=0.5;
+                          sponsor5.balance += 1;
+                          sponsor5.teamIncome += 1;
+                          sponsor5.income += 1;
+                          sponsor5.dailyIncome += 1;
+                          sponsor5.teamIncomeValidation += 1;
                           sponsor5.lastIncomeUpdate = currentDate; //
                           await sponsor5.save();
                         }

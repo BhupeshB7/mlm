@@ -27,7 +27,40 @@ router.delete('/tasks', taskController.deleteAllTasks);
 // Route to fetch task Report 
 router.get('/user/:userId/taskStatus',taskController.taskCompletionStatus)
 
+// New team task report code
+router.get('/pi2/NewTeamTaskReport/:userId', async (req, res) => {
+  try {
+      const { userId, level } = req.params;
+      const users = await fetchUsersByLevel(userId, level);
+      const userData = await Promise.all(users.map(async (user) => {
+          const task = await UserTask.findOne({ userId: user.userId });
+          return {
+              Name: user.name,
+              UserId: user.userId,
+              Level: level,
+              Mobile: user.mobile,
+              Status: task ? task.completed : false
+          };
+      }));
+      res.json(userData);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
 
+// Function to fetch users by level recursively
+async function fetchUsersByLevel(userId, level) {
+  if (level <= 0) return [];
+  const users = await User.find({ sponsorId: userId });
+  const nextLevelUsers = [];
+  for (const user of users) {
+      const nextLevelUsersOfUser = await fetchUsersByLevel(user.userId, level - 1);
+      nextLevelUsers.push(...nextLevelUsersOfUser);
+  }
+  return [...users, ...nextLevelUsers];
+}
+
+// New team task report code
 router.get('/teamTaskMember/:userId', async (req, res) => {
   const { userId } = req.params;
 

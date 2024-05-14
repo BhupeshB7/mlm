@@ -10,6 +10,9 @@ const topupHistorySchema =new mongoose.Schema({
     },
     targetUserId :{
         type:String
+    },
+    package:{
+        type:Number
     }
 },{
     timestamps:true
