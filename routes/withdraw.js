@@ -14,6 +14,17 @@ const router = express.Router();
 router.post("/user/:userId", async (req, res) => {
   const { userId } = req.params;
   const { amount, ifscCode, accountNo, accountHolderName } = req.body;
+  // Check if ifscCode, accountNo, and accountHolderName lengths are greater than 3
+  if (
+    ifscCode.length <= 3 ||
+    accountNo.length <= 3 ||
+    accountHolderName.length <= 3
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Update your profile. Please provide valid details." });
+  }
+
   const release = await mutex.acquire();
   try {
     const user = await User.findOne({ userId: userId });
@@ -107,14 +118,19 @@ router.post("/user/:userId", async (req, res) => {
           .status(400)
           .json({ error: "Minimum Two Direct for Withdrawal" });
       }
-      if(user.package===999|| user.package===1000){
-        const packageCount= await User.countDocuments({
+      if (user.package === 999 || user.package === 1000) {
+        const packageCount = await User.countDocuments({
           sponsorId: userId,
           package: { $in: [999, 1000] },
           is_active: true,
-        })
+        });
         if (packageCount < 2) {
-          return res.status(400).json({ error: "For withdrawal you Should have at least 2 Downline user with packages  999/-" });
+          return res
+            .status(400)
+            .json({
+              error:
+                "For withdrawal you Should have at least 2 Downline user with packages  999/-",
+            });
         }
       }
       // Check if user balance is sufficient for the withdrawal
@@ -194,12 +210,11 @@ router.post("/user/:userId", async (req, res) => {
         .status(400)
         .json({ error: " withdrawal amount Should be 400 Rs" });
     }
-    
   } catch (error) {
     // Release the lock in case of any error
     release();
     return res.status(500).json({ error: "Internal Server Error" });
-  }finally {
+  } finally {
     release();
   }
 });
