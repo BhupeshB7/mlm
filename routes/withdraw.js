@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const { Mutex } = require("async-mutex");
+const mutex = new Mutex();
 // import database models
 const User = require("../models/User");
 const WithdrawalReq = require("../models/WithdrawReq");
@@ -12,286 +14,193 @@ const router = express.Router();
 router.post("/user/:userId", async (req, res) => {
   const { userId } = req.params;
   const { amount, ifscCode, accountNo, accountHolderName } = req.body;
-  const user = await User.findOne({ userId: userId });
-
-  // Check if the withdrawal amount is greater than 0
-  if (amount <= 0) {
-    return res
-      .status(400)
-      .json({ error: "Withdrawal amount should be greater than 0" });
-  }
-  const currentDate = new Date();
-  const currentIST = new Date(
-    currentDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-  );
-
-  const dayOfWeek = currentIST.getDay();
-  const hours = currentIST.getHours();
-
-  // Check if it's Sunday
-  if (dayOfWeek === 0) {
-    return res
-      .status(403)
-      .json({ error: "Withdrawal not allowed on Sundays." });
-  }
-
-  // Check if it's before 9 AM
-  if (hours < 9) {
-    return res
-      .status(403)
-      .json({ error: "Withdrawal not allowed before 9 AM." });
-  }
-
-  // Check if it's after 1 PM
-  if (hours >= 13) {
-    return res
-      .status(403)
-      .json({ error: "Withdrawal not allowed After 1 PM." });
-  }
-  const today = moment().startOf('day');
-  const tomorrow = moment(today).add(1, 'days');
-
-  // Check if there's any transaction for today
-  const todayTransaction = await WithdrawBalance.findOne({
-    userId:userId,
-  amount:amount,  createdAt: { $gte: today.toDate(), $lt: tomorrow.toDate() }
-  });
-
-  // if (todayTransaction) {
-  //   return res.status(400).json({ error: "Today's withdrawal limit reached. Please make a withdrawal tomorrow." });
-  // }
-  // Check if the withdrawal amount is greater than or equal to 500
-  if (amount === 500) {
+  const release = await mutex.acquire();
+  try {
+    const user = await User.findOne({ userId: userId });
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
+    // Check if the withdrawal amount is greater than 0
+    if (amount <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Withdrawal amount should be greater than 0" });
+    }
+    const currentDate = new Date();
+    const currentIST = new Date(
+      currentDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
 
-    // Check if the user is active
-    if (!user.is_active) {
-      return res
-        .status(400)
-        .json({ error: "User is not active and cannot make withdrawals" });
-    }
-    //   // check if the withdrawal amount is greater than or equal to 500
-    if (amount < 500) {
-      return res
-        .status(400)
-        .json({ error: "Minimum withdrawal amount is 500 Rs" });
-    }
-    // Check if user has at least two direct referrals
-    const count = await User.countDocuments({
-      sponsorId: userId,
-      is_active: true,
-    });
-    // console.log(count);
-    if (count < 2) {
-      return res
-        .status(400)
-        .json({ error: "Minimum Two Direct for Withdrawal" });
-    }
+    const dayOfWeek = currentIST.getDay();
+    const hours = currentIST.getHours();
 
-    // Check if user balance is sufficient for the withdrawal
-    if (user.balance < amount) {
-      return res.status(400).json({ error: "Insufficient balance" });
-    }
-    if (
-      !user.withdrawalDone && !user.withdrawalDoneFour &&
-      !user.withdrawalDoneEight 
-    ) {
+    // Check if it's Sunday
+    if (dayOfWeek === 0) {
       return res
         .status(403)
-        .json({
+        .json({ error: "Withdrawal not allowed on Sundays." });
+    }
+
+    // Check if it's before 9 AM
+    if (hours < 12) {
+      return res
+        .status(403)
+        .json({ error: "Withdrawal not allowed before 12 PM." });
+    }
+
+    // Check if it's after 1 PM
+    if (hours >= 14) {
+      return res
+        .status(403)
+        .json({ error: "Withdrawal not allowed After 2 PM." });
+    }
+    const today = moment().startOf("day");
+    const tomorrow = moment(today).add(1, "days");
+
+    const todayTransactionTotal = await WithdrawBalance.aggregate([
+      {
+        $match: {
+          userId: userId,
+          createdAt: { $gte: today.toDate(), $lt: tomorrow.toDate() },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalWithdrawal: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const totalWithdrawalToday =
+      todayTransactionTotal.length > 0
+        ? todayTransactionTotal[0].totalWithdrawal
+        : 0;
+
+    if (totalWithdrawalToday >= 4000) {
+      return res.status(400).json({
+        error:
+          "Today's withdrawal limit reached. Please make a withdrawal tomorrow.",
+      });
+    }
+    if (amount > 400) {
+      return res
+        .status(400)
+        .json({ error: "withdrawal amount Should be 400 Rs" });
+    }
+    if (amount === 400) {
+      // Check if the user is active
+      if (!user.is_active) {
+        return res
+          .status(400)
+          .json({ error: "User is not active and cannot make withdrawals" });
+      }
+
+      // Check if user has at least two direct referrals
+      const count = await User.countDocuments({
+        sponsorId: userId,
+        is_active: true,
+      });
+      // console.log(count);
+      if (count < 2) {
+        return res
+          .status(400)
+          .json({ error: "Minimum Two Direct for Withdrawal" });
+      }
+      if(user.package===999|| user.package===1000){
+        const packageCount= await User.countDocuments({
+          sponsorId: userId,
+          package: { $in: [999, 1000] },
+          is_active: true,
+        })
+        if (packageCount < 2) {
+          return res.status(400).json({ error: "For withdrawal you Should have at least 2 Downline user with packages  999/-" });
+        }
+      }
+      // Check if user balance is sufficient for the withdrawal
+      if (user.balance < amount) {
+        return res.status(400).json({ error: "Insufficient balance" });
+      }
+      if (!user.withdrawalDone) {
+        return res.status(403).json({
           error:
-            "First complete the withdrawal of Rs 200,400 and 800 then you will be able to withdraw Rs 500 or more.",
+            "First complete the withdrawal of Rs 50 then you will be able to withdraw Rs 400.",
         });
+      }
+
+      // Create a new withdrawal request
+      const withdrawalRequest = new WithdrawBalance({
+        userId,
+        amount,
+        ifscCode,
+        accountNo,
+        accountHolderName,
+      });
+
+      await withdrawalRequest.save();
+
+      // Update user withdrawal and balance
+      user.withdrawal += amount;
+      user.balance -= amount;
+      await user.save();
+
+      return res.json({ success: true });
+    } else if (amount === 50) {
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const withdrawalReq = await WithdrawBalance.findOne({
+        userId: userId,
+        status: "approved",
+      });
+      if (withdrawalReq) {
+        return res
+          .status(403)
+          .json({ success: false, error: "Already payments of 50" });
+      }
+      // Check if user has already made a withdrawal of 200 Rs
+      if (user.withdrawalDone) {
+        return res
+          .status(403)
+          .json({ error: "Withdrawal of 50 Rs already done" });
+      }
+
+      // Check if user balance is sufficient for the withdrawal
+      if (user.balance < amount) {
+        return res.status(400).json({ error: "Insufficient balance" });
+      }
+
+      // Create a new withdrawal request
+      const withdrawalRequest = new WithdrawBalance({
+        userId,
+        amount,
+        ifscCode,
+        accountNo,
+        accountHolderName,
+      });
+
+      await withdrawalRequest.save();
+
+      // Update user withdrawal and balance
+      user.withdrawal += amount;
+      user.balance -= amount;
+      user.withdrawalDone = true;
+      await user.save();
+
+      return res.json({ success: true });
+    } else {
+      return res
+        .status(400)
+        .json({ error: " withdrawal amount Should be 400 Rs" });
     }
     
-    // Create a new withdrawal request
-    const withdrawalRequest = new WithdrawBalance({
-      userId,
-      amount,
-      ifscCode,
-      accountNo,
-      accountHolderName,
-    });
-
-    await withdrawalRequest.save();
-
-    // Update user withdrawal and balance
-    user.withdrawal += amount;
-    user.balance -= amount;
-    await user.save();
-
-    return res.json({ success: true });
-  } else if (amount === 200) {
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const withdrawalReq = await WithdrawBalance.findOne({ userId: userId,status: 'approved' });
-    if (withdrawalReq) {
-      return res
-        .status(403)
-        .json({ success: false, error: "Already payments of 200" });
-    }
-    // Check if user has already made a withdrawal of 200 Rs
-    if (user.withdrawalDone) {
-      return res
-        .status(403)
-        .json({ error: "Withdrawal of 200 Rs already done" });
-    }
-
-    // Check if user balance is sufficient for the withdrawal
-    if (user.balance < amount) {
-      return res.status(400).json({ error: "Insufficient balance" });
-    }
-
-    // Create a new withdrawal request
-    const withdrawalRequest = new WithdrawBalance({
-      userId,
-      amount,
-      ifscCode,
-      accountNo,
-      accountHolderName,
-    });
-
-    await withdrawalRequest.save();
-
-    // Update user withdrawal and balance
-    user.withdrawal += amount;
-    user.balance -= amount;
-    user.withdrawalDone = true;
-    await user.save();
-
-    return res.json({ success: true });
-  } else if (amount === 400) {
-    const count1 = await User.countDocuments({
-      sponsorId: userId,
-      is_active: true,
-    });
-    if (!user.withdrawalDone) {
-      return res
-        .status(403)
-        .json({
-          error:
-            "First complete the withdrawal of Rs 200 and then you will be able to withdraw Rs 400.",
-        });
-    }
-    const withdrawalReq = await WithdrawBalance.findOne({ userId: userId, amount: amount });
-    if (withdrawalReq) {
-      return res
-        .status(403)
-        .json({ success: false, error: "Already payments of 400" });
-    }
-    // console.log(count1)
-    // Check if user has already made a withdrawal of 200 Rs
-    if (user.withdrawalDoneFour && amount === 400) {
-      return res
-        .status(403)
-        .json({ error: "Withdrawal of 400 Rs already done" });
-    }
-    if (count1 < 1) {
-      return res
-        .status(400)
-        .json({ error: "Minimum One Direct for Withdrawal" });
-    }
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if user balance is sufficient for the withdrawal
-    if (user.balance < amount) {
-      return res.status(400).json({ error: "Insufficient balance" });
-    }
-
-    // Create a new withdrawal request
-    const withdrawalRequest = new WithdrawBalance({
-      userId,
-      amount,
-      ifscCode,
-      accountNo,
-      accountHolderName,
-    });
-
-    await withdrawalRequest.save();
-
-    // Update user withdrawal and balance
-    user.withdrawal += amount;
-    user.balance -= amount;
-    user.withdrawalDoneFour = true;
-    await user.save();
-
-    return res.json({ success: true });
-  } else if (amount === 800) {
-    const count1 = await User.countDocuments({
-      sponsorId: userId,
-      is_active: true,
-    });
-    if (!user.withdrawalDone) {
-      return res
-        .status(403)
-        .json({
-          error:
-            "First complete the withdrawal of Rs 200 and then you will be able to withdraw Rs 400.",
-        });
-    }
-    if (!user.withdrawalDoneFour) {
-      return res
-        .status(403)
-        .json({
-          error:
-            "First complete the withdrawal of Rs 400 and then you will be able to withdraw Rs 800.",
-        });
-    }
-    const withdrawalReq = await WithdrawBalance.findOne({ userId: userId, amount: amount });
-    if (withdrawalReq) {
-      return res
-        .status(403)
-        .json({ success: false, error: "Already payments of 800" });
-    }
-    // console.log(count1)
-    // Check if user has already made a withdrawal of 200 Rs
-    if (user.withdrawalDoneEight && amount === 800) {
-      return res
-        .status(403)
-        .json({ error: "Withdrawal of 800 Rs already done" });
-    }
-    if (count1 < 2) {
-      return res
-        .status(400)
-        .json({ error: "Minimum Two Direct for Withdrawal" });
-    }
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if user balance is sufficient for the withdrawal
-    if (user.balance < amount) {
-      return res.status(400).json({ error: "Insufficient balance" });
-    }
-
-    // Create a new withdrawal request
-    const withdrawalRequest = new WithdrawBalance({
-      userId,
-      amount,
-      ifscCode,
-      accountNo,
-      accountHolderName,
-    });
-
-    await withdrawalRequest.save();
-
-    // Update user withdrawal and balance
-    user.withdrawal += amount;
-    user.balance -= amount;
-    user.withdrawalDoneEight = true;
-    await user.save();
-
-    return res.json({ success: true });
-  } else {
-    return res
-      .status(400)
-      .json({ error: " withdrawal amount Should be 500 Rs" });
+  } catch (error) {
+    // Release the lock in case of any error
+    release();
+    return res.status(500).json({ error: "Internal Server Error" });
+  }finally {
+    release();
   }
 });
 // Withdrawal code ENd
