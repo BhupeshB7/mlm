@@ -408,6 +408,52 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(500).send(error);
   }
 });
+router.get('/allAmounts/summary', async (req, res) => {
+  try {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
 
+    const yesterdayAmount = await Deposit.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate()),
+            $lt: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$depositAmount" }
+        }
+      }
+    ]);
+
+    const todayAmount = await Deposit.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$depositAmount" }
+        }
+      }
+    ]);
+
+    res.json({
+      yesterdayAmount: yesterdayAmount.length > 0 ? yesterdayAmount[0].totalAmount : 0,
+      todayAmount: todayAmount.length > 0 ? todayAmount[0].totalAmount : 0
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 module.exports = router;
 

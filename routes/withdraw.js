@@ -10,6 +10,7 @@ const WithdrawBalance = require("../models/WithdrawBalance");
 
 // router.use(express.json());
 const router = express.Router();
+
 // All withdrawal Code
 router.post("/user/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -220,6 +221,7 @@ router.post("/user/:userId", async (req, res) => {
 });
 // Withdrawal code ENd
 
+
 // endpoint for admin to fetch a specific withdrawal request
 router.get("/withdrawals/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -372,4 +374,70 @@ router.delete("/withdrawalWallet/:id", async (req, res) => {
     res.status(500).send("something went wrong"); // Internal server error
   }
 });
+
+router.get('/allAmounts/summary', async (req, res) => {
+  try {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const yesterdayAmount = await WithdrawBalance.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate()),
+            $lt: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amount" }
+        }
+      }
+    ]);
+
+    const todayAmount = await WithdrawBalance.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amount" }
+        }
+      }
+    ]);
+    const todayApprovedAmount = await WithdrawBalance.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+          },
+          status: "approved"
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amount" }
+        }
+      }
+    ]);
+
+    res.json({
+      yesterdayAmount: yesterdayAmount.length > 0 ? yesterdayAmount[0].totalAmount : 0,
+      todayAmount: todayAmount.length > 0 ? todayAmount[0].totalAmount : 0,
+      todayApprovedAmount: todayApprovedAmount.length > 0 ? todayApprovedAmount[0].totalAmount : 0
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 module.exports = router;
