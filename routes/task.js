@@ -84,4 +84,12 @@ router.put('/walletUp', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.put('/resetDailyIncome',async(req,res)=>{
+  try {
+    await User.updateMany({}, { $set: {teamIncomeValidation:0 } });
+    res.json({ message: 'All users DailyIncome updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
   module.exports = router;
