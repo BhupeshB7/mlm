@@ -225,11 +225,10 @@ function countActiveUsersByLevel(teamStructure) {
 
 function getHighestAchievedRank(activeUsersByLevel) {
   const rankThresholds = {
-    Bronze: 10,
-    Silver: 70,
-    Gold: 350,
-    RoyalStar: 800,
-    Diamond: 2000,
+    Star: 10,
+    TopLeader: 60,
+    RoyalGold: 300,
+    Diamond: 800,
   };
 
   let highestAchievedRank = 'Fresher';
@@ -237,15 +236,13 @@ function getHighestAchievedRank(activeUsersByLevel) {
   for (let level = 1; level <= 5; level++) {
     const count = activeUsersByLevel[level] || 0;
         // console.log(count);
-    if (level === 1 && count >= rankThresholds.Bronze) {
-      highestAchievedRank = 'Bronze';
-    } else if (level === 2 && count >= rankThresholds.Silver) {
-      highestAchievedRank = 'Silver';
-    } else if (level === 3 && count >= rankThresholds.Gold) {
-      highestAchievedRank = 'Gold';
-    } else if (level === 4 && count >= rankThresholds.RoyalStar) {
-      highestAchievedRank = 'RoyalStar';
-    }
+    if (level === 1 && count >= rankThresholds.Star) {
+      highestAchievedRank = 'Star';
+    } else if (level === 2 && count >= rankThresholds.TopLeader) {
+      highestAchievedRank = 'Top Leader';
+    } else if (level === 3 && count >= rankThresholds.RoyalGold) {
+      highestAchievedRank = 'ROyal Gold';
+    } 
     else if (level === 5 && count >= rankThresholds.Diamond) {
       highestAchievedRank = 'Diamond';
     }
@@ -279,7 +276,7 @@ router.post("/updateWalletss/:userId", async (req, res) => {
     case 'Fresher':
       maximumEarnings = 650;
       break;
-    case 'Bronze':
+    case 'Star':
       maximumEarnings = 1300;
       break;
     case 'Silver':
@@ -288,7 +285,7 @@ router.post("/updateWalletss/:userId", async (req, res) => {
     case 'Gold':
       maximumEarnings = 3500;
       break;
-    case 'RoyalStar':
+    case 'RoyalGOld':
       maximumEarnings = 5000;
       break;
     case 'Diamond':
