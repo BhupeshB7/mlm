@@ -1,3 +1,4 @@
+
 // taskController.js
 const User = require("../models/User");
 const Task = require("../models/newTask");
@@ -176,303 +177,96 @@ const markTaskCompleted = async (req, res) => {
         let sponsorDownCount = await User.countDocuments({
           sponsorId: sponsor.userId,
           is_active: true,
-          package:  1000,
         });
-        if(user.package === 1000){
-         
-          if(sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
-            sponsor.balance += 4;
-            sponsor.teamIncome += 4;
-            sponsor.dailyIncome += 4;
-            sponsor.teamIncomeValidation += 4;
-            sponsor.lastIncomeUpdate = currentDate; //
-            await sponsor.save();
-  
-            let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
-  
-            if (sponsor2 && sponsor2.is_active) {
-              let sponsor2DownCount = await User.countDocuments({
-                sponsorId: sponsor2.userId,
-                is_active: true,
-              });
-              // console.log(sponsor2);
-              // console.log("Total Count");
-              // console.log("Level1");
-              // console.log(sponsor2DownCount);
-              if (sponsor2DownCount >= 4) {
-                sponsor2.teamIncome += 3;
-                sponsor2.balance += 3;
-                sponsor2.income += 3;
-                sponsor2.dailyIncome += 3;
-                sponsor2.teamIncomeValidation += 3;
-                sponsor2.lastIncomeUpdate = currentDate; //
-                await sponsor2.save();
-  
-                let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
-  
-                if (sponsor3 && sponsor3.is_active) {
-                  let sponsor3CountUser = await User.countDocuments({
-                    sponsorId: sponsor3.userId,
-                    is_active: true,
+        // console.log(user.sponsorId);
+        // console.log("Total Count");
+        // console.log("Level1");
+        // console.log(sponsorDownCount);
+        if (sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
+          sponsor.balance += 4;
+          sponsor.teamIncome += 4;
+          sponsor.dailyIncome += 4;
+          sponsor.teamIncomeValidation += 4;
+          sponsor.lastIncomeUpdate = currentDate; //
+          await sponsor.save();
+
+          let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
+
+          if (sponsor2 && sponsor2.is_active) {
+            let sponsor2DownCount = await User.countDocuments({
+              sponsorId: sponsor2.userId,
+              is_active: true,
+            });
+            // console.log(sponsor2);
+            // console.log("Total Count");
+            // console.log("Level1");
+            // console.log(sponsor2DownCount);
+            if (sponsor2DownCount >= 4) {
+              sponsor2.teamIncome += 3;
+              sponsor2.balance += 3;
+              sponsor2.income += 3;
+              sponsor2.dailyIncome += 3;
+              sponsor2.teamIncomeValidation += 3;
+              sponsor2.lastIncomeUpdate = currentDate; //
+              await sponsor2.save();
+
+              let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
+
+              if (sponsor3 && sponsor3.is_active) {
+                let sponsor3CountUser = await User.countDocuments({
+                  sponsorId: sponsor3.userId,
+                  is_active: true,
+                });
+                // console.log(user.sponsorId);
+                // console.log("Level1");
+                // console.log("Total Count");
+                // console.log(sponsor3CountUser);
+                if (sponsor3CountUser >= 6) {
+                  sponsor3.balance += 2;
+                  sponsor3.teamIncome += 2;
+                  sponsor3.income += 2;
+                  sponsor3.dailyIncome += 2;
+                  sponsor3.teamIncomeValidation += 2;
+                  sponsor3.lastIncomeUpdate = currentDate; //
+                  await sponsor3.save();
+
+                  let sponsor4 = await User.findOne({
+                    userId: sponsor3.sponsorId,
                   });
-                  // console.log(user.sponsorId);
-                  // console.log("Level1");
-                  // console.log("Total Count");
-                  // console.log(sponsor3CountUser);
-                  if (sponsor3CountUser >= 6) {
-                    sponsor3.balance += 2;
-                    sponsor3.teamIncome += 2;
-                    sponsor3.income += 2;
-                    sponsor3.dailyIncome += 2;
-                    sponsor3.teamIncomeValidation += 2;
-                    sponsor3.lastIncomeUpdate = currentDate; //
-                    await sponsor3.save();
-  
-                    let sponsor4 = await User.findOne({
-                      userId: sponsor3.sponsorId,
+
+                  if (sponsor4 && sponsor4.is_active) {
+                    let sponsor4CountUser = await User.countDocuments({
+                      sponsorId: sponsor4.userId,
+                      is_active: true,
                     });
-  
-                    if (sponsor4 && sponsor4.is_active) {
-                      let sponsor4CountUser = await User.countDocuments({
-                        sponsorId: sponsor4.userId,
-                        is_active: true,
+
+                    if (sponsor4CountUser >= 8) {
+                      sponsor4.balance += 1;
+                      sponsor4.teamIncome += 1;
+                      sponsor4.income += 1;
+                      sponsor4.dailyIncome += 1;
+                      sponsor4.teamIncomeValidation += 1;
+                      sponsor4.lastIncomeUpdate = currentDate; //
+                      await sponsor4.save();
+
+                      let sponsor5 = await User.findOne({
+                        userId: sponsor4.sponsorId,
                       });
-  
-                      if (sponsor4CountUser >= 8) {
-                        sponsor4.balance += 1;
-                        sponsor4.teamIncome += 1;
-                        sponsor4.income += 1;
-                        sponsor4.dailyIncome += 1;
-                        sponsor4.teamIncomeValidation += 1;
-                        sponsor4.lastIncomeUpdate = currentDate; //
-                        await sponsor4.save();
-  
-                        let sponsor5 = await User.findOne({
-                          userId: sponsor4.sponsorId,
+
+                      if (sponsor5 && sponsor5.is_active) {
+                        let sponsor5CountUser = await User.countDocuments({
+                          sponsorId: sponsor5.userId,
+                          is_active: true,
                         });
-  
-                        if (sponsor5 && sponsor5.is_active) {
-                          let sponsor5CountUser = await User.countDocuments({
-                            sponsorId: sponsor5.userId,
-                            is_active: true,
-                          });
-  
-                          if (sponsor5CountUser >= 10) {
-                            sponsor5.balance += 1;
-                            sponsor5.teamIncome += 1;
-                            sponsor5.income += 1;
-                            sponsor5.dailyIncome += 1;
-                            sponsor5.teamIncomeValidation += 1;
-                            sponsor5.lastIncomeUpdate = currentDate; //
-                            await sponsor5.save();
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      else {
-       
-        let sponsor = await User.findOne({ userId: user.sponsorId });
-        if (sponsor) { 
-        // let sponsorTest = await User.find({ sponsorId: sponsor.userId }).select("name userId sponsorId");
-        // console.log(sponsor);
-        // console.log(sponsorTest)
-        let sponsorDownCount = await User.countDocuments({
-          sponsorId: sponsor.userId,
-          is_active: true,
-        });
-        
-          if(sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
-            sponsor.balance += 4;
-            sponsor.teamIncome += 4;
-            sponsor.dailyIncome += 4;
-            sponsor.teamIncomeValidation += 4;
-            sponsor.lastIncomeUpdate = currentDate; //
-            await sponsor.save();
-  
-            let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
-  
-            if (sponsor2 && sponsor2.is_active) {
-              let sponsor2DownCount = await User.countDocuments({
-                sponsorId: sponsor2.userId,
-                is_active: true,
-              });
-              // console.log(sponsor2);
-              // console.log("Total Count");
-              // console.log("Level1");
-              // console.log(sponsor2DownCount);
-              if (sponsor2DownCount >= 4) {
-                sponsor2.teamIncome += 3;
-                sponsor2.balance += 3;
-                sponsor2.income += 3;
-                sponsor2.dailyIncome += 3;
-                sponsor2.teamIncomeValidation += 3;
-                sponsor2.lastIncomeUpdate = currentDate; //
-                await sponsor2.save();
-  
-                let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
-  
-                if (sponsor3 && sponsor3.is_active) {
-                  let sponsor3CountUser = await User.countDocuments({
-                    sponsorId: sponsor3.userId,
-                    is_active: true,
-                  });
-                  // console.log(user.sponsorId);
-                  // console.log("Level1");
-                  // console.log("Total Count");
-                  // console.log(sponsor3CountUser);
-                  if (sponsor3CountUser >= 6) {
-                    sponsor3.balance += 2;
-                    sponsor3.teamIncome += 2;
-                    sponsor3.income += 2;
-                    sponsor3.dailyIncome += 2;
-                    sponsor3.teamIncomeValidation += 2;
-                    sponsor3.lastIncomeUpdate = currentDate; //
-                    await sponsor3.save();
-  
-                    let sponsor4 = await User.findOne({
-                      userId: sponsor3.sponsorId,
-                    });
-  
-                    if (sponsor4 && sponsor4.is_active) {
-                      let sponsor4CountUser = await User.countDocuments({
-                        sponsorId: sponsor4.userId,
-                        is_active: true,
-                      });
-  
-                      if (sponsor4CountUser >= 8) {
-                        sponsor4.balance += 1;
-                        sponsor4.teamIncome += 1;
-                        sponsor4.income += 1;
-                        sponsor4.dailyIncome += 1;
-                        sponsor4.teamIncomeValidation += 1;
-                        sponsor4.lastIncomeUpdate = currentDate; //
-                        await sponsor4.save();
-  
-                        let sponsor5 = await User.findOne({
-                          userId: sponsor4.sponsorId,
-                        });
-  
-                        if (sponsor5 && sponsor5.is_active) {
-                          let sponsor5CountUser = await User.countDocuments({
-                            sponsorId: sponsor5.userId,
-                            is_active: true,
-                          });
-  
-                          if (sponsor5CountUser >= 10) {
-                            sponsor5.balance += 1;
-                            sponsor5.teamIncome += 1;
-                            sponsor5.income += 1;
-                            sponsor5.dailyIncome += 1;
-                            sponsor5.teamIncomeValidation += 1;
-                            sponsor5.lastIncomeUpdate = currentDate; //
-                            await sponsor5.save();
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-          // console.log(user.sponsorId);
-          // console.log("Total Count");
-          // console.log("Level1");
-          // console.log(sponsorDownCount);
-          
-          if(sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
-            sponsor.balance += 4;
-            sponsor.teamIncome += 4;
-            sponsor.dailyIncome += 4;
-            sponsor.teamIncomeValidation += 4;
-            sponsor.lastIncomeUpdate = currentDate; //
-            await sponsor.save();
-  
-            let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
-  
-            if (sponsor2 && sponsor2.is_active) {
-              let sponsor2DownCount = await User.countDocuments({
-                sponsorId: sponsor2.userId,
-                is_active: true,
-              });
-              // console.log(sponsor2);
-              // console.log("Total Count");
-              // console.log("Level1");
-              // console.log(sponsor2DownCount);
-              if (sponsor2DownCount >= 4) {
-                sponsor2.teamIncome += 3;
-                sponsor2.balance += 3;
-                sponsor2.income += 3;
-                sponsor2.dailyIncome += 3;
-                sponsor2.teamIncomeValidation += 3;
-                sponsor2.lastIncomeUpdate = currentDate; //
-                await sponsor2.save();
-  
-                let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
-  
-                if (sponsor3 && sponsor3.is_active) {
-                  let sponsor3CountUser = await User.countDocuments({
-                    sponsorId: sponsor3.userId,
-                    is_active: true,
-                  });
-                  // console.log(user.sponsorId);
-                  // console.log("Level1");
-                  // console.log("Total Count");
-                  // console.log(sponsor3CountUser);
-                  if (sponsor3CountUser >= 6) {
-                    sponsor3.balance += 2;
-                    sponsor3.teamIncome += 2;
-                    sponsor3.income += 2;
-                    sponsor3.dailyIncome += 2;
-                    sponsor3.teamIncomeValidation += 2;
-                    sponsor3.lastIncomeUpdate = currentDate; //
-                    await sponsor3.save();
-  
-                    let sponsor4 = await User.findOne({
-                      userId: sponsor3.sponsorId,
-                    });
-  
-                    if (sponsor4 && sponsor4.is_active) {
-                      let sponsor4CountUser = await User.countDocuments({
-                        sponsorId: sponsor4.userId,
-                        is_active: true,
-                      });
-  
-                      if (sponsor4CountUser >= 8) {
-                        sponsor4.balance += 1;
-                        sponsor4.teamIncome += 1;
-                        sponsor4.income += 1;
-                        sponsor4.dailyIncome += 1;
-                        sponsor4.teamIncomeValidation += 1;
-                        sponsor4.lastIncomeUpdate = currentDate; //
-                        await sponsor4.save();
-  
-                        let sponsor5 = await User.findOne({
-                          userId: sponsor4.sponsorId,
-                        });
-  
-                        if (sponsor5 && sponsor5.is_active) {
-                          let sponsor5CountUser = await User.countDocuments({
-                            sponsorId: sponsor5.userId,
-                            is_active: true,
-                          });
-  
-                          if (sponsor5CountUser >= 10) {
-                            sponsor5.balance += 1;
-                            sponsor5.teamIncome += 1;
-                            sponsor5.income += 1;
-                            sponsor5.dailyIncome += 1;
-                            sponsor5.teamIncomeValidation += 1;
-                            sponsor5.lastIncomeUpdate = currentDate; //
-                            await sponsor5.save();
-                          }
+
+                        if (sponsor5CountUser >= 10) {
+                          sponsor5.balance += 1;
+                          sponsor5.teamIncome += 1;
+                          sponsor5.income += 1;
+                          sponsor5.dailyIncome += 1;
+                          sponsor5.teamIncomeValidation += 1;
+                          sponsor5.lastIncomeUpdate = currentDate; //
+                          await sponsor5.save();
                         }
                       }
                     }
