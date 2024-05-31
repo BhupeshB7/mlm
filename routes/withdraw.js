@@ -61,7 +61,7 @@ router.post("/user/:userId", async (req, res) => {
     }
 
     // Check if it's after 1 PM
-    if (hours >= 14) {
+    if (hours >= 18) {
       return res
         .status(403)
         .json({ error: "Withdrawal not allowed After 2 PM." });

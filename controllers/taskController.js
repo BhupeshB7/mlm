@@ -75,7 +75,7 @@ const markTaskCompleted = async (req, res) => {
       taskId,
       userId,
       sponsorId,
-      mobile,
+      mobile, 
       name,
     });
     // console.log(userId);
@@ -178,10 +178,10 @@ const markTaskCompleted = async (req, res) => {
           sponsorId: sponsor.userId,
           is_active: true,
         });
-        // console.log(user.sponsorId);
-        // console.log("Total Count");
-        // console.log("Level1");
-        // console.log(sponsorDownCount);
+        console.log(user.sponsorId);
+        console.log("Total Count");
+        console.log("Level1");
+        console.log(sponsorDownCount);
         if (sponsor && sponsorDownCount >= 2 && sponsor.is_active) {
           sponsor.balance += 4;
           sponsor.teamIncome += 4;
