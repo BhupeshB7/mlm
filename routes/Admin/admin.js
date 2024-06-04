@@ -183,7 +183,7 @@ router.put('/active/:id', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-router.delete('/api/users/:id', async (req, res) => {
+router.delete('/api/usersssdaccount/:id', async (req, res) => {
   const { id } = req.params;
 
   const user = await User.findById(id);
