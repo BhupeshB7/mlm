@@ -440,14 +440,14 @@ router.post('/profileUpdate',auth, async (req, res) => {
       }
       user.GPay = GPay;
     }
-    if (req.body.mobile) {
-      const mobile = req.body.mobile.trim();
-      const mobileExists = await User.findOne({ mobile });
-      if (mobileExists && mobileExists._id.toString() !== user._id.toString()) {
-        return res.status(400).json({ error: 'Mobile number already exists' });
-      }
-      user.mobile = mobile;
-    }
+    // if (req.body.mobile) {
+    //   const mobile = req.body.mobile.trim();
+    //   const mobileExists = await User.findOne({ mobile });
+    //   if (mobileExists && mobileExists._id.toString() !== user._id.toString()) {
+    //     return res.status(400).json({ error: 'Mobile number already exists' });
+    //   }
+    //   user.mobile = mobile;
+    // }
 if (req.body.aadhar) {
       const aadhar = req.body.aadhar.trim();
       const aadharExists = await User.findOne({ aadhar });
@@ -456,14 +456,14 @@ if (req.body.aadhar) {
       }
       user.aadhar = aadhar;
     }
-    if (req.body.email) {
-      const email = req.body.email.trim().toLowerCase();
-      const emailExists = await User.findOne({ email });
-      if (emailExists && emailExists._id.toString() !== user._id.toString()) {
-        return res.status(400).json({ error: 'Email already exists' });
-      }
-      user.email = email;
-    }
+    // if (req.body.email) {
+    //   const email = req.body.email.trim().toLowerCase();
+    //   const emailExists = await User.findOne({ email });
+    //   if (emailExists && emailExists._id.toString() !== user._id.toString()) {
+    //     return res.status(400).json({ error: 'Email already exists' });
+    //   }
+    //   user.email = email;
+    // }
     user.updateCount += 1;
 
     // Mark details as updated
