@@ -131,7 +131,7 @@ router.post('/login', isAdminOrAuthenticatedMiddleware, async (req, res) => {
 // Define the number of items to display per page
 const itemsPerPage = 20; // You can adjust this as needed
 
-router.get('/api/userssss/account', async (req, res) => {
+router.get('/api/users/account', async (req, res) => {
   const searchQuery = req.query.search; // Get the search query parameter from the request
   const page = parseInt(req.query.page) || 1; // Get the page number from the request, default to 1
 
@@ -183,7 +183,7 @@ router.put('/active/:id', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-router.delete('/api/usersssdaccount/:id', async (req, res) => {
+router.delete('/api/users/:id', async (req, res) => {
   const { id } = req.params;
 
   const user = await User.findById(id);
