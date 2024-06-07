@@ -163,6 +163,7 @@ router.get('/api/users/account', async (req, res) => {
       ],
     })
       .skip(skip)
+      .select("name email mobile sponsorId userId is_active package isBlocked activatioTime balance income selfIncome teamIncome topupWallet withdrawal")
       .limit(itemsPerPage);
 
     res.json({ users, totalPages });

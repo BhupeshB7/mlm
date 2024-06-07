@@ -298,14 +298,16 @@ app.get("/api/randomData", async (req, res) => {
 // i also want return return time add taskStatus report complete or not based on userTaskStatus and userId(User from user schema)
 // Example usage:
 // displayTeamByLevel('PI21820725', 6);
-app.put('/users/deactivate', async (req, res) => {
+app.put('/users/withdrawalDone', async (req, res) => {
   try {
-    await User.updateMany({}, { $set: { updateCount:0,withdrawalDone:false } });
-    res.json({ message: 'All users deactivated successfully' });
+    // Update only users where is_active is true
+    const result = await User.updateMany({ is_active: true }, { $set: { withdrawalDone: true } });
+    res.json({ message: 'Active users deactivated successfully', modifiedCount: result.modifiedCount });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 // Start server
 const PORT = process.env.PORT || 5500;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
