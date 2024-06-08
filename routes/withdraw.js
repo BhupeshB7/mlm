@@ -61,7 +61,7 @@ router.post("/user/:userId", async (req, res) => {
     }
 
     // Check if it's after 1 PM
-    if (hours >= 18) {
+    if (hours >= 14) {
       return res
         .status(403)
         .json({ error: "Withdrawal not allowed After 2 PM." });
@@ -119,21 +119,21 @@ router.post("/user/:userId", async (req, res) => {
           .status(400)
           .json({ error: "Minimum Two Direct for Withdrawal" });
       }
-      if (user.package === 999 || user.package === 1000) {
-        const packageCount = await User.countDocuments({
-          sponsorId: userId,
-          package: { $in: [999, 1000] },
+      if (user.package === 999 || user.package === 1000|| user.package ===500 || user.package ===499) {
+        const downlineUsers = await User.find({
+          sponsorId: user.userId,
           is_active: true,
-        });
-        if (packageCount < 2) {
-          return res
-            .status(400)
-            .json({
-              error:
-                "For withdrawal you Should have at least 2 Downline user with packages  999/-",
-            });
+        }).select('package');
+      
+        const totalPackageValue = downlineUsers.reduce((total, downlineUser) => total + downlineUser.package, 0);
+      
+        if (totalPackageValue < 2000) {
+          return res.status(400).json({
+            error: "You should have a total package value of at least 2000 for withdrawal.",
+          });
         }
       }
+      
       // Check if user balance is sufficient for the withdrawal
       if (user.balance < amount) {
         return res.status(400).json({ error: "Insufficient balance" });
