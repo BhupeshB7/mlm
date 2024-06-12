@@ -11,8 +11,8 @@ const cloudinaryConfig = require("./cloudinaryConfig");
 const User = require("./models/User");
 const fs = require('fs'); // Import the file system module
 const taskRoutes = require("./routes/taskRoute");
-const sessionRoutes = require("./routes/sessionRoutes");
-const sessionRoutes3 = require("./routes/threeMinuteRoutes");
+// const sessionRoutes = require("./routes/sessionRoutes");
+// const sessionRoutes3 = require("./routes/threeMinuteRoutes");
 const GameProfile = require("./models/GameProfile");
 const captchaRoutes = require('./routes/captchaRoutes');
 
@@ -70,9 +70,9 @@ app.use("/api", require("./routes/fundMove"));
 app.use("/api", require("./routes/contact"));
 app.use("/api", require("./routes/fundMove"));
 app.use("/userTasks", require("./routes/userTaskRoute"));
-app.use("/api/gameProfile", require("./routes/GameRoutes"));
+// app.use("/api/gameProfile", require("./routes/GameRoutes"));
 app.use("/api/game", require("./routes/game"));
-app.use("/api", require("./routes/LiveGameUser"));
+// app.use("/api", require("./routes/LiveGameUser"));
 app.use("/api", require("./routes/GameDeposit"));
 app.use("/api", require("./routes/image"));
 app.use("/api", require("./routes/WalletTransfer"));
@@ -80,8 +80,8 @@ app.use("/api", require("./routes/changePassword"));
 app.use("/api/notice", require("./routes/notice"));
 app.use("/api/gift", require("./routes/GiftCode"));
 app.use('/captcha', captchaRoutes);
-app.use("/", sessionRoutes);
-app.use("/three", sessionRoutes3);
+// app.use("/", sessionRoutes);
+// app.use("/three", sessionRoutes3);
 app.use("/server",(req,res)=>{
   res.json({message:"Server Started!"});
 })

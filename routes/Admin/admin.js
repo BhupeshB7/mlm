@@ -244,6 +244,47 @@ router.get('/users/count', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+router.get('/user/detail/:id',async(req,res)=>{
+  try {
+    const userDetails = await User.findOne({userId: req.params.id}).select("userId dailyIncome teamIncome selfIncome balance income");
+    if(!userDetails){
+      res.status(404).json({message: 'User not found'});
+    }
+res.json({message: 'Details fetched',userDetails});
+  } catch (error) {
+    res.status(501).json({error: error.message});
+  }
+})
+router.post('/user/detailUpdate/:id', async (req, res) => {
+  const { id } = req.params;
+    const { selfIncome, dailyIncome, teamIncome, income, balance } = req.body;
+
+    try {
+        // Fetch the current user details
+        const user = await User.findOne({ userId: id }).select('userId dailyIncome teamIncome selfIncome balance income');
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Update fields as required
+        if (selfIncome !== undefined) user.selfIncome = (user.selfIncome || 0) + selfIncome;
+        if (dailyIncome !== undefined) user.dailyIncome = dailyIncome;
+        if (teamIncome !== undefined) user.teamIncome = (user.teamIncome || 0) + teamIncome;
+        if (income !== undefined) user.income = (user.income || 0) + income;
+        if (balance !== undefined) user.balance = (user.balance || 0) + balance;
+
+        // Save the updated user details
+        await user.save();
+
+        res.status(200).send(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+
 // Get all users (admin only)
 // router.get('/users', adminAuth, async (req, res) => {
 //     try {
