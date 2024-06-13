@@ -339,7 +339,7 @@ router.put("/withdrawals/reject/:id", async (req, res) => {
     user.withdrawal -= refundAmount;
     // Refund the amount to the user's wallet
     user.balance += refundAmount;
-    user.withdrawalDone = false;
+    // user.withdrawalDone = false;
     withdrawalRequest.status = "rejected";
 
     // Use a transaction to ensure both updates (user wallet and withdrawal status) are atomic
